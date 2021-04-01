@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 
-class FileService:
+class File_Service:
     def copy_file(self,src,dst):
         try:
             shutil.copyfile(src, dst)
@@ -21,13 +21,13 @@ class FileService:
         except Exception as error:
             raise error
 
-    def wrtie_file(self,folder,file_name,content):
-        try:
-            self.metadata_file_name = os.path.join(folder, file_name)
-            with open(self.metadata_file_name, "w") as fp:
-                fp.write(str(content))
-        except Exception as error:
-            raise error
+    # def wrtie_file(self,folder,file_name,content):
+    #     try:
+    #         self.metadata_file_name = os.path.join(folder, file_name)
+    #         with open(self.metadata_file_name, "w") as fp:
+    #             fp.write(str(content))
+    #     except Exception as error:
+    #         raise error
 
     def create_folder(self,folder_name):
         try:

@@ -20,6 +20,10 @@ class Config(object):
         if not os.path.exists(temp_folder):
             os.makedirs(temp_folder)
 
+        status_folder = os.path.join(hd2_location,"data")
+        if not os.path.exists(status_folder):
+            os.makedirs(status_folder)
+
         status_folder = os.path.join(hd2_location,"status")
         if not os.path.exists(status_folder):
             os.makedirs(status_folder)

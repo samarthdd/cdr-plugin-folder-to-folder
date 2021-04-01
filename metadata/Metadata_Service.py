@@ -3,7 +3,7 @@ import hashlib
 import logging as logger
 logger.basicConfig(level=logger.INFO)
 
-class MetadataService:
+class Metadata_Service:
 
     def get_metadata(self,file_path,hd1_path):
         # Create metadata json
@@ -32,6 +32,16 @@ class MetadataService:
             return sha256_hash
         except Exception as error:
             logger.error(f"PreProcessor: get_hash : {error}")
+
+    def get_json_field(self,field_name,file_path):
+        pass
+    def set_json_field(self,field_name,file_path):
+        pass
+
+
+
+
+
 
 
 
