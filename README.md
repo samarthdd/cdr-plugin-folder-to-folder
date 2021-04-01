@@ -1,10 +1,5 @@
-# gw-defence-cyber-school
+# cdr-plugin-folder-to-folder
 
-## Python environment
-
-Install required packages
-
-```
-    pip3 install -r ./common_settings/requirements.txt
-```
-Feel free to update the package list in `./common_settings/requirements.txt` as you needed
+- add project description
+- add digrams
+- add links to Jupyter notebooks
