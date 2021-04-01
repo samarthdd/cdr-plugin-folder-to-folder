@@ -2,15 +2,16 @@ import hashlib
 
 import logging as logger
 logger.basicConfig(level=logger.INFO)
-import jsondb
+
 class MetadataService:
-    def get_metadata(self,file_path):
+
+    def get_metadata(self,file_path,hd1_path):
         # Create metadata json
         try:
             self.file_path=file_path
             metadata={}
             metadata["file_name"]=self.file_path.split("/")[-1]
-            metadata["original_file_paths"] = self.file_path
+            metadata["original_file_paths"] = hd1_path
             metadata["original_hash"] = self.get_hash(self.file_path)
             metadata["evidence_file_paths"]=None
             metadata["rebuild_status"] = None
@@ -31,5 +32,8 @@ class MetadataService:
             return sha256_hash
         except Exception as error:
             logger.error(f"PreProcessor: get_hash : {error}")
+
+
+
 
 

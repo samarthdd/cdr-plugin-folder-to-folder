@@ -16,9 +16,13 @@ class Config(object):
         gw_sdk_address = os.getenv("GW_SDK_ADDRESS")
         gw_sdk_port = int(os.getenv("GW_SDK_PORT"))
 
-        temp_folder = "./tmp"
-        if not os.path.exists("./tmp"):
-            os.makedirs("./tmp")
+        temp_folder = "../tmp"
+        if not os.path.exists(temp_folder):
+            os.makedirs(temp_folder)
+
+        status_folder = os.path.join(hd2_location,"status")
+        if not os.path.exists(status_folder):
+            os.makedirs(status_folder)
 
     except Exception as e:
         print(
