@@ -14,11 +14,13 @@ class test_Pre_Processor(TestCase):
 
     def test_process_files(self):
         self.pre_processor.process_files()
+
         data_path=os.path.join(Config.hd2_location,"data")
         status_path=os.path.join(Config.hd2_location,"status")
-        data_directory = os.listdir(data_path)
-        status_directory      =os.listdir(status_path)
 
-        assert len(data_directory) is not None
-        assert len(status_directory) is not None
+        data_directory        =  os.listdir(data_path)
+        status_directory      = os.listdir(status_path)
+
+        assert len(data_directory) is not 0
+        assert len(status_directory) is not 0
 

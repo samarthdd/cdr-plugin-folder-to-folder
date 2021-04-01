@@ -14,8 +14,5 @@ class test_Metadata_Service(TestCase):
 
     def test_get_hash(self):
         hash=self.metadata_service.get_hash(self.test_file)
-
-
-
         assert hash is not None
 

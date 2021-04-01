@@ -4,7 +4,7 @@ import json
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from common_settings.config_params import Config
-from .utils.File_Service import File_Service
+from pre_processing.utils.File_Service import File_Service
 from metadata.Metadata_Service import Metadata_Service
 
 import logging as logger
@@ -12,6 +12,7 @@ logger.basicConfig(level=logger.INFO)
 
 class Pre_Processor:
     def __init__(self):
+
         self.filename       =  None
         self.hd1_path       =  None
         self.original_hash  =  None
