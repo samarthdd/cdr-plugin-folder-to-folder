@@ -112,7 +112,7 @@ class PreProcessor:
         json_data={}
         json_data["id"]=self.id
         json_data["file_name"]=self.file_name
-        json_data["original_hahs"]=self.hash
+        json_data["original_hash"]=self.hash
         self.hash_json.append(json_data)
         #json_data=json.dumps(json_data)
 
