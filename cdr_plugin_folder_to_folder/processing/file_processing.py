@@ -92,6 +92,15 @@ class FileProcessing(object):
             print("File does not exist: ", source_path)
             return
 
+        metadata_file_path = os.path.join(dir, "metadata.json")
+        if not (FileService.file_exist(metadata_file_path)):
+            print("File does not exist: ", metadata_file_path)
+            return
+
+        #metadata_file = open(metadata_file_path)
+        #metadata = json.load(metadata_file)
+        #metadata_file.close()
+
         encodedFile = FileService.base64encode(source_path)
         if not encodedFile:
             print("Cannot encode: ", source_path)

@@ -32,6 +32,7 @@ class FileService:
             text_file_name = os.path.join(folder, file_name)
             with open(text_file_name, "w") as fp:
                 fp.write(str(content))
+                fp.close()
         except Exception as error:
             raise error
 
@@ -41,6 +42,7 @@ class FileService:
             binary_file_name = os.path.join(folder, file_name)
             with open(binary_file_name, "wb") as fp:
                 fp.write(content)
+                fp.close()
         except Exception as error:
             raise error
 
