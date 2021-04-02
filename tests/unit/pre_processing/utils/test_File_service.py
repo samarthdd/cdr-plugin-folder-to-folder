@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from pre_processing.utils.File_Service import File_Service
 class test_File_service(TestCase):
-    test_folder="/Users/samarthbharadwaj/PycharmProjects/gw_internal/cdr-plugin-folder-to-folder/test_data/test_files"
+    test_folder="./test_data/test_files"
     new_folder=os.path.join(test_folder, "sample")
 
     def setUp(self) -> None:

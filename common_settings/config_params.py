@@ -10,19 +10,19 @@ class Config(object):
     load_dotenv(os.path.join(BASEDIR, 'config.env'), override=True)
     try:
 
-        hd1_location = os.getenv("HD1_LOCATION")
-        hd2_location = os.getenv("HD2_LOCATION")
-        hd3_location = os.getenv("HD3_LOCATION")
-        gw_sdk_address = os.getenv("GW_SDK_ADDRESS")
-        gw_sdk_port = int(os.getenv("GW_SDK_PORT"))
+        hd1_location    = os.getenv("HD1_LOCATION")
+        hd2_location    = os.getenv("HD2_LOCATION")
+        hd3_location    = os.getenv("HD3_LOCATION")
+        gw_sdk_address  = os.getenv("GW_SDK_ADDRESS")
+        gw_sdk_port     = int(os.getenv("GW_SDK_PORT"))
 
         temp_folder = "../tmp"
         if not os.path.exists(temp_folder):
             os.makedirs(temp_folder)
 
-        status_folder = os.path.join(hd2_location,"data")
-        if not os.path.exists(status_folder):
-            os.makedirs(status_folder)
+        data_folder = os.path.join(hd2_location,"data")
+        if not os.path.exists(data_folder):
+            os.makedirs(data_folder)
 
         status_folder = os.path.join(hd2_location,"status")
         if not os.path.exists(status_folder):

@@ -1,11 +1,14 @@
+import os
+import sys
 from unittest import TestCase
 from metadata.Metadata_Service import Metadata_Service
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
 class test_Metadata_Service(TestCase):
 
     def setUp(self) -> None:
         self.metadata_service = Metadata_Service()
-        self.test_file = "/Users/samarthbharadwaj/PycharmProjects/gw_internal/cdr-plugin-folder-to-folder/test_data/test_files/image1.jpg"
+        self.test_file = "./test_data/test_files/image1.jpg"
 
     def test_get_metadata(self):
         hd1_path="./test_path"

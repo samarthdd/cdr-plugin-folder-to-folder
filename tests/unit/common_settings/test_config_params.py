@@ -15,7 +15,7 @@ class test_Config(TestCase):
         self.assertEqual(self.config.hd3_location, os.environ.get("HD3_LOCATION"))
         self.assertEqual(self.config.gw_sdk_address, os.environ.get("GW_SDK_ADDRESS"))
         self.assertEqual(self.config.gw_sdk_port, int(os.environ.get("GW_SDK_PORT")))
-        assert  os.path.exists(self.config.temp_folder) is True
-        assert os.path.exists(self.config.data_folder) is True
+        assert  os.path.exists(self.config.temp_folder)  is True
+        assert os.path.exists(self.config.data_folder)   is True
         assert os.path.exists(self.config.status_folder) is True
 

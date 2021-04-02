@@ -25,7 +25,7 @@ class Pre_Processor:
         self.file_service   =  File_Service()
         self.meta_service   =  Metadata_Service()
 
-        self.hash_json      = []
+        self.hash_json      =  []
         self.id             =  0
 
     def process_files(self):
@@ -58,7 +58,6 @@ class Pre_Processor:
             # Create basefolder
             self.base_folder = os.path.join(self.temp_folder, self.original_hash)
             self.file_service.create_folder(folder_name=self.base_folder)
-
 
             # target folder
             self.dst_folder = os.path.join(self.data_target, self.original_hash)
@@ -135,6 +134,3 @@ def start_process():
     pre_processor = Pre_Processor()
     pre_processor.process_files()
     return {"Processing is done"}
-
-
-
