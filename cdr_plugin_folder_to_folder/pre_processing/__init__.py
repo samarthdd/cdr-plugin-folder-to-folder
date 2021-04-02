@@ -5,7 +5,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from common_settings.config_params import Config
-from cdr_plugin_folder_to_folder.pre_processing.src import FileService
+from cdr_plugin_folder_to_folder.pre_processing import FileService
 
 from metadata.src.metadata_service import MetadataService
 
