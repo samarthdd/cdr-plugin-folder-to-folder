@@ -1,16 +1,25 @@
+import os
+import os.path
 import sys
 sys.path.insert(1, '../common_settings')
 from config_params import Config
+from file_processing import FileProcessing
 
 class FileOperations(object):
 
     @staticmethod
+    def LoopHashDirectories():
+        rootdir = os.path.join(Config.hd2_location,"data")
+        directory_contents = os.listdir(rootdir)
+        for item in directory_contents:
+            itempath = os.path.join(rootdir,item)
+            if os.path.isdir(itempath):
+                print(itempath)
+                FileProcessing.processDirectory(itempath)
+
+    @staticmethod
     def main(argv):
-        print("HD1            - {}".format(Config.hd1_location))
-        print("HD2            - {}".format(Config.hd2_location))
-        print("HD3            - {}".format(Config.hd3_location))    
-        print("GW SDK Address - {}".format(Config.gw_sdk_address))    
-        print("GW SDK Port    - {}".format(Config.gw_sdk_port))    
+        FileOperations.LoopHashDirectories()
 
 if __name__ == "__main__":
     FileOperations.main(sys.argv[1:])
