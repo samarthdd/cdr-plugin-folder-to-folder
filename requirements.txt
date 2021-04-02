@@ -1,0 +1,10 @@
+python-dotenv
+python-dateutil
+requests
+urllib3
+python-json-logger
+
+# for testing
+pytest
+pytest-cov
+coveralls
