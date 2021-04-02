@@ -29,9 +29,18 @@ class FileService:
     @staticmethod
     def wrtie_file(folder,file_name,content):
         try:
-            metadata_file_name = os.path.join(folder, file_name)
-            with open(metadata_file_name, "w") as fp:
+            text_file_name = os.path.join(folder, file_name)
+            with open(text_file_name, "w") as fp:
                 fp.write(str(content))
+        except Exception as error:
+            raise error
+
+    @staticmethod
+    def wrtie_binary_file(folder,file_name,content):
+        try:
+            binary_file_name = os.path.join(folder, file_name)
+            with open(binary_file_name, "wb") as fp:
+                fp.write(content)
         except Exception as error:
             raise error
 

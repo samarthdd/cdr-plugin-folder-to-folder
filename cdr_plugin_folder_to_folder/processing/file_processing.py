@@ -29,7 +29,7 @@ class FileProcessing(object):
             return response.text
      
         except Exception as e:
-            print("ERROR: {}".format(e))
+            print("ERROR: ".format(e))
             return ""
 
     @staticmethod
@@ -48,7 +48,7 @@ class FileProcessing(object):
     def create_report(hash, encodedFile):
         xmlreport = FileProcessing.analyse(encodedFile)
         if not xmlreport:
-            print("Cannot get xml report for {}", source_path)
+            print("Cannot get xml report")
             return
 
         report_folder = os.path.join(Config.hd2_location,"reports")
@@ -58,45 +58,51 @@ class FileProcessing(object):
         FileService.create_folder(report_file_folder)
 
         FileService.wrtie_file(report_file_folder,"report.xml",xmlreport)
-        
+
+    @staticmethod
+    def do_rebuild(hash, encodedFile):
+        result = FileProcessing.rebuild(encodedFile)
+        if not result:
+            print("Cannot rebuild file")
+            return
+
+        rebuild_folder = os.path.join(Config.hd2_location,"processed")
+        FileService.create_folder(rebuild_folder)
+
+        rebuild_file_folder = os.path.join(rebuild_folder,hash)
+        FileService.create_folder(rebuild_file_folder)
+
+        decoded = FileService.base64decode(result)
+
+        if decoded:
+            FileService.wrtie_binary_file(rebuild_file_folder, "rebuild", decoded)
+        else:
+            FileService.wrtie_file(rebuild_file_folder, "failed.html", result)
+
     @staticmethod
     def processDirectory (dir):
 
         hash = ntpath.basename(dir)
         if len(hash) != 64:
-            print("Enexpected hash length for {}", dir)
+            print("Enexpected hash length for: ", dir)
             return
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
-            print("File does not exist {}", source_path)
+            print("File does not exist: ", source_path)
             return
 
         encodedFile = FileService.base64encode(source_path)
         if not encodedFile:
-            print("Cannot encode {}", source_path)
+            print("Cannot encode: ", source_path)
             return
 
         FileProcessing.create_report(hash, encodedFile)
 
+        FileProcessing.do_rebuild(hash, encodedFile)
+
     @staticmethod
     def main(argv):
-        f = open("base64.sample", "r")
-        base64_value = f.read()
-
-        #result = FileProcessing.filetypedetection(base64_value)
-        #print(result)
-
-        #result = FileProcessing.analyse(base64_value)
-        #print(result)
-        
-        #result = FileProcessing.rebuild(base64_value)
-        #print(result)
-
-        #file = open("sample.pdf", "wb")
-        #file.write(FileService.base64decode(result))
-        #file.close()
-
         FileProcessing.processDirectory("C:\\gw_test\\hd2\\data\\32823a0dbe4dd137873cd286a592436ef738b10ce16e746a1ec64fb07c027615")
 
 if __name__ == "__main__":
