@@ -9,7 +9,6 @@ class Config(object):
     BASEDIR = os.path.abspath(os.path.dirname(__file__))
     load_dotenv(os.path.join(BASEDIR, 'config.env'), override=True)
     try:
-
         hd1_location    = os.getenv("HD1_LOCATION")
         hd2_location    = os.getenv("HD2_LOCATION")
         hd3_location    = os.getenv("HD3_LOCATION")
