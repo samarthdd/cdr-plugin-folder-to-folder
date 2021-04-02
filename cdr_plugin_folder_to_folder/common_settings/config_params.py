@@ -14,7 +14,7 @@ class Config(object):
         hd2_location = os.getenv("HD2_LOCATION")
         hd3_location = os.getenv("HD3_LOCATION")
         gw_sdk_address = os.getenv("GW_SDK_ADDRESS")
-        gw_sdk_port = int(os.getenv("GW_SDK_PORT"))
+        gw_sdk_port = int(os.getenv("GW_SDK_PORT",8080))
 
         temp_folder = "./tmp"
         if not os.path.exists("./tmp"):

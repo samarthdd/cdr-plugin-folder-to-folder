@@ -7,6 +7,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from common_settings.config_params import Config
 from cdr_plugin_folder_to_folder.pre_processing import FileService
 
+from metadata.src.metadata_service import MetadataService
+
 import logging as logger
 logger.basicConfig(level=logger.INFO)
 
@@ -20,6 +22,7 @@ class PreProcessor:
         self.target        =  os.path.join(Config.hd2_location , "data")
 
         self.file_service  =  FileService()
+        self.meta_service  =  MetadataService()
 
     def process_files(self):
         try:
@@ -41,15 +44,15 @@ class PreProcessor:
             # Copy File
             self.file_service.copy_file(self.file_path,self.current_path)
 
+            # Get metadata
+            metadata_content=self.meta_service.get_metadata(file_path=self.current_path)
+
             # Get SHA 256 hash
-            self.hash = self.get_hash(file_path=self.current_path)
+            self.hash = metadata_content["original_hash"]
 
             # Create basefolder
             self.base_folder=os.path.join(self.temp_folder,self.hash)
             self.file_service.create_folder(folder_name=self.base_folder)
-
-            # Get metadata
-            metadata_content=self.get_metadata()
 
             # Store metadata
             self.file_service.wrtie_file(folder=self.base_folder,file_name="metadata.json",content=metadata_content)

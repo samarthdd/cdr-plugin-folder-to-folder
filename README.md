@@ -18,10 +18,10 @@
 - 3 Harddisks (source, evidence and target)
 
 
-![defense_school_revised](https://user-images.githubusercontent.com/70108899/113388987-87a0c980-938f-11eb-9fab-f397383f7c95.jpg)
-
 ## Flow diagram
 
-![image](https://user-images.githubusercontent.com/70108899/113400135-a314d000-93a1-11eb-8b5f-5d9fb3679264.png)
+![defense_school_revised](https://user-images.githubusercontent.com/70108899/113388987-87a0c980-938f-11eb-9fab-f397383f7c95.jpg)
 
 ## Data mapping
+
+![image](https://user-images.githubusercontent.com/70108899/113400135-a314d000-93a1-11eb-8b5f-5d9fb3679264.png)
