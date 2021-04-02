@@ -5,7 +5,7 @@ sys.path.insert(1, '../common_settings')
 from config_params import Config
 from file_processing import FileProcessing
 
-class FileOperations(object):
+class Loops(object):
 
     @staticmethod
     def LoopHashDirectories():
@@ -14,12 +14,12 @@ class FileOperations(object):
         for item in directory_contents:
             itempath = os.path.join(rootdir,item)
             if os.path.isdir(itempath):
-                print(itempath)
+                print("Processing: ", itempath)
                 FileProcessing.processDirectory(itempath)
 
     @staticmethod
     def main(argv):
-        FileOperations.LoopHashDirectories()
+        Loops.LoopHashDirectories()
 
 if __name__ == "__main__":
-    FileOperations.main(sys.argv[1:])
+    Loops.main(sys.argv[1:])
