@@ -1,8 +1,10 @@
 import os
 import sys
 from unittest import TestCase
-from metadata.Metadata_Service import Metadata_Service
+
+sys.path.insert(1, '../../../')
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
+from metadata.Metadata_Service import Metadata_Service
 
 class test_Metadata_Service(TestCase):
 
