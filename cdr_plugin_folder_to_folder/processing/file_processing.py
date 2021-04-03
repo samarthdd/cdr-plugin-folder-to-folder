@@ -7,7 +7,7 @@ import os.path
 sys.path.insert(1, '../common_settings')
 from config_params import Config
 sys.path.insert(1, '../utils')
-from file_service import FileService
+from file_utils import FileService
 
 class FileProcessing(object):
 

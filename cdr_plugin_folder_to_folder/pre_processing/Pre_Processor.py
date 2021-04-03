@@ -1,11 +1,19 @@
 import os
 import sys
 import json
+import ntpath
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from common_settings.config_params import Config
-from pre_processing.utils.File_Service import File_Service
-from metadata.Metadata_Service import Metadata_Service
+#from common_settings.config_params import Config
+#from pre_processing.utils.File_Service import File_Service
+#from metadata.Metadata_Service import Metadata_Service
+
+sys.path.insert(1, '../common_settings')
+from config_params import Config
+sys.path.insert(1, '../pre_processing/utils')
+from file_service import File_Service
+sys.path.insert(1, '../../Metadata')
+from Metadata_Service import Metadata_Service
 
 import logging as logger
 logger.basicConfig(level=logger.INFO)
@@ -41,7 +49,7 @@ class Pre_Processor:
 
     def process(self,file_path):
         try:
-            self.file_name = file_path.split("/")[-1]
+            self.file_name = ntpath.basename(file_path)
             self.hd1_path=file_path
 
             # Copy File to temp path
@@ -121,6 +129,9 @@ class Pre_Processor:
 
             self.hash_json.append(json_data)
             hash_file_name="hash.json"
+
+            if not os.path.exists(Config.status_folder):
+                os.makedirs(Config.status_folder)
 
             self.file_service.wrtie_json_file(self.status_target,hash_file_name,json.dumps(self.hash_json))
         except Exception as error:
