@@ -5,9 +5,7 @@ import sys, getopt
 from dotenv import load_dotenv
 
 class Config(object):
-    # Load configuration
-    BASEDIR = os.path.abspath(os.path.dirname(__file__))
-    load_dotenv(os.path.join(BASEDIR, 'config.env'), override=True)
+    load_dotenv()       # Load configuration from .env file that should exist in the root of the repo
     try:
         hd1_location    = os.getenv("HD1_LOCATION")
         hd2_location    = os.getenv("HD2_LOCATION")

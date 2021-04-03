@@ -1,23 +1,32 @@
 import os
 import sys
-from unittest import TestCase
+from pprint import pprint
+from unittest                                            import TestCase
+from osbot_utils.utils.Files                             import file_exists, file_sha256, file_name
+from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
+from metadata.Metadata_Service                           import Metadata_Service
 
-sys.path.insert(1, '../../../')
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
-from metadata.Metadata_Service import Metadata_Service
 
 class test_Metadata_Service(TestCase):
 
     def setUp(self) -> None:
         self.metadata_service = Metadata_Service()
-        self.test_file = "./test_data/test_files/image1.jpg"
+        self.test_file        = Test_Data().images().pop()
+        assert file_exists(self.test_file)
 
     def test_get_metadata(self):
-        hd1_path="./test_path"
-        content=self.metadata_service.get_metadata(self.test_file,hd1_path)
-        assert content["original_file_paths"] is hd1_path
+        hd1_path= "./test_path"
+        metadata  =self.metadata_service.get_metadata(self.test_file,hd1_path)
+
+        assert metadata == {  'evidence_file_paths' : None                       ,
+                              'file_name'           : file_name(self.test_file)  ,
+                              'original_file_paths' : hd1_path                   ,
+                              'original_hash'       : file_sha256(self.test_file),
+                              'rebuild_status'      : None                       ,
+                              'target_path'         : None                       ,
+                              'xml_report_status'   : None                       }
 
     def test_get_hash(self):
         hash=self.metadata_service.get_hash(self.test_file)
-        assert hash is not None
+        assert hash == file_sha256(self.test_file)
 

@@ -128,3 +128,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# project spefific
+tests/test_data
+tests/unit/pre_processing/test_data

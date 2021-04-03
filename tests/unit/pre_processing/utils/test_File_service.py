@@ -2,28 +2,38 @@ import os
 import shutil
 from unittest import TestCase
 
+from osbot_utils.utils.Files import folder_exists, temp_folder, file_exists, folder_temp, folder_delete_all, temp_file, \
+    file_copy
+
 from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
+from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 
 
 class test_File_service(TestCase):
     test_folder="./test_data/test_files"
-    new_folder=os.path.join(test_folder, "sample")
+    #new_folder=os.path.join(test_folder, "sample")
 
-    def setUp(self) -> None:
-        self.file_service=File_Service()
-        self.test_folder=test_File_service.test_folder
-        self.test_file =  os.path.join(self.test_folder,"image1.jpg")
-        self.new_folder = test_File_service.new_folder
-        self.dict_content={}
-        self.dict_content["value"]="testing"
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.new_folder = temp_folder()
 
     @classmethod
     def tearDownClass(cls) -> None:
-        shutil.rmtree(test_File_service.new_folder)
+        shutil.rmtree(cls.new_folder)
         pass
 
+    def setUp(self) -> None:
+        self.test_data    = Test_Data()
+        self.file_service = File_Service()
+        self.test_folder  = self.test_data.path_test_files
+        self.test_file    = self.test_data.image()
+        self.dict_content = { "value": "testing" }
+
+
     def test_copy_file(self):
-        self.dst = os.path.join(self.test_folder,"image2.jpg")
+        assert file_exists(self.test_file)
+        assert folder_exists(self.new_folder)
+        self.dst = os.path.join(self.new_folder,"image2.jpg")
         self.file_service.copy_file(self.test_file,self.dst )
 
         assert os.path.exists(self.dst) is True
@@ -34,8 +44,11 @@ class test_File_service(TestCase):
         assert os.path.exists(self.new_folder) is True
 
     def test_copy_folder(self):
-        self.file_service.copy_folder(self.test_folder,self.new_folder)
-        directory = os.listdir(self.new_folder)
+        temp_folder = folder_temp()
+        folder_delete_all(temp_folder)
+
+        self.file_service.copy_folder(self.test_folder,temp_folder)
+        directory = os.listdir(temp_folder)
 
         assert len(directory) is not 0
 
@@ -47,18 +60,20 @@ class test_File_service(TestCase):
         assert os.path.exists(os.path.join(self.new_folder,"test.json")) is True
 
     def test_read_json_file(self):
-        json_file_path=os.path.join(self.test_folder,"test.json")
+        json_file_path=self.test_data.json()
         content=self.file_service.read_json_file(json_file_path)
 
         assert content is not None
 
     def test_move_file(self):
-        if not os.path.exists(self.new_folder):
-            os.makedirs(self.new_folder)
-        self.src = os.path.join(self.test_folder, "image2.jpg")
-        self.file_service.move_file(self.src, os.path.join(self.new_folder,"image1.jpg"))
+        source_file = temp_file()
+        target_file = temp_file()
+        file_copy(self.test_file, source_file)
 
-        assert os.path.exists(self.src ) is False
+        self.file_service.move_file(source_file, target_file)
+
+        assert os.path.exists(source_file ) is False
+        assert os.path.exists(target_file ) is True
 
 
     def test_delete_folder(self):
