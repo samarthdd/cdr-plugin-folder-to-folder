@@ -1,10 +1,15 @@
-python-dotenv
+fastapi
 python-dateutil
-requests
-urllib3
+python-dotenv
 python-json-logger
+pydantic
+requests
+starlette
+urllib3
+uvicorn
+wheel
 
 # for testing
+coveralls
 pytest
 pytest-cov
-coveralls
