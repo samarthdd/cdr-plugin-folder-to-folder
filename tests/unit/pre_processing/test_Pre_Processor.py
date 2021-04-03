@@ -1,9 +1,12 @@
 import os
 import sys
 from unittest import TestCase
-from pre_processing.Pre_Processor import Pre_Processor
+
+from cdr_plugin_folder_to_folder.common_settings.config_params import Config
+from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
-from common_settings.config_params import Config
+
 class test_Pre_Processor(TestCase):
 
     def setUp(self) -> None:

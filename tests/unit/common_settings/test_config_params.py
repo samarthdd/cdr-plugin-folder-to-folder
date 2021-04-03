@@ -1,14 +1,14 @@
 import os
 import sys
 from unittest import TestCase
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
-sys.path.insert(1, '../../../cdr_plugin_folder_to_folder')
-from common_settings.config_params import Config
+from cdr_plugin_folder_to_folder.common_settings.config_params import Config
+
+
 class test_Config(TestCase):
 
     def setUp(self) -> None:
-        self.config  =Config()
+        self.config  = Config()
 
     def test_config(self):
         self.assertEqual(self.config.hd1_location , os.environ.get("HD1_LOCATION"))

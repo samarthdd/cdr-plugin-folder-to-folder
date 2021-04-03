@@ -25,5 +25,5 @@ jobs:
           pip install -e .
       - name: Run tests with pytest
         run: |
-          pytest -v --durations=0 --cov=k8_kubernetes tests
+          pytest -v --durations=0 --cov=cdr_plugin_folder_to_folder tests
           #coveralls

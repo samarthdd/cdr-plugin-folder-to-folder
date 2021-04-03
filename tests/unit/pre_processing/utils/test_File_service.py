@@ -2,7 +2,9 @@ import os
 import shutil
 from unittest import TestCase
 
-from pre_processing.utils.File_Service import File_Service
+from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
+
+
 class test_File_service(TestCase):
     test_folder="./test_data/test_files"
     new_folder=os.path.join(test_folder, "sample")

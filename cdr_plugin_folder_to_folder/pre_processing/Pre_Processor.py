@@ -3,19 +3,12 @@ import sys
 import json
 import ntpath
 
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-#from common_settings.config_params import Config
-#from pre_processing.utils.File_Service import File_Service
-#from metadata.Metadata_Service import Metadata_Service
-
-sys.path.insert(1, '../common_settings')
-from config_params import Config
-sys.path.insert(1, '../pre_processing/utils')
-from file_service import File_Service
-sys.path.insert(1, '../../Metadata')
-from Metadata_Service import Metadata_Service
-
 import logging as logger
+
+from cdr_plugin_folder_to_folder.common_settings.config_params import Config
+from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
+from metadata.Metadata_Service import Metadata_Service
+
 logger.basicConfig(level=logger.INFO)
 
 class Pre_Processor:
