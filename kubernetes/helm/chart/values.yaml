@@ -10,7 +10,12 @@ image:
 podAnnotations: {}
 application:
   cdrplugin:
-    env: {}
+    env: 
+      HD1_LOCATION: "./test_data/hd1"
+      HD2_LOCATION: "./test_data/hd2"
+      HD3_LOCATION: "./test_data/hd3"
+      GW_SDK_ADDRESS: "54.246.71.220"
+      GW_SDK_PORT: "1346"
     secrets: {}
 
 service:
@@ -38,11 +43,13 @@ livenessProbe:
   path: "/"
   initialDelaySeconds: 30
   timeoutSeconds: 3
+  periodSeconds: 30
   scheme: "HTTP"
 readinessProbe:
   path: "/"
   initialDelaySeconds: 30
   timeoutSeconds: 3
+  periodSeconds: 30
   scheme: "HTTP"
 
 resources:
