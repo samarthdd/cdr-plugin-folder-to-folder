@@ -2,7 +2,7 @@ import os
 import os.path
 import sys
 
-from cdr_plugin_folder_to_folder.common_settings.config_params import Config
+from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from file_processing import FileProcessing
 
 class Loops(object):

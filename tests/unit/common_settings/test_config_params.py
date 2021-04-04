@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from osbot_utils.utils.Files import folder_exists
 
-from cdr_plugin_folder_to_folder.common_settings.config_params import *
+from cdr_plugin_folder_to_folder.common_settings.Config import *
 
 class test_Config(TestCase):
 

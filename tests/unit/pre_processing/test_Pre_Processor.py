@@ -5,7 +5,7 @@ from unittest import TestCase
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import folder_exists, folder_create, file_copy
 
-from cdr_plugin_folder_to_folder.common_settings.config_params import Config
+from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 

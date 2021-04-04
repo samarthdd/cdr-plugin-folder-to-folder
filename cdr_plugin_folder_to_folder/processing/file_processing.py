@@ -6,7 +6,7 @@ import os.path
 
 from osbot_utils.utils.Files import folder_create
 
-from cdr_plugin_folder_to_folder.common_settings.config_params import Config
+from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 
 
