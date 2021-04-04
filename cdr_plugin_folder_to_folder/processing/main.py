@@ -1,11 +1,8 @@
 import sys
-from fastapi import FastAPI
 import uvicorn
-from file_iteration import Loops
-
-sys.path.insert(1, '../pre_processing')
-sys.path.insert(1, '../pre_processing/utils')
-from Pre_Processor import Pre_Processor
+from fastapi import FastAPI
+from Loops import Loops
+from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 
 app = FastAPI()
 

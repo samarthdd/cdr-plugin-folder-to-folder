@@ -10,7 +10,7 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 
 
-class FileProcessing(object):                                       # todo: add Unit Tests to this class
+class File_Processing(object):                                       # todo: add Unit Tests to this class
 
     @staticmethod
     def base64request(endpoint, base64enc_file):
@@ -36,20 +36,20 @@ class FileProcessing(object):                                       # todo: add 
 
     @staticmethod
     def analyse (base64enc_file):
-        return FileProcessing.base64request("api/Analyse/base64",base64enc_file)
+        return File_Processing.base64request("api/Analyse/base64", base64enc_file)
 
     @staticmethod
     def rebuild (base64enc_file):
-        return FileProcessing.base64request("api/rebuild/base64", base64enc_file)
+        return File_Processing.base64request("api/rebuild/base64", base64enc_file)
 
     @staticmethod
     def filetypedetection (base64enc_file):
-        return FileProcessing.base64request("api/FileTypeDetection/base64",base64enc_file)
+        return File_Processing.base64request("api/FileTypeDetection/base64", base64enc_file)
 
     @staticmethod
     def create_report(hash, encodedFile):
         config = Config().load_values()                     # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
-        xmlreport = FileProcessing.analyse(encodedFile)
+        xmlreport = File_Processing.analyse(encodedFile)
         if not xmlreport:
             print("Cannot get xml report")
             return
@@ -65,7 +65,7 @@ class FileProcessing(object):                                       # todo: add 
     @staticmethod
     def do_rebuild(hash, encodedFile):
         config = Config().load_values()                                 # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
-        result = FileProcessing.rebuild(encodedFile)
+        result = File_Processing.rebuild(encodedFile)
         if not result:
             print("Cannot rebuild file")
             return
@@ -110,13 +110,13 @@ class FileProcessing(object):                                       # todo: add 
             print("Cannot encode: ", source_path)
             return
 
-        FileProcessing.create_report(hash, encodedFile)
+        File_Processing.create_report(hash, encodedFile)
 
-        FileProcessing.do_rebuild(hash, encodedFile)
+        File_Processing.do_rebuild(hash, encodedFile)
 
     @staticmethod
     def main(argv):
-        FileProcessing.processDirectory("C:\\gw_test\\hd2\\data\\32823a0dbe4dd137873cd286a592436ef738b10ce16e746a1ec64fb07c027615")
+        File_Processing.processDirectory("C:\\gw_test\\hd2\\data\\32823a0dbe4dd137873cd286a592436ef738b10ce16e746a1ec64fb07c027615")
 
 if __name__ == "__main__":
-    FileProcessing.main(sys.argv[1:])
+    File_Processing.main(sys.argv[1:])
