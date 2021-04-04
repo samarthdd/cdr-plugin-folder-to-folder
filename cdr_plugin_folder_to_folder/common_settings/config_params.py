@@ -1,50 +1,42 @@
 import os
-#import logging
-import sys, getopt
-#import json
 from dotenv import load_dotenv
+from osbot_utils.utils.Files import folder_not_exists, path_combine, folder_create
 
-DEFAULT_HD1_LOCATION   = "./test_data/hd1"
-DEFAULT_HD2_LOCATION   = "./test_data/hd2"
-DEFAULT_HD3_LOCATION   = "./test_data/hd3"
-DEFAULT_GW_SDK_ADDRESS = "91.109.26.86"
-DEFAULT_GW_SDK_PORT    = "8080"
+# todo: refactor the whole test files so that it all comes from temp folders (not from files in the repo)
+DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test_data' )
+DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd1'                )
+DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd2'                )
+DEFAULT_HD3_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd3'                )
+DEFAULT_GW_SDK_ADDRESS   = "91.109.26.86"
+DEFAULT_GW_SDK_PORT      = "8080"
+
 
 class Config(object):
-    load_dotenv()       # Load configuration from .env file that should exist in the root of the repo
-    try:
-        hd1_location    = os.getenv("HD1_LOCATION"   , DEFAULT_HD1_LOCATION)
-        hd2_location    = os.getenv("HD2_LOCATION"   , DEFAULT_HD2_LOCATION)
-        hd3_location    = os.getenv("HD3_LOCATION"   , DEFAULT_HD3_LOCATION)
-        gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS)
-        gw_sdk_port     = int(os.getenv("GW_SDK_PORT", DEFAULT_GW_SDK_PORT))
 
-        temp_folder = "../tmp"
-        if not os.path.exists(temp_folder):
-            os.makedirs(temp_folder)
+    def __init__(self):
+        load_dotenv()                   # Load configuration from .env file that should exist in the root of the repo
+        self.root_folder    = None      # todo: see if we will need this
+        self.hd1_location   = None
+        self.hd2_location   = None
+        self.hd3_location   = None
+        self.gw_sdk_address = None
+        self.gw_sdk_port    = None
 
-        data_folder = os.path.join(hd2_location,"data")
-        if not os.path.exists(data_folder):
-            os.makedirs(data_folder)
+    def load_values(self):
+        self.root_folder     = os.getenv("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
+        self.hd1_location    = os.getenv("HD1_LOCATION"   , DEFAULT_HD1_LOCATION   )
+        self.hd2_location    = os.getenv("HD2_LOCATION"   , DEFAULT_HD2_LOCATION   )
+        self.hd3_location    = os.getenv("HD3_LOCATION"   , DEFAULT_HD3_LOCATION   )
+        self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
+        self.gw_sdk_port     = int(os.getenv("GW_SDK_PORT", DEFAULT_GW_SDK_PORT)   )
+        self.check_config()
+        return self
 
-        status_folder = os.path.join(hd2_location,"status")
-        if not os.path.exists(status_folder):
-            os.makedirs(status_folder)
-
-    except Exception as e:
-        print(
-            "Please create config.env file similar to config.env.sample")
-        print(str(e))
-        raise
-
-    #The function below is to verify that config params are obtained from config.env
-    @staticmethod
-    def main(argv):
-        print("HD1            - {}".format(Config.hd1_location))
-        print("HD2            - {}".format(Config.hd2_location))
-        print("HD3            - {}".format(Config.hd3_location))    
-        print("GW SDK Address - {}".format(Config.gw_sdk_address))    
-        print("GW SDK Port    - {}".format(Config.gw_sdk_port))    
-
-if __name__ == "__main__":
-    Config.main(sys.argv[1:])
+    def check_config(self):
+        if folder_not_exists(self.hd1_location):
+            raise Exception("Folder not found: HD1")
+        if folder_not_exists(self.hd2_location):
+            raise Exception("Folder not found: HD2")
+        if folder_not_exists(self.hd3_location):
+            raise Exception("Folder not found: HD3")
+        # todo: add check for GW_SDK_ADDRESS

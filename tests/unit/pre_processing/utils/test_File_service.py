@@ -8,10 +8,10 @@ from osbot_utils.utils.Files import folder_exists, temp_folder, file_exists, fol
 from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 
-
 class test_File_service(TestCase):
-    test_folder="./test_data/test_files"
+    #test_folder="./test_data/test_files"
     #new_folder=os.path.join(test_folder, "sample")
+    new_folder = None
 
     @classmethod
     def setUpClass(cls) -> None:
