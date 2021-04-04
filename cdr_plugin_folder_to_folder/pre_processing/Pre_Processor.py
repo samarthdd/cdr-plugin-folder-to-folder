@@ -5,6 +5,8 @@ import ntpath
 
 import logging as logger
 
+from osbot_utils.utils.Files import temp_folder
+
 from cdr_plugin_folder_to_folder.common_settings.config_params import Config
 from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
 from metadata.Metadata_Service import Metadata_Service
@@ -17,11 +19,11 @@ class Pre_Processor:
         self.filename       =  None
         self.hd1_path       =  None
         self.original_hash  =  None
-
-        self.temp_folder    =  Config.temp_folder
-
-        self.data_target    =  os.path.join(Config.hd2_location , "data")
-        self.status_target  =  os.path.join(Config.hd2_location , "status")
+        self.config         = Config().load_values()
+        self.temp_folder    = temp_folder()                     # todo: this should be deleted after file processing
+        self.hd1_location   = self.config.hd1_location
+        self.data_target    =  os.path.join(self.config.hd2_location , "data")
+        self.status_target  =  os.path.join(self.config.hd2_location , "status")
 
         self.file_service   =  File_Service()
         self.meta_service   =  Metadata_Service()
@@ -31,7 +33,7 @@ class Pre_Processor:
 
     def process_files(self):
         try:
-            for folderName, subfolders, filenames in os.walk(Config.hd1_location):
+            for folderName, subfolders, filenames in os.walk(self.hd1_location):
                 for filename in filenames:
                     self.hd1_path =  os.path.join(folderName, filename)
                     if os.path.isfile(self.hd1_path):

@@ -17,7 +17,10 @@ class test_Pre_Processor(TestCase):
         self.pre_processor = Pre_Processor()
         self.test_data     = Test_Data()
         self.test_file     = self.test_data.image()
-        self.path_h1       = Config.hd1_location
+        self.config        = Config().load_values()
+        self.path_h1       = self.config.hd1_location
+        self.path_h2       = self.config.hd2_location
+        self.path_h3       = self.config.hd3_location
         folder_create(self.path_h1)
         
 
@@ -26,16 +29,15 @@ class test_Pre_Processor(TestCase):
 
 
     def test__init__(self):
-        assert folder_exists(self.pre_processor.temp_folder  )
         assert folder_exists(self.pre_processor.data_target  )
         assert folder_exists(self.pre_processor.status_target)
-        assert folder_exists(Config.hd1_location)
+        assert folder_exists(self.path_h1)
 
     def test_process_files(self):
         self.pre_processor.process_files()
 
-        data_path        = os.path.join(Config.hd2_location,"data")
-        status_path      = os.path.join(Config.hd2_location,"status")
+        data_path        = self.pre_processor.data_target
+        status_path      = self.pre_processor.status_target
 
         data_directory   = os.listdir(data_path)
         status_directory = os.listdir(status_path)
