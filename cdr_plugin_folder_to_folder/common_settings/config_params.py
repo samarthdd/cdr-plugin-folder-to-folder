@@ -23,7 +23,6 @@ class Config(object):
         self.root_folder    = None      # todo: see if we will need this
 
     def load_values(self):
-
         self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
         self.gw_sdk_port     = int(os.getenv("GW_SDK_PORT", DEFAULT_GW_SDK_PORT)   )
         self.hd1_location    = os.getenv("HD1_LOCATION"   , DEFAULT_HD1_LOCATION   )

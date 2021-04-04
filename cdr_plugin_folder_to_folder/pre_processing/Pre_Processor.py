@@ -5,7 +5,7 @@ import ntpath
 
 import logging as logger
 
-from osbot_utils.utils.Files import temp_folder
+from osbot_utils.utils.Files import temp_folder, path_combine, folder_create
 
 from cdr_plugin_folder_to_folder.common_settings.config_params import Config
 from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
@@ -20,16 +20,19 @@ class Pre_Processor:
         self.hd1_path       =  None
         self.original_hash  =  None
         self.config         = Config().load_values()
-        self.temp_folder    = temp_folder()                     # todo: this should be deleted after file processing
+        self.temp_folder    = temp_folder()                                     # todo: this should be deleted after file processing
         self.hd1_location   = self.config.hd1_location
-        self.data_target    =  os.path.join(self.config.hd2_location , "data")
-        self.status_target  =  os.path.join(self.config.hd2_location , "status")
+        self.data_target    =  path_combine(self.config.hd2_location , "data")
+        self.status_target  =  path_combine(self.config.hd2_location , "status")
 
         self.file_service   =  File_Service()
         self.meta_service   =  Metadata_Service()
 
         self.hash_json      =  []
         self.id             =  0
+
+        folder_create(self.data_target)                             # todo: refactor this from this __init__
+        folder_create(self.status_target)
 
     def process_files(self):
         try:
@@ -124,9 +127,6 @@ class Pre_Processor:
 
             self.hash_json.append(json_data)
             hash_file_name="hash.json"
-
-            if not os.path.exists(Config.status_folder):
-                os.makedirs(Config.status_folder)
 
             self.file_service.wrtie_json_file(self.status_target,hash_file_name,json.dumps(self.hash_json))
         except Exception as error:
