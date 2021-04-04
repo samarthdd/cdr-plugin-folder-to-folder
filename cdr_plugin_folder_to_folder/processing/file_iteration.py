@@ -1,15 +1,16 @@
 import os
 import os.path
 import sys
-sys.path.insert(1, '../common_settings')
-from config_params import Config
+
+from cdr_plugin_folder_to_folder.common_settings.config_params import Config
 from file_processing import FileProcessing
 
 class Loops(object):
 
     @staticmethod
     def LoopHashDirectories():
-        rootdir = os.path.join(Config.hd2_location,"data")
+        config = Config().load_values()
+        rootdir = os.path.join(config.hd2_location,"data")
         directory_contents = os.listdir(rootdir)
         for item in directory_contents:
             itempath = os.path.join(rootdir,item)

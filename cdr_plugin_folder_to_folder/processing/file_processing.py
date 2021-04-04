@@ -4,17 +4,19 @@ import requests
 import ntpath
 import os.path
 
-sys.path.insert(1, '../common_settings')
-from config_params import Config
-sys.path.insert(1, '../utils')
-from file_utils import FileService
+from osbot_utils.utils.Files import folder_create
 
-class FileProcessing(object):
+from cdr_plugin_folder_to_folder.common_settings.config_params import Config
+from cdr_plugin_folder_to_folder.utils.file_utils import FileService
+
+
+class FileProcessing(object):                                       # todo: add Unit Tests to this class
 
     @staticmethod
     def base64request(endpoint, base64enc_file):
+        config = Config().load_values()                             # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
         try:
-            url = "http://" + Config.gw_sdk_address + ":" + str(Config.gw_sdk_port) + "/" + endpoint
+            url = "http://" + config.gw_sdk_address + ":" + str(config.gw_sdk_port) + "/" + endpoint
 
             payload = json.dumps({
               "Base64": base64enc_file
@@ -46,27 +48,29 @@ class FileProcessing(object):
 
     @staticmethod
     def create_report(hash, encodedFile):
+        config = Config().load_values()                     # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
         xmlreport = FileProcessing.analyse(encodedFile)
         if not xmlreport:
             print("Cannot get xml report")
             return
 
-        report_folder = os.path.join(Config.hd2_location,"reports")
-        FileService.create_folder(report_folder)
+        report_folder = os.path.join(config.hd2_location,"reports")     # todo: this should not be calculated here
+        folder_create(report_folder)                                    # todo: this folder should not be created here
 
-        report_file_folder = os.path.join(report_folder,hash)
-        FileService.create_folder(report_file_folder)
+        report_file_folder = os.path.join(report_folder,hash)           # todo: this should not be calculated here
+        folder_create(report_file_folder)                               # todo: this folder should not be created here
 
-        FileService.wrtie_file(report_file_folder,"report.xml",xmlreport)
+        FileService.wrtie_file(report_file_folder,"report.xml",xmlreport)   # todo: refactor to use OSBot-utils methods
 
     @staticmethod
     def do_rebuild(hash, encodedFile):
+        config = Config().load_values()                                 # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
         result = FileProcessing.rebuild(encodedFile)
         if not result:
             print("Cannot rebuild file")
             return
 
-        rebuild_folder = os.path.join(Config.hd2_location,"processed")
+        rebuild_folder = os.path.join(config.hd2_location,"processed")
         FileService.create_folder(rebuild_folder)
 
         rebuild_file_folder = os.path.join(rebuild_folder,hash)
