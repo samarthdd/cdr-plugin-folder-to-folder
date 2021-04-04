@@ -47,7 +47,6 @@ class File_Service:
             self.metadata_file_name = os.path.join(folder, file_name)
             with open(self.metadata_file_name, 'w') as json_file:
                 json.dump(content, json_file)
-                json_file.close()
         except Exception as error:
             raise error
 

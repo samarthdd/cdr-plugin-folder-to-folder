@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "trackableappname" . }}
+  annotations: {}
+  labels:
+    app: {{ template "appname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "appname" . }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      annotations:
+        checksum/application-secrets: "{{ .Values.application.secretChecksum }}"
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "appname" . }}
+        track: "{{ .Values.application.track }}"
+        tier: "{{ .Values.application.tier }}"
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.cdrplugin.repository }}:{{ .Values.image.cdrplugin.tag }}"
+        imagePullPolicy: {{ .Values.image.cdrplugin.pullPolicy }}
+        {{- if .Values.application.cdrplugin.secrets }}
+        envFrom:
+        - secretRef:
+            name: {{ .Values.application.cdrplugin.secretName }}
+        {{- end }}
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+        {{- with .Values.application.cdrplugin.env }}
+        {{- range $key, $val := . }}
+        {{- if $val }}
+          - name: "{{ tpl $key $  }}"
+            value: "{{ tpl $val $  }}"
+        {{- end }}
+        {{- end }}
+        {{- end }}
+
+        ports:
+        - name: "{{ .Values.service.cdrplugin.name }}"
+          containerPort: {{ .Values.service.cdrplugin.internalPort }}
+        {{- if .Values.livenessProbe }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.livenessProbe.path }}
+            port: {{ .Values.service.cdrplugin.internalPort }}
+            scheme: {{ .Values.livenessProbe.scheme }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        {{- end }}
+        {{- if .Values.readinessProbe }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.readinessProbe.path }}
+            port: {{ .Values.service.cdrplugin.internalPort }}  
+            scheme: {{ .Values.readinessProbe.scheme }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources.cdrplugin | indent 12 }}
+      {{- if .Values.hostAliases }}
+      {{- with .Values.hostAliases }}
+      hostAliases:
+      {{- range $key, $val :=  . }}
+      - ip: {{ $key }}
+        hostnames:
+        {{- range $hostname := $val }}
+        - {{ $hostname }}
+        {{- end -}}
+      {{- end}}
+      {{- end}}
+      {{- end}}

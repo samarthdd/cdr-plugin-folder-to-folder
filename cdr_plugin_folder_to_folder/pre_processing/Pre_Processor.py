@@ -128,7 +128,7 @@ class Pre_Processor:
             self.hash_json.append(json_data)
             hash_file_name="hash.json"
 
-            self.file_service.wrtie_json_file(self.status_target,hash_file_name,json.dumps(self.hash_json))
+            self.file_service.wrtie_json_file(self.status_target,hash_file_name,self.hash_json)
         except Exception as error:
             raise error
 

@@ -1,0 +1,65 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  cdrplugin:
+    repository: pranaysahith/cdr_plugin_folder_to_folder
+    tag: 0.0.1
+    pullPolicy: IfNotPresent
+podAnnotations: {}
+application:
+  cdrplugin:
+    env: {}
+    secrets: {}
+
+service:
+  cdrplugin:
+    enabled: true
+    annotations: {}
+    name: nginx
+    type: ClusterIP
+    additionalHosts: {}
+    commonName:
+    externalPort: 80
+    internalPort: 80
+    url: cdrplugin-dev01.glasswall-icap.com
+ingress:
+  enabled: true
+  tls:
+    enabled: true
+    secretName: 
+    crt:
+    key:
+    ca_crt:
+  annotations: {}
+  path: /
+livenessProbe:
+  path: "/"
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  scheme: "HTTP"
+readinessProbe:
+  path: "/"
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  scheme: "HTTP"
+
+resources:
+  cdrplugin:
+    limits:
+      cpu: 250m
+      memory: 250Mi
+    requests:
+      cpu: 250m
+      memory: 250Mi
+
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  maxUnavailable: 1
+scale:
+  cdrplugin:
+    enabled: false
+    MinReplicaCount: 1
+    MaxReplicaCount: 8

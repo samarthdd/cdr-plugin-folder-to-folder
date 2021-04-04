@@ -129,7 +129,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# project spefific
+# project specific
 tests/test_data
 tests/unit/pre_processing/test_data
 test_data/hd2
+notes.txt

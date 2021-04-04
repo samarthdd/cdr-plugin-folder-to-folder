@@ -1,7 +1,7 @@
 import sys
 import uvicorn
 from fastapi import FastAPI
-from Loops import Loops
+from cdr_plugin_folder_to_folder.processing.Loops import Loops
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 
 app = FastAPI()
@@ -22,4 +22,4 @@ def start_process():
     return {"Processing is done"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=80, log_level="info")
+    uvicorn.run("main:app", host="0.0.0.0", port=80, log_level="info")
