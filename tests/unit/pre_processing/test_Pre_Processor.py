@@ -19,7 +19,6 @@ class test_Pre_Processor(TestCase):
         self.test_file     = self.test_data.image()
         self.path_h1       = Config.hd1_location
         folder_create(self.path_h1)
-        file_copy    (self.test_file, self.path_h1)
         
 
     def tearDown(self) -> None:
