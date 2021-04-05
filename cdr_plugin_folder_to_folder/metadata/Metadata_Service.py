@@ -61,6 +61,7 @@ class Metadata_Service:
         self.medadata_folder = medadata_folder
         with open(self.get_metadata_file_path(), 'w') as outfile:
             json.dump(self.metadata, outfile)
+            outfile.close()
 
     def get_hash(self,file_path):
         return file_sha256(file_path)
@@ -86,7 +87,7 @@ class Metadata_Service:
     def set_status(self, medadata_folder, status):
         self.get_from_file(medadata_folder)
         self.metadata["rebuild_status"] = status
-        self.write_metadata_to_file(medadata_folder)
+        self.write_metadata_to_file(self.metadata, medadata_folder)
 
     def set_status_inprogress(self, medadata_folder):
         self.set_status(medadata_folder, Status.IN_PROGRESS.value)

@@ -96,7 +96,7 @@ class File_Processing(object):                                       # todo: add
         if not meta_service.is_initial_status(dir):
             return False
 
-        #meta_service.set_status_inprogress(dir)
+        meta_service.set_status_inprogress(dir)
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
@@ -118,7 +118,7 @@ class File_Processing(object):                                       # todo: add
         File_Processing.create_report(hash, encodedFile)
         File_Processing.do_rebuild(hash, encodedFile, processed_path)
 
-        #meta_service.set_status_comleted(dir)
+        meta_service.set_status_comleted(dir)
 
         return True
 
