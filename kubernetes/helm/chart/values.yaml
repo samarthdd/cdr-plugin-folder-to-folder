@@ -70,3 +70,8 @@ scale:
     enabled: false
     MinReplicaCount: 1
     MaxReplicaCount: 8
+
+volumemountpath:
+  hd1: "/mnt/hd1"
+  hd2: "/mnt/hd2"
+  hd2: "/mnt/hd3"
