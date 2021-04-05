@@ -2,6 +2,9 @@ version:  '3.9'
 services:
   jupyter:
       image: cdr_plugin_folder_to_folder_notebooks
+      build:
+        dockerfile: ${PWD}/jupyter/Dockerfile
+        context: ${PWD}/jupyter
       volumes:
         - ${PWD}/jupyter/notebooks:/home/jovyan/work
         - ${PWD}/test_data:/home/jovyan/test_data
@@ -13,6 +16,9 @@ services:
 
   api:
       image: cdr_plugin_folder_to_folder
+      build:
+        dockerfile: ${PWD}/cdr_plugin_folder_to_folder/Dockerfile
+        context: ${PWD}/cdr_plugin_folder_to_folder
       volumes:
         - ${PWD}/cdr_plugin_folder_to_folder:/app/cdr_plugin_folder_to_folder
       ports:
