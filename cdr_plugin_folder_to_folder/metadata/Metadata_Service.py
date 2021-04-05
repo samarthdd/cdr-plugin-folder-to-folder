@@ -5,6 +5,7 @@ import os
 import logging as logger
 
 from osbot_utils.utils.Files import file_sha256, file_name
+from cdr_plugin_folder_to_folder.common_settings.Config import Config
 
 logger.basicConfig(level=logger.INFO)
 
@@ -16,6 +17,7 @@ class Metadata_Service:
         self.file_path = None
         self.medadata_folder = None
         self.metadata = {}
+        self.config = Config().load_values()
 
     def get_metadata(self, file_path, hd1_path):
         # Create metadata json
@@ -56,7 +58,16 @@ class Metadata_Service:
     def get_hash(self,file_path):
         return file_sha256(file_path)
 
+    def get_original_file_path(self, medadata_folder):
+        self.get_from_file(medadata_folder)
+        return self.metadata["original_file_paths"]
 
+    def get_processed_file_path(self, medadata_folder):
+        self.get_from_file(medadata_folder)
+        path = self.metadata["original_file_paths"]
+        path = path.replace(self.config.hd1_location, self.config.hd3_location)
+        print(path)
+        return path
 
 
 

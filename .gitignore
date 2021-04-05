@@ -133,3 +133,4 @@ dmypy.json
 tests/test_data
 tests/unit/pre_processing/test_data
 test_data/hd2
+test_data/hd3

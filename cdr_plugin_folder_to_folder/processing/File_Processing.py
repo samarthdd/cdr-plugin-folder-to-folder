@@ -64,7 +64,7 @@ class File_Processing(object):                                       # todo: add
         FileService.wrtie_file(report_file_folder,"report.xml",xmlreport)   # todo: refactor to use OSBot-utils methods
 
     @staticmethod
-    def do_rebuild(hash, encodedFile):
+    def do_rebuild(hash, encodedFile, processed_path):
         config = Config().load_values()                                 # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
         result = File_Processing.rebuild(encodedFile)
         if not result:
@@ -81,6 +81,7 @@ class File_Processing(object):                                       # todo: add
 
         if decoded:
             FileService.wrtie_binary_file(rebuild_file_folder, "rebuild", decoded)
+            FileService.wrtie_binary_file(ntpath.dirname(processed_path), ntpath.basename(processed_path), decoded)            
         else:
             FileService.wrtie_file(rebuild_file_folder, "failed.html", result)
 
@@ -107,9 +108,12 @@ class File_Processing(object):                                       # todo: add
             print("Cannot encode: ", source_path)
             return
 
+        meta_service = Metadata_Service()
+        processed_path = meta_service.get_processed_file_path(dir)
+
         File_Processing.create_report(hash, encodedFile)
 
-        File_Processing.do_rebuild(hash, encodedFile)
+        File_Processing.do_rebuild(hash, encodedFile, processed_path)
 
     @staticmethod
     def main(argv):
