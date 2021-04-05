@@ -76,11 +76,23 @@ class Metadata_Service:
         print(path)
         return path
 
+    def get_status(self, medadata_folder):
+        self.get_from_file(medadata_folder)
+        return self.metadata["rebuild_status"]
 
+    def is_initial_status(self, medadata_folder):
+        return (self.get_status(medadata_folder) == Status.INITIAL.value)
 
+    def set_status(self, medadata_folder, status):
+        self.get_from_file(medadata_folder)
+        self.metadata["rebuild_status"] = status
+        self.write_metadata_to_file(medadata_folder)
 
+    def set_status_inprogress(self, medadata_folder):
+        self.set_status(medadata_folder, Status.IN_PROGRESS.value)
 
-
+    def set_status_comleted(self, medadata_folder):
+        self.set_status(medadata_folder, Status.COMPLETED.value)
 
 
 
