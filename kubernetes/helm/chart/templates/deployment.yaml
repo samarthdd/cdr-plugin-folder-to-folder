@@ -49,6 +49,24 @@ spec:
         {{- end }}
         {{- end }}
 
+        volumeMounts:
+          - name: hd1-vol
+            mountPath: {{ .Values.volumemountpath.hd1 }}
+            readOnly: true
+          - name: hd2-vol
+            mountPath: {{ .Values.volumemountpath.hd2 }}
+          - name: hd3-vol
+            mountPath: {{ .Values.volumemountpath.hd3 }}
+        volumes:
+        - name: hd1-vol
+          persistentVolumeClaim:
+            claimName: hd1-pvc
+        - name: hd2-vol
+          persistentVolumeClaim:
+            claimName: hd2-pvc
+        - name: hd3-vol
+          persistentVolumeClaim:
+            claimName: hd2-pvc
         ports:
         - name: "{{ .Values.service.cdrplugin.name }}"
           containerPort: {{ .Values.service.cdrplugin.internalPort }}

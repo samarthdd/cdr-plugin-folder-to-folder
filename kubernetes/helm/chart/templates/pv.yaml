@@ -1,0 +1,95 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: hd1-pv
+  labels:
+    type: local
+    usage: hd1-pv
+spec:
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/hd1"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: hd1-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 3Gi
+  selector:
+    matchLabels:
+      usage: hd1-pv
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: hd2-pv
+  labels:
+    type: local
+    usage: hd2-pv
+spec:
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/hd2"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: hd2-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 3Gi
+  selector:
+    matchLabels:
+      usage: hd2-pv
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: hd3-pv
+  labels:
+    type: local
+    usage: hd3-pv
+spec:
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/hd3"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: hd3-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 3Gi
+  selector:
+    matchLabels:
+      usage: hd3-pv
+---
