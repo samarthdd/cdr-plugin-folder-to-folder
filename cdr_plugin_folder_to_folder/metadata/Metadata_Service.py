@@ -7,7 +7,14 @@ import logging as logger
 from osbot_utils.utils.Files import file_sha256, file_name
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 
+from enum import Enum
+
 logger.basicConfig(level=logger.INFO)
+
+class Status(Enum):
+     INITIAL = "Initial"
+     IN_PROGRESS = "In Progress"
+     COMPLETED = "Completed"
 
 class Metadata_Service:
 
@@ -26,7 +33,7 @@ class Metadata_Service:
                     "original_file_paths": hd1_path                      ,  # todo: DC: check why we need this (since I think this is part of the file_path variable)
                     "original_hash"      : self.get_hash(self.file_path) ,
                     "evidence_file_paths": None                          ,
-                    "rebuild_status"     : None                          ,
+                    "rebuild_status"     : Status.INITIAL.value          ,
                     "xml_report_status"  : None                          ,
                     "target_path"        : None                          }
 
