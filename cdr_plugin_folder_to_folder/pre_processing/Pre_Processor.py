@@ -74,10 +74,7 @@ class Pre_Processor:
 
                 # Store metadata
                 metadata_content["hd2_path"] = os.path.join(self.dst_folder, self.dst_file_name)
-                self.file_service.wrtie_json_file(folder=self.base_folder,
-                                                  file_name="metadata.json",
-                                                  content=metadata_content)
-
+                self.meta_service.write_metadata_to_file(metadata_content, self.base_folder)
 
                 # Rename and Move original file to hash folder
                 self.file_service.move_file(self.current_path,
@@ -107,10 +104,10 @@ class Pre_Processor:
 
             self.file_service.copy_file( src, dst)
 
-            metadata_content   = self.file_service.read_json_file(dst)
+            metadata_content   = self.meta_service.get_from_file(self.base_folder)
             if metadata_content["original_file_paths"] != self.hd1_path:
                 metadata_content["original_file_paths"] = metadata_content["original_file_paths"]+ "," + self.hd1_path
-                self.file_service.wrtie_json_file(folder=self.base_folder,file_name="metadata.json",content=metadata_content)
+                self.meta_service.write_metadata_to_file(metadata_content,self.dst_folder)
                 self.file_service.copy_file(dst,src)
         except Exception as error:
             raise error
