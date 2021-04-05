@@ -3,7 +3,7 @@ import os.path
 import sys
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
-from File_Processing import File_Processing
+from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 
 class Loops(object):
 
@@ -18,9 +18,3 @@ class Loops(object):
                 print("Processing: ", itempath)
                 File_Processing.processDirectory(itempath)
 
-    @staticmethod
-    def main(argv):
-        Loops.LoopHashDirectories()
-
-if __name__ == "__main__":
-    Loops.main(sys.argv[1:])
