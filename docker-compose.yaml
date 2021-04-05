@@ -1,13 +1,19 @@
-version:  '3'
+version:  '3.9'
 services:
-  datascience-notebook:
+  jupyter:
       image: cdr_plugin_folder_to_folder_notebooks
       volumes:
         - ${PWD}/jupyter/notebooks:/home/jovyan/work
         - ${PWD}/test_data:/home/jovyan/test_data
       ports:
-        #- ${PORT}:8888
-      - 8888:8888
-      container_name:   jupyter_notebook
+        - 8888:8888
+      container_name: jupyter_notebook
       command: "start-notebook.sh \
                  --NotebookApp.token=${ACCESS_TOKEN}"
+
+  api:
+      image: cdr_plugin_folder_to_folder
+      volumes:
+        - ${PWD}/cdr_plugin_folder_to_folder:/app/cdr_plugin_folder_to_folder
+      ports:
+        - 8880:8880
