@@ -99,8 +99,8 @@ class Pre_Processor:
     def update_hd2_metadata(self):
         try:
             # Update HD2 metadata with source paths
-            src  = os.path.join(self.dst_folder,"metadata.json")
-            dst  = os.path.join(self.base_folder,"metadata.json")
+            src  = os.path.join(self.dst_folder, Metadata_Service.METADATA_FILE_NAME)
+            dst  = os.path.join(self.base_folder, Metadata_Service.METADATA_FILE_NAME)
 
             self.file_service.copy_file( src, dst)
 

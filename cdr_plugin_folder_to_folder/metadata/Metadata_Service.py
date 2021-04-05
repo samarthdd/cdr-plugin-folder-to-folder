@@ -39,14 +39,12 @@ class Metadata_Service:
     def get_from_file(self, medadata_folder):
         self.medadata_folder=medadata_folder
         try:
-
             with open(self.get_metadata_file_path()) as json_file:
                 self.metadata = json.load(json_file)
         except Exception as error:
             logger.error("Failed to init metadata from file: {medadata_folder}")
             logger.error("Failure details: {error}")
             raise error
-
         return self.metadata
 
     def write_metadata_to_file(self, metadata, medadata_folder):
@@ -58,11 +56,6 @@ class Metadata_Service:
     def get_hash(self,file_path):
         return file_sha256(file_path)
 
-    def get_json_field(self,field_name,file_path):
-        pass
-
-    def set_json_field(self,field_name,file_path):
-        pass
 
 
 

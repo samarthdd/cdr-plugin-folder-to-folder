@@ -8,6 +8,7 @@ from osbot_utils.utils.Files import folder_create
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
+from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 
 
 class File_Processing(object):                                       # todo: add Unit Tests to this class
@@ -96,14 +97,10 @@ class File_Processing(object):                                       # todo: add
             print("File does not exist: ", source_path)
             return
 
-        metadata_file_path = os.path.join(dir, "metadata.json")
+        metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
         if not (FileService.file_exist(metadata_file_path)):
             print("File does not exist: ", metadata_file_path)
             return
-
-        #metadata_file = open(metadata_file_path)
-        #metadata = json.load(metadata_file)
-        #metadata_file.close()
 
         encodedFile = FileService.base64encode(source_path)
         if not encodedFile:
