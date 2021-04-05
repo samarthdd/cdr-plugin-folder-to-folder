@@ -8,7 +8,7 @@ from osbot_utils.utils.Files import folder_create
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
-
+from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 
 class File_Processing(object):                                       # todo: add Unit Tests to this class
 
@@ -63,7 +63,7 @@ class File_Processing(object):                                       # todo: add
         FileService.wrtie_file(report_file_folder,"report.xml",xmlreport)   # todo: refactor to use OSBot-utils methods
 
     @staticmethod
-    def do_rebuild(hash, encodedFile):
+    def do_rebuild(hash, encodedFile, processed_path):
         config = Config().load_values()                                 # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
         result = File_Processing.rebuild(encodedFile)
         if not result:
@@ -80,6 +80,7 @@ class File_Processing(object):                                       # todo: add
 
         if decoded:
             FileService.wrtie_binary_file(rebuild_file_folder, "rebuild", decoded)
+            FileService.wrtie_binary_file(ntpath.dirname(processed_path), ntpath.basename(processed_path), decoded)            
         else:
             FileService.wrtie_file(rebuild_file_folder, "failed.html", result)
 
@@ -89,30 +90,37 @@ class File_Processing(object):                                       # todo: add
         hash = ntpath.basename(dir)
         if len(hash) != 64:
             print("Enexpected hash length for: ", dir)
-            return
+            return False
+
+        meta_service = Metadata_Service()
+        if not meta_service.is_initial_status(dir):
+            return False
+
+        meta_service.set_status_inprogress(dir)
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
             print("File does not exist: ", source_path)
-            return
+            return False
 
-        metadata_file_path = os.path.join(dir, "metadata.json")
+        metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
         if not (FileService.file_exist(metadata_file_path)):
             print("File does not exist: ", metadata_file_path)
-            return
-
-        #metadata_file = open(metadata_file_path)
-        #metadata = json.load(metadata_file)
-        #metadata_file.close()
+            return False
 
         encodedFile = FileService.base64encode(source_path)
         if not encodedFile:
             print("Cannot encode: ", source_path)
-            return
+            return False
+
+        processed_path = meta_service.get_processed_file_path(dir)
 
         File_Processing.create_report(hash, encodedFile)
+        File_Processing.do_rebuild(hash, encodedFile, processed_path)
 
-        File_Processing.do_rebuild(hash, encodedFile)
+        meta_service.set_status_comleted(dir)
+
+        return True
 
     @staticmethod
     def main(argv):
