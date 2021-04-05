@@ -10,7 +10,7 @@ class Server:
     def __init__(self):
         self.host       = "0.0.0.0"
         self.log_level  = "info"
-        self.port       = "8888"
+        self.port       = "8880"
         self.app        = None
 
     def setup(self):
