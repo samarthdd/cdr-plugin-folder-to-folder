@@ -44,3 +44,16 @@ services:
     environment:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+
+  # minio
+
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - ${PWD}/test_data:/data
+    ports:
+      - 9000:9000
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: ${ACCESS_TOKEN}
+    command: server /data
