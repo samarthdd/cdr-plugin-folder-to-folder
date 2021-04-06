@@ -119,7 +119,7 @@ jobs:
           instance_id="${{ steps.deploy.outputs.instance_id }}"
           instance_ip="${{ steps.deploy.outputs.instance_ip }}"
           ami_id="${{ steps.deploy.outputs.ami_id }}"
-          curl --fail -kv http://$instance_ip/"
+          curl --fail -kv http://$instance_ip/pre_processing/
           echo "Tests are successfully on the new instance, terminating old instance."
           aws ec2 create-tags --resources $ami_id --tags Key=Test_Result,Value=Success
           instance_id="${{ steps.get_id.outputs.instance_id }}"
