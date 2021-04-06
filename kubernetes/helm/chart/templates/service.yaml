@@ -1,0 +1,24 @@
+{{- if .Values.service.cdrplugin.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+{{- if .Values.service.cdrplugin.annotations }}
+  annotations:
+{{ toYaml .Values.service.cdrplugin.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "appname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.cdrplugin.type }}
+  ports:
+  - port: {{ .Values.service.cdrplugin.externalPort }}
+    targetPort: {{ .Values.service.cdrplugin.internalPort }}
+    protocol: TCP
+    name: {{ .Values.service.cdrplugin.name }}
+  selector:
+    app: {{ template "appname" . }}
+{{- end -}}

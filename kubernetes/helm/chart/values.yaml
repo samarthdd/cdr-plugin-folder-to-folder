@@ -1,0 +1,88 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  cdrplugin:
+    repository: pranaysahith/cdr_plugin_folder_to_folder
+    tag: 0.0.2
+    pullPolicy: IfNotPresent
+  jupyter:
+    repository: pranaysahith/cdr_plugin_jupyter
+    tag: 0.0.1
+    pullPolicy: IfNotPresent
+podAnnotations: {}
+application:
+  cdrplugin:
+    env:
+      HD1_LOCATION: "/mnt/hd1"
+      HD2_LOCATION: "/mnt/hd2"
+      HD3_LOCATION: "/mnt/hd3"
+      GW_SDK_ADDRESS: "54.246.71.220"
+      GW_SDK_PORT: "1346"
+    secrets: {}
+
+service:
+  cdrplugin:
+    enabled: true
+    annotations: {}
+    name: cdrplugin
+    type: ClusterIP
+    additionalHosts: {}
+    commonName:
+    externalPort: 8880
+    internalPort: 8880
+    url: ""
+ingress:
+  enabled: true
+  tls:
+    enabled: false
+    secretName: 
+    crt:
+    key:
+    ca_crt:
+  annotations: {}
+  path: /
+livenessProbe:
+  path: "/"
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  periodSeconds: 30
+  scheme: "HTTP"
+readinessProbe:
+  path: "/"
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  periodSeconds: 30
+  scheme: "HTTP"
+
+resources:
+  cdrplugin:
+    limits:
+      cpu: 250m
+      memory: 250Mi
+    requests:
+      cpu: 250m
+      memory: 250Mi
+
+podDisruptionBudget:
+  enabled: false
+  # minAvailable: 1
+  maxUnavailable: 1
+scale:
+  cdrplugin:
+    enabled: false
+    MinReplicaCount: 1
+    MaxReplicaCount: 8
+
+hostPath:
+  hd1: 
+    path: "/mnt/hd1"
+    size: 1Ti
+  hd2:
+    path: "/mnt/hd2"
+    size: 1Ti
+  hd3:
+    path: "/mnt/hd3"
+    size: 1Ti
+

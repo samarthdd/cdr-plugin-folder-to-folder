@@ -1,7 +1,6 @@
 import sys
 import uvicorn
 from fastapi import FastAPI
-
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 
 #app = FastAPI()

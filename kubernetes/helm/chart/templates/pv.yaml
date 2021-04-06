@@ -1,0 +1,98 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: hd1-pv
+  labels:
+    type: local
+    usage: hd1-pv
+spec:
+  capacity:
+    storage: {{ .Values.hostPath.hd1.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.hostPath.hd1.path }}
+    type: "Directory"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: hd1-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.hostPath.hd1.size }}
+  selector:
+    matchLabels:
+      usage: hd1-pv
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: hd2-pv
+  labels:
+    type: local
+    usage: hd2-pv
+spec:
+  capacity:
+    storage: {{ .Values.hostPath.hd2.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.hostPath.hd2.path }}
+    type: "Directory"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: hd2-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.hostPath.hd2.size }}
+  selector:
+    matchLabels:
+      usage: hd2-pv
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: hd3-pv
+  labels:
+    type: local
+    usage: hd3-pv
+spec:
+  capacity:
+    storage: {{ .Values.hostPath.hd3.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.hostPath.hd3.path }}
+    type: "Directory"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: hd3-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.hostPath.hd3.size }}
+  selector:
+    matchLabels:
+      usage: hd3-pv
+---
