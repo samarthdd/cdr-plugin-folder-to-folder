@@ -5,6 +5,7 @@ import os
 import logging as logger
 
 from osbot_utils.utils.Files import file_sha256, file_name
+from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 
 from enum import Enum
@@ -59,9 +60,7 @@ class Metadata_Service:
     def write_metadata_to_file(self, metadata, medadata_folder):
         self.metadata = metadata
         self.medadata_folder = medadata_folder
-        with open(self.get_metadata_file_path(), 'w') as outfile:
-            json.dump(self.metadata, outfile)
-            outfile.close()
+        json_save_file_pretty(self.metadata, self.get_metadata_file_path())
 
     def get_hash(self,file_path):
         return file_sha256(file_path)

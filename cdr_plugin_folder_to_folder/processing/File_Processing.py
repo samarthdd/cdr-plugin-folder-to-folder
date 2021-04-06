@@ -3,8 +3,10 @@ import json
 import requests
 import ntpath
 import os.path
+import xmltodict
 
 from osbot_utils.utils.Files import folder_create
+from osbot_utils.utils.Json import json_save_file_pretty
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
@@ -54,41 +56,34 @@ class File_Processing(object):                                       # todo: add
             print("Cannot get xml report")
             return
 
-        report_folder = os.path.join(config.hd2_location,"reports")     # todo: this should not be calculated here
+        report_folder = os.path.join(config.hd2_location,"data")     # todo: this should not be calculated here
         folder_create(report_folder)                                    # todo: this folder should not be created here
 
         report_file_folder = os.path.join(report_folder,hash)           # todo: this should not be calculated here
         folder_create(report_file_folder)                               # todo: this folder should not be created here
 
-        FileService.wrtie_file(report_file_folder,"report.xml",xmlreport)   # todo: refactor to use OSBot-utils methods
+        json_obj = xmltodict.parse(xmlreport)
+
+        json_save_file_pretty(json_obj, os.path.join(report_file_folder, "report.json"))
 
     @staticmethod
     def do_rebuild(hash, encodedFile, processed_path):
-        config = Config().load_values()                                 # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
         result = File_Processing.rebuild(encodedFile)
         if not result:
             print("Cannot rebuild file")
             return
 
-        rebuild_folder = os.path.join(config.hd2_location,"processed")
-        FileService.create_folder(rebuild_folder)
-
-        rebuild_file_folder = os.path.join(rebuild_folder,hash)
-        FileService.create_folder(rebuild_file_folder)
+        dirname = ntpath.dirname(processed_path)
+        basename = ntpath.basename(processed_path)
+        folder_create(dirname)
 
         decoded = FileService.base64decode(result)
 
+        # Save to HD3
         if decoded:
-            # Save to HD2
-            FileService.wrtie_binary_file(rebuild_file_folder, "rebuild", decoded)
-
-            # Save to HD3
-            dirname = ntpath.dirname(processed_path)
-            basename = ntpath.basename(processed_path)
-            folder_create(dirname)
             FileService.wrtie_binary_file(dirname, basename, decoded)
         else:
-            FileService.wrtie_file(rebuild_file_folder, "failed.html", result)
+            FileService.wrtie_file(dirname, basename + ".html", result)
 
     @staticmethod
     def processDirectory (dir):

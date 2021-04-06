@@ -9,6 +9,7 @@ starlette
 urllib3
 uvicorn
 wheel
+xmltodict
 
 # for testing
 coveralls
