@@ -51,6 +51,7 @@ sudo docker build cdr_plugin_folder_to_folder -f cdr_plugin_folder_to_folder/Doc
 sudo docker push localhost:30500/cdr-plugin-folder-to-folder
 
 # install cdr plugin folder to folder API helm charts
+sudo mkdir -p /mnt/hd1 /mnt/hd2 /mnt/hd3
 GW_SDK_PORT=${GW_SDK_PORT-1346}
 helm upgrade --install cdr-plugin-f2f  \
     --set image.cdrplugin.repository=localhost:30500/cdr-plugin-folder-to-folder \
