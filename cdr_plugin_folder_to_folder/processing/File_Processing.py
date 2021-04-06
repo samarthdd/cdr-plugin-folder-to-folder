@@ -79,8 +79,14 @@ class File_Processing(object):                                       # todo: add
         decoded = FileService.base64decode(result)
 
         if decoded:
+            # Save to HD2
             FileService.wrtie_binary_file(rebuild_file_folder, "rebuild", decoded)
-            FileService.wrtie_binary_file(ntpath.dirname(processed_path), ntpath.basename(processed_path), decoded)            
+
+            # Save to HD3
+            dirname = ntpath.dirname(processed_path)
+            basename = ntpath.basename(processed_path)
+            folder_create(dirname)
+            FileService.wrtie_binary_file(dirname, basename, decoded)
         else:
             FileService.wrtie_file(rebuild_file_folder, "failed.html", result)
 
