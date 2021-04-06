@@ -68,31 +68,22 @@ class File_Processing(object):                                       # todo: add
 
     @staticmethod
     def do_rebuild(hash, encodedFile, processed_path):
-        config = Config().load_values()                                 # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
         result = File_Processing.rebuild(encodedFile)
         if not result:
             print("Cannot rebuild file")
             return
 
-        rebuild_folder = os.path.join(config.hd2_location,"processed")
-        FileService.create_folder(rebuild_folder)
-
-        rebuild_file_folder = os.path.join(rebuild_folder,hash)
-        FileService.create_folder(rebuild_file_folder)
+        dirname = ntpath.dirname(processed_path)
+        basename = ntpath.basename(processed_path)
+        folder_create(dirname)
 
         decoded = FileService.base64decode(result)
 
+        # Save to HD3
         if decoded:
-            # Save to HD2
-            FileService.wrtie_binary_file(rebuild_file_folder, "rebuild", decoded)
-
-            # Save to HD3
-            dirname = ntpath.dirname(processed_path)
-            basename = ntpath.basename(processed_path)
-            folder_create(dirname)
             FileService.wrtie_binary_file(dirname, basename, decoded)
         else:
-            FileService.wrtie_file(rebuild_file_folder, "failed.html", result)
+            FileService.wrtie_file(dirname, basename + ".html", result)
 
     @staticmethod
     def processDirectory (dir):
