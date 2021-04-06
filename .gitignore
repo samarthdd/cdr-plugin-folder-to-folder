@@ -129,9 +129,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# project spefific
-tests/test_data
-tests/unit/pre_processing/test_data
-test_data/hd2
-test_data/hd3
-test_data/.minio.sys
+# project specific
+
