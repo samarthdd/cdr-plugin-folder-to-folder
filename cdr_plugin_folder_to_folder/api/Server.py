@@ -15,11 +15,11 @@ class Server:
 
     def setup(self):
         self.app = FastAPI()
-        self.app.include_router(router, prefix="/pre_processing")
+        self.app.include_router(router, prefix="")
         return self
 
     def start(self):
-        uvicorn.run(self.app, host=self.host, port=self.port, log_level=self.log_level)
+        uvicorn.run(self.app, host=self.host, port=int(self.port), log_level=self.log_level)
 
 if __name__ == "__main__":
     Server().setup().start()

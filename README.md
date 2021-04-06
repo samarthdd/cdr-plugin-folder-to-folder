@@ -1,27 +1,5 @@
 # cdr-plugin-folder-to-folder
 
-# Architecture
-
-![architecture](./diagrams/cdr-plugin-folder-to-folder-architecture.png)
-
-# Setup
-
-- Create virtualenv
-- Run `pip install -r common_settings/requirements.txt`
-
-# Services
- 
-## Pre-Processing
-
-- Run `pytests -v tests`
-
-- Run as Fast API  `uvicorn pre_processing.Pre_Processor:app --reload`
-
-- HD1 --> `test_data/hd1`,  HD2 --> `test_data/hd1`
-
-- Open http://localhost:8000/process
-
-
 =======
 **Repo Workflows**
 
@@ -48,3 +26,43 @@
 ## Data mapping
 
 ![image](https://user-images.githubusercontent.com/70108899/113400135-a314d000-93a1-11eb-8b5f-5d9fb3679264.png)
+
+## Usage
+
+- Set minio and jupyter notebook password 
+    ```
+     export ACCESS_TOKEN=
+  
+   ```
+  
+- Run `docker-compose up`
+
+## Services
+
+### Fast API
+
+- Open `http:0.0.0.0:8880`
+- Endpoints
+
+| API Endpoint | Method | Description | 
+|------|---------|---------    |
+| /    |  GET |  Home Screen |
+| /pre-process    | GET |  Pre processing of file from HD1 to HD2      |
+| /loop   | GET | Processing of HD2 files and storing result in HD3 |
+
+## Jupyter Notebook
+- Open `http:0.0.0.0:8888/`
+- Use `access_token` as password
+
+## Minio
+- Open `http:0.0.0.0:9000/`
+- Use `access_token` as password
+
+## Elastic Search
+- Open `http:0.0.0.0:5601/`
+- Use `access_token` as password
+
+## Kibana
+- Open `http:0.0.0.0:9200/`
+- Use `access_token` as password
+  
