@@ -15,3 +15,6 @@ xmltodict
 coveralls
 pytest
 pytest-cov
+
+# logging
+elasticsearch==7.12.0
