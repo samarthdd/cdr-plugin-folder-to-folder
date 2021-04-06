@@ -135,3 +135,5 @@ tests/unit/pre_processing/test_data
 test_data/hd2
 notes.txt
 *.pem
+test_data/hd3
+test_data/.minio.sys

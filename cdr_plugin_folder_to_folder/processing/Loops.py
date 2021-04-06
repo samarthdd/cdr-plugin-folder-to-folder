@@ -15,6 +15,7 @@ class Loops(object):
         for item in directory_contents:
             itempath = os.path.join(rootdir,item)
             if os.path.isdir(itempath):
-                print("Processing: ", itempath)
-                File_Processing.processDirectory(itempath)
-
+                try:
+                    File_Processing.processDirectory(itempath)
+                except Exception as error:
+                    print(error)
