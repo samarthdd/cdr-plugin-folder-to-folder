@@ -7,10 +7,18 @@ cd cdr-plugin-folder-to-folder
 ```
 
 ## Minimalist deployment without SSL. API can be accessed only on port 80 (only for development purpose)
+
+The paths where host directories are mounted in the container can be controlled by setting values - `application.cdrplugin.env.HD1_LOCATION`, `application.cdrplugin.env.HD2_LOCATION`, `application.cdrplugin.env.HD3_LOCATION`
+
+The paths of host directories which needs to be mounted can be controlled by setting values - `hostPath.hd1.path`, `hostPath.hd2.path`, `hostPath.hd3.path`
+
 ```
 helm upgrade --install cdr-plugin-f2f \
-  --set image.cdrplugin.repository=<docker-repository>/<image_name:image_tag> \
-  --set service.cdrplugin.url="<Domain_name>"
+  --set image.cdrplugin.repository=<docker-repository> \
+  --set image.cdrplugin.tag=<image_name:image_tag>  \
+  --set application.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
+  --set application.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \
+  --set application.cdrplugin.env.HD3_LOCATION="/mnt/hd3" \
   --set ingress.tls.enabled=false \
   --atomic kubernetes/helm/chart/
 ```
@@ -18,7 +26,11 @@ helm upgrade --install cdr-plugin-f2f \
 **example:**
 ```
 helm upgrade --install cdr-plugin-f2f \
-  --set image.cdrplugin.repository=pranaysahith/cdr_plugin_folder_to_folder:0.0.2 \
+  --set image.cdrplugin.repository=pranaysahith/cdr_plugin_folder_to_folder \
+  --set image.cdrplugin.tag=0.0.2  \
+  --set application.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
+  --set application.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \
+  --set application.cdrplugin.env.HD3_LOCATION="/mnt/hd3" \
   --set service.cdrplugin.url="cdrplugin-dev01.glasswall-icap.com"
   --set ingress.tls.enabled=false \
   --atomic kubernetes/helm/chart/
@@ -43,7 +55,11 @@ key=$(cat ./server.key | base64 | tr -d '\n')
 crt=$(cat ./server.crt ./ca.pem | base64 | tr -d '\n')
 
 helm upgrade --install cdr-plugin-f2f \
-  --set image.cdrplugin.repository=<docker-repository>/<image_name:image_tag> \
+  --set image.cdrplugin.repository=<docker-repository> \
+  --set image.cdrplugin.tag=<image_name:image_tag> \
+  --set application.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
+  --set application.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \
+  --set application.cdrplugin.env.HD3_LOCATION="/mnt/hd3" \
   --set service.cdrplugin.url="<Domain_name>" \
   --set ingress.tls.crt=$crt \
   --set ingress.tls.key=$key \
