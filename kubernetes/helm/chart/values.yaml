@@ -28,11 +28,11 @@ service:
     commonName:
     externalPort: 80
     internalPort: 80
-    url: cdrplugin-dev01.glasswall-icap.com
+    url: ""
 ingress:
   enabled: true
   tls:
-    enabled: true
+    enabled: false
     secretName: 
     crt:
     key:
@@ -74,4 +74,4 @@ scale:
 volumemountpath:
   hd1: "/mnt/hd1"
   hd2: "/mnt/hd2"
-  hd2: "/mnt/hd3"
+  hd3: "/mnt/hd3"

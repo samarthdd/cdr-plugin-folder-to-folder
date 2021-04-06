@@ -1,16 +1,52 @@
-# this will have a docekr compose for the the FastAPI and for the Jupyter notebooks
-#version:  '3'
-#services:
-#  datascience-notebook:
-#      image:    jupyter/datascience-notebook
-#      volumes:
-#        - ${LOCAL_WORKING_DIR}:/home/jovyan/work
-#        - ${LOCAL_DATASETS}:/home/jovyan/work/datasets
-#        - ${LOCAL_MODULES}:/home/jovyan/work/modules
-#        - ${LOCAL_SSL_CERTS}:/etc/ssl/notebook
-#      ports:
-#        - ${PORT}:8888
-#      container_name:   jupyter_notebook
-#      command: "start-notebook.sh \
-#        --NotebookApp.password=${ACCESS_TOKEN} \
-#        --NotebookApp.certfile=/etc/ssl/notebook/jupyter.pem"
+version:  '3.9'
+services:
+  jupyter:
+      image: cdr_plugin_folder_to_folder_notebooks
+      build:
+        dockerfile: ${PWD}/jupyter/Dockerfile
+        context: ${PWD}/jupyter
+      volumes:
+        - ${PWD}/jupyter/notebooks:/home/jovyan/work
+        - ${PWD}/test_data:/home/jovyan/test_data
+      ports:
+        - 8888:8888
+      container_name: jupyter_notebook
+      command: "start-notebook.sh \
+                 --NotebookApp.token=${ACCESS_TOKEN}"
+
+  api:
+      image: cdr_plugin_folder_to_folder
+      build:
+        dockerfile: ${PWD}/cdr_plugin_folder_to_folder/Dockerfile
+        context: ${PWD}/cdr_plugin_folder_to_folder
+      volumes:
+        - ${PWD}/cdr_plugin_folder_to_folder:/app/cdr_plugin_folder_to_folder
+      ports:
+        - 8880:8880
+
+
+  # Elastic and Kibana
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.12.0
+    container_name: kib01
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'

@@ -1,10 +1,7 @@
-import os
-import sys
-from pprint import pprint
 from unittest                                            import TestCase
 from osbot_utils.utils.Files                             import file_exists, file_sha256, file_name
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
-from metadata.Metadata_Service                           import Metadata_Service
+from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 
 
 class test_Metadata_Service(TestCase):

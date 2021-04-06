@@ -18,9 +18,3 @@ class Loops(object):
                 print("Processing: ", itempath)
                 File_Processing.processDirectory(itempath)
 
-    @staticmethod
-    def main(argv):
-        Loops.LoopHashDirectories()
-
-if __name__ == "__main__":
-    Loops.main(sys.argv[1:])

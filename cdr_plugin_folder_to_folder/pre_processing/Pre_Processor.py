@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import ntpath
 
@@ -9,7 +8,7 @@ from osbot_utils.utils.Files import temp_folder, path_combine, folder_create
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
-from metadata.Metadata_Service import Metadata_Service
+from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 
 logger.basicConfig(level=logger.INFO)
 
