@@ -6,7 +6,6 @@ from cdr_plugin_folder_to_folder.processing.main import router as processing_rou
 from cdr_plugin_folder_to_folder.pre_processing.main import router as pre_processing_router
 from cdr_plugin_folder_to_folder.file_distribution.main import router as file_distribution_router
 
-
 class Server:
 
     def __init__(self):

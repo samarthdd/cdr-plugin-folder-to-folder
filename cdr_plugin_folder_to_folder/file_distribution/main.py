@@ -38,7 +38,3 @@ def get_hd2_status_files():
 def get_hd3_files(num_of_files: int):
     list=file_distributor.get_hd3_files(num_of_files=num_of_files)
     return list
-
-
-
-
