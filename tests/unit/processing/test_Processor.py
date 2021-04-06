@@ -28,8 +28,8 @@ class test_Processor(TestCase):
     def test_process_files(self):
         Loops.LoopHashDirectories()
 
-        assert folder_exists(self.repotrs_path)
-        assert folder_exists(self.processed_path)
+        assert folder_exists(self.config.hd3_location)
+        assert len(os.listdir(self.config.hd3_location)) != 0
 
     def test_process_file(self):
         pass
