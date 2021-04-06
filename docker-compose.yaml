@@ -13,6 +13,8 @@ services:
       container_name: jupyter_notebook
       command: "start-notebook.sh \
                  --NotebookApp.token=${ACCESS_TOKEN}"
+      depends_on:
+        - filebeat
 
 # Fast API
 
@@ -26,6 +28,8 @@ services:
         - ${PWD}/test_data:/app/test_data
       ports:
         - 8880:8880
+      depends_on:
+        - filebeat
 
   # Elastic and Kibana
 
@@ -38,6 +42,7 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - logger.level=WARN
     ulimits:
       memlock:
         soft: -1
@@ -50,8 +55,9 @@ services:
     ports:
       - 5601:5601
     environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+      - logger.level=WARN
+      - ELASTICSEARCH_URL=http://es01:9200
+      - ELASTICSEARCH_HOSTS=["http://es01:9200"]
 
   # minio
 
@@ -65,3 +71,16 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: ${ACCESS_TOKEN}
     command: server /data
+    depends_on:
+      - filebeat
+
+
+  # docker logs (using file beat)
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.12.0
+    user: root
+    volumes:
+      - ${PWD}/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock

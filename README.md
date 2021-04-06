@@ -1,6 +1,5 @@
 # cdr-plugin-folder-to-folder
 
-=======
 **Repo Workflows**
 
 ![](https://github.com/filetrust/cdr-plugin-folder-to-folder/actions/workflows/run-tests.yml/badge.svg)
@@ -21,7 +20,7 @@
 
 ## Flow diagram
 
-![defense_school_revised](https://user-images.githubusercontent.com/70108899/113388987-87a0c980-938f-11eb-9fab-f397383f7c95.jpg)
+![image](https://user-images.githubusercontent.com/70108899/113400135-a314d000-93a1-11eb-8b5f-5d9fb3679264.png)
 
 ## Data mapping
 
@@ -65,4 +64,4 @@
 ## Kibana
 - Open `http:0.0.0.0:9200/`
 - Use `access_token` as password
-  
+
