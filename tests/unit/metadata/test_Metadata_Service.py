@@ -2,7 +2,7 @@ from unittest                                            import TestCase
 from osbot_utils.utils.Files                             import file_exists, file_sha256, file_name
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
-
+from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Status
 
 class test_Metadata_Service(TestCase):
 
@@ -19,7 +19,7 @@ class test_Metadata_Service(TestCase):
                               'file_name'           : file_name(self.test_file)  ,
                               'original_file_paths' : hd1_path                   ,
                               'original_hash'       : file_sha256(self.test_file),
-                              'rebuild_status'      : None                       ,
+                              'rebuild_status'      : Status.INITIAL.value       ,
                               'target_path'         : None                       ,
                               'xml_report_status'   : None                       }
 

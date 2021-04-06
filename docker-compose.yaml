@@ -1,16 +1,86 @@
-# this will have a docekr compose for the the FastAPI and for the Jupyter notebooks
-#version:  '3'
-#services:
-#  datascience-notebook:
-#      image:    jupyter/datascience-notebook
-#      volumes:
-#        - ${LOCAL_WORKING_DIR}:/home/jovyan/work
-#        - ${LOCAL_DATASETS}:/home/jovyan/work/datasets
-#        - ${LOCAL_MODULES}:/home/jovyan/work/modules
-#        - ${LOCAL_SSL_CERTS}:/etc/ssl/notebook
-#      ports:
-#        - ${PORT}:8888
-#      container_name:   jupyter_notebook
-#      command: "start-notebook.sh \
-#        --NotebookApp.password=${ACCESS_TOKEN} \
-#        --NotebookApp.certfile=/etc/ssl/notebook/jupyter.pem"
+version:  '3.9'
+services:
+  jupyter:
+      image: cdr_plugin_folder_to_folder_notebooks
+      volumes:
+        - ${PWD}/jupyter/notebooks:/home/jovyan/work
+        - ${PWD}/test_data:/home/jovyan/test_data
+      build:
+        context: jupyter
+        dockerfile: Dockerfile
+      ports:
+        - 8888:8888
+      container_name: jupyter_notebook
+      command: "start-notebook.sh \
+                 --NotebookApp.token=${ACCESS_TOKEN}"
+      depends_on:
+        - filebeat
+
+# Fast API
+
+  api:
+      image: cdr_plugin_folder_to_folder
+      build:
+        context: cdr_plugin_folder_to_folder
+        dockerfile: Dockerfile
+      volumes:
+        - ${PWD}/cdr_plugin_folder_to_folder:/app/cdr_plugin_folder_to_folder
+        - ${PWD}/test_data:/app/test_data
+      ports:
+        - 8880:8880
+      depends_on:
+        - filebeat
+
+  # Elastic and Kibana
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - logger.level=WARN
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.12.0
+    container_name: kib01
+    ports:
+      - 5601:5601
+    environment:
+      - logger.level=WARN
+      - ELASTICSEARCH_URL=http://es01:9200
+      - ELASTICSEARCH_HOSTS=["http://es01:9200"]
+
+  # minio
+
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - ${PWD}/test_data:/data
+    ports:
+      - 9000:9000
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: ${ACCESS_TOKEN}
+    command: server /data
+    depends_on:
+      - filebeat
+
+
+  # docker logs (using file beat)
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.12.0
+    user: root
+    volumes:
+      - ${PWD}/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock
