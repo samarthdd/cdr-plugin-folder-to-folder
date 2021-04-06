@@ -44,7 +44,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: {{ .Values.volumemountpath.hd2 }}
+    path: {{ .Values.hostPath.hd2.path }}
     type: "Directory"
 
 ---
@@ -77,7 +77,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: {{ .Values.volumemountpath.hd3 }}
+    path: {{ .Values.hostPath.hd3.path }}
     type: "Directory"
 
 ---
