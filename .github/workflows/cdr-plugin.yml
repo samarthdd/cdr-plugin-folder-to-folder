@@ -26,7 +26,7 @@ on:
       - 'kubernetes'
       - 'cdr_plugin_folder_to_folder'
       - 'infra/packer'
-      - '.github/workflows/cdr-plugin.yaml'
+      - '.github/workflows/cdr-plugin.yml'
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
