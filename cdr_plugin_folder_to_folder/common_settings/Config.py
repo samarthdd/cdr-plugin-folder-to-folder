@@ -8,7 +8,7 @@ DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd1'         
 DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd2'                )
 DEFAULT_HD3_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd3'                )
 DEFAULT_GW_SDK_ADDRESS   = "91.109.25.86"
-DEFAULT_GW_SDK_PORT      = "8080"
+DEFAULT_GW_SDK_PORT      = "8888"
 
 
 class Config(object):
