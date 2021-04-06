@@ -26,8 +26,8 @@ service:
     type: ClusterIP
     additionalHosts: {}
     commonName:
-    externalPort: 80
-    internalPort: 80
+    externalPort: 8880
+    internalPort: 8880
     url: ""
 ingress:
   enabled: true
@@ -40,13 +40,13 @@ ingress:
   annotations: {}
   path: /
 livenessProbe:
-  path: "/"
+  path: "/pre_processing/"
   initialDelaySeconds: 30
   timeoutSeconds: 3
   periodSeconds: 30
   scheme: "HTTP"
 readinessProbe:
-  path: "/"
+  path: "/pre_processing/"
   initialDelaySeconds: 30
   timeoutSeconds: 3
   periodSeconds: 30

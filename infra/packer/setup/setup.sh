@@ -46,8 +46,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install docker-ce docker-ce-cli cont
 sudo docker run -d -p 30500:5000 --restart always --name registry registry:2
 
 # build images
-cd ~/cdr_plugin_folder_to_folder
-sudo docker build cdr_plugin_folder_to_folder -f Dockerfile -t localhost:30500/cdr-plugin-folder-to-folder
+cd ~/cdr-plugin-folder-to-folder
+sudo docker build cdr_plugin_folder_to_folder -f cdr_plugin_folder_to_folder/Dockerfile -t localhost:30500/cdr-plugin-folder-to-folder
 sudo docker push localhost:30500/cdr-plugin-folder-to-folder
 
 # install cdr plugin folder to folder API helm charts
