@@ -1,5 +1,5 @@
 #!/bin/bash
-set -v 
+set -v -e
 
 pushd $( dirname $0 )
 if [ -f ./env ] ; then
@@ -23,6 +23,7 @@ curl -sfL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 
 echo "Done installing helm"
 
 # get source code
+cd ~
 BRANCH=${BRANCH:-main}
 git clone https://github.com/pranaysahith/cdr-plugin-folder-to-folder.git --branch $BRANCH && cd cdr-plugin-folder-to-folder
 
@@ -45,17 +46,21 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install docker-ce docker-ce-cli cont
 sudo docker run -d -p 30500:5000 --restart always --name registry registry:2
 
 # build images
-sudo docker build . -t localhost:30500/cdr-plugin-folder-to-folder
+cd ~/cdr_plugin_folder_to_folder
+sudo docker build cdr_plugin_folder_to_folder -f Dockerfile -t localhost:30500/cdr-plugin-folder-to-folder
 sudo docker push localhost:30500/cdr-plugin-folder-to-folder
 
 # install cdr plugin folder to folder API helm charts
 GW_SDK_PORT=${GW_SDK_PORT-1346}
-helm upgrade --install cdr-plugin-f2f \
-  --set image.cdrplugin.repository=localhost:30500/cdr-plugin-folder-to-folder \
-  --set ingress.tls.enabled=false \
-  --set image.cdrplugin.env.GW_SDK_ADDRESS=$GW_SDK_ADDRESS \
-  --set image.cdrplugin.env.GW_SDK_PORT=$GW_SDK_PORT \
-  --atomic kubernetes/helm/chart/
+helm upgrade --install cdr-plugin-f2f  \
+    --set image.cdrplugin.repository=localhost:30500/cdr-plugin-folder-to-folder \
+    --set image.cdrplugin.tag=latest \
+    --set application.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
+    --set application.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \
+    --set application.cdrplugin.env.HD3_LOCATION="/mnt/hd3" \
+    --set image.cdrplugin.env.GW_SDK_ADDRESS=$GW_SDK_ADDRESS \
+    --set ingress.tls.enabled=false \
+    --atomic kubernetes/helm/chart/
 
 # create script to mount hard disks and upgrade helm chart
 tee -a > ~/setup.sh <<EOF
