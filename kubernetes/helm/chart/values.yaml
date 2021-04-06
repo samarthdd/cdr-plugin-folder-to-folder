@@ -5,15 +5,19 @@ replicaCount: 1
 image:
   cdrplugin:
     repository: pranaysahith/cdr_plugin_folder_to_folder
+    tag: 0.0.2
+    pullPolicy: IfNotPresent
+  jupyter:
+    repository: pranaysahith/cdr_plugin_jupyter
     tag: 0.0.1
     pullPolicy: IfNotPresent
 podAnnotations: {}
 application:
   cdrplugin:
-    env: 
-      HD1_LOCATION: "./test_data/hd1"
-      HD2_LOCATION: "./test_data/hd2"
-      HD3_LOCATION: "./test_data/hd3"
+    env:
+      HD1_LOCATION: "/mnt/hd1"
+      HD2_LOCATION: "/mnt/hd2"
+      HD3_LOCATION: "/mnt/hd3"
       GW_SDK_ADDRESS: "54.246.71.220"
       GW_SDK_PORT: "1346"
     secrets: {}
@@ -71,7 +75,14 @@ scale:
     MinReplicaCount: 1
     MaxReplicaCount: 8
 
-volumemountpath:
-  hd1: "/mnt/hd1"
-  hd2: "/mnt/hd2"
-  hd3: "/mnt/hd3"
+hostPath:
+  hd1: 
+    path: "/mnt/hd1"
+    size: 1Ti
+  hd2:
+    path: "/mnt/hd2"
+    size: 1Ti
+  hd3:
+    path: "/mnt/hd3"
+    size: 1Ti
+

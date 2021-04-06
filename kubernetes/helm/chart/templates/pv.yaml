@@ -7,11 +7,11 @@ metadata:
     usage: hd1-pv
 spec:
   capacity:
-    storage: 1Ti
+    storage: {{ .Values.hostPath.hd1.size }}
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/hd1"
+    path: {{ .Values.hostPath.hd1.path }}
     type: "Directory"
 
 ---
@@ -25,7 +25,7 @@ spec:
   accessModes: [ "ReadWriteOnce" ]
   resources:
     requests:
-      storage: 1Ti
+      storage: {{ .Values.hostPath.hd1.size }}
   selector:
     matchLabels:
       usage: hd1-pv
@@ -40,11 +40,11 @@ metadata:
     usage: hd2-pv
 spec:
   capacity:
-    storage: 1Ti
+    storage: {{ .Values.hostPath.hd2.size }}
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/hd2"
+    path: {{ .Values.volumemountpath.hd2 }}
     type: "Directory"
 
 ---
@@ -58,7 +58,7 @@ spec:
   accessModes: [ "ReadWriteOnce" ]
   resources:
     requests:
-      storage: 1Ti
+      storage: {{ .Values.hostPath.hd2.size }}
   selector:
     matchLabels:
       usage: hd2-pv
@@ -73,11 +73,11 @@ metadata:
     usage: hd3-pv
 spec:
   capacity:
-    storage: 1Ti
+    storage: {{ .Values.hostPath.hd3.size }}
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/hd3"
+    path: {{ .Values.volumemountpath.hd3 }}
     type: "Directory"
 
 ---
@@ -91,7 +91,7 @@ spec:
   accessModes: [ "ReadWriteOnce" ]
   resources:
     requests:
-      storage: 1Ti
+      storage: {{ .Values.hostPath.hd3.size }}
   selector:
     matchLabels:
       usage: hd3-pv

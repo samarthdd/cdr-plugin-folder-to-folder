@@ -51,12 +51,12 @@ spec:
 
         volumeMounts:
         - name: hd1-vol
-          mountPath: {{ .Values.volumemountpath.hd1 }}
+          mountPath: {{ .Values.application.cdrplugin.env.HD1_LOCATION }}
           readOnly: true
         - name: hd2-vol
-          mountPath: {{ .Values.volumemountpath.hd2 }}
+          mountPath: {{ .Values.application.cdrplugin.env.HD2_LOCATION }}
         - name: hd3-vol
-          mountPath: {{ .Values.volumemountpath.hd3 }}
+          mountPath: {{ .Values.application.cdrplugin.env.HD3_LOCATION }}
         ports:
         - name: "{{ .Values.service.cdrplugin.name }}"
           containerPort: {{ .Values.service.cdrplugin.internalPort }}
