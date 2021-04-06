@@ -127,12 +127,3 @@ class Pre_Processor:
             self.file_service.wrtie_json_file(self.status_target,hash_file_name,json.dumps(self.hash_json))
         except Exception as error:
             raise error
-
-# Fast API
-from fastapi import FastAPI
-app = FastAPI()
-@app.get("/process")
-def start_process():
-    pre_processor = Pre_Processor()
-    pre_processor.process_files()
-    return {"Processing is done"}

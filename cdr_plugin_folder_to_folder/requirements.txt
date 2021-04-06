@@ -9,8 +9,12 @@ starlette
 urllib3
 uvicorn
 wheel
+xmltodict
 
 # for testing
 coveralls
 pytest
 pytest-cov
+
+# logging
+elasticsearch==7.12.0
