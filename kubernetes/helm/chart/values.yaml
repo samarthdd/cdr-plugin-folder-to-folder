@@ -26,7 +26,7 @@ service:
   cdrplugin:
     enabled: true
     annotations: {}
-    name: nginx
+    name: cdrplugin
     type: ClusterIP
     additionalHosts: {}
     commonName:
@@ -44,13 +44,13 @@ ingress:
   annotations: {}
   path: /
 livenessProbe:
-  path: "/pre_processing/"
+  path: "/"
   initialDelaySeconds: 30
   timeoutSeconds: 3
   periodSeconds: 30
   scheme: "HTTP"
 readinessProbe:
-  path: "/pre_processing/"
+  path: "/"
   initialDelaySeconds: 30
   timeoutSeconds: 3
   periodSeconds: 30
