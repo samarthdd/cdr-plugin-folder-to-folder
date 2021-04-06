@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from osbot_utils.utils.Files import folder_not_exists, path_combine, folder_create, create_folder
 
 # todo: refactor the whole test files so that it all comes from temp folders (not from files in the repo)
-DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test_data' )
+DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test_data/scenario-1' )
 DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd1'                )
 DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd2'                )
 DEFAULT_HD3_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd3'                )
