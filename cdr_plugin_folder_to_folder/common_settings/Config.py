@@ -38,9 +38,9 @@ class Config(object):
 
     def check_config(self):
         if folder_not_exists(self.hd1_location):
-            raise Exception("Folder not found: HD1")
+            raise Exception(f"{self.hd1_location} Folder not found: HD1")
         if folder_not_exists(self.hd2_location):
-            raise Exception("Folder not found: HD2")
+            raise Exception(f"{self.hd2_location} Folder not found: HD2")
         if folder_not_exists(self.hd3_location):
-            raise Exception("Folder not found: HD3")
+            raise Exception(f"{self.hd3_location} Folder not found: HD3")
         # todo: add check for GW_SDK_ADDRESS

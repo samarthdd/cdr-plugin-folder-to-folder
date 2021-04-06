@@ -129,9 +129,11 @@ class Pre_Processor:
             raise error
 
 # Fast API
+
 from fastapi import FastAPI
 app = FastAPI()
-@app.get("/process")
+
+@app.get("/pre-process")
 def start_process():
     pre_processor = Pre_Processor()
     pre_processor.process_files()
