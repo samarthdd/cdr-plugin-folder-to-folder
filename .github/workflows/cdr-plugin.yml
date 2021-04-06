@@ -23,7 +23,6 @@ on:
   push:
     branches: 
      - main
-     - packer-templates
     paths:
       - 'kubernetes'
       - 'cdr_plugin_folder_to_folder'
