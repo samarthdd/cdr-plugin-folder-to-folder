@@ -9,6 +9,8 @@ DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd2'         
 DEFAULT_HD3_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd3'                )
 DEFAULT_GW_SDK_ADDRESS   = "91.109.25.86"
 DEFAULT_GW_SDK_PORT      = "8080"
+DEFAULT_ELASTIC_HOST     = "127.0.0.1"
+DEFAULT_ELASTIC_PORT     = "9200"
 
 
 class Config(object):
@@ -21,6 +23,8 @@ class Config(object):
         self.hd2_location   = None
         self.hd3_location   = None
         self.root_folder    = None      # todo: see if we will need this
+        self.elastic_host   = None
+        self.elastic_port   = None
 
     def load_values(self):
         self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
@@ -29,6 +33,8 @@ class Config(object):
         self.hd2_location    = os.getenv("HD2_LOCATION"   , DEFAULT_HD2_LOCATION   )
         self.hd3_location    = os.getenv("HD3_LOCATION"   , DEFAULT_HD3_LOCATION   )
         self.root_folder     = os.getenv("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
+        self.elastic_host    = os.getenv("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
+        self.elastic_port    = os.getenv("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )
 
         create_folder(self.hd2_location)            # todo: remove this from here
         create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here
