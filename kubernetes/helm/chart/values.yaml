@@ -21,6 +21,10 @@ application:
       GW_SDK_ADDRESS: "54.246.71.220"
       GW_SDK_PORT: "1346"
     secrets: {}
+  jupyter:
+    env: {}
+    secrets: {}
+
 
 service:
   cdrplugin:
@@ -33,6 +37,15 @@ service:
     externalPort: 8880
     internalPort: 8880
     url: ""
+  jupyter:
+    enabled: true
+    annotations: {}
+    name: jupyter
+    type: NodePort
+    additionalHosts: {}
+    commonName:
+    externalPort: 8888
+    internalPort: 8888
 ingress:
   enabled: true
   tls:
@@ -86,3 +99,9 @@ hostPath:
     path: "/mnt/hd3"
     size: 1Ti
 
+jupyter:
+  enabled: true
+  harddisks:
+    hd1: "/home/jovyan/data/hd1"
+    hd2: "/home/jovyan/data/hd2"
+    hd3: "/home/jovyan/data/hd3"

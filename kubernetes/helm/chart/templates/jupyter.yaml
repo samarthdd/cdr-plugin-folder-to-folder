@@ -1,0 +1,201 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "trackableappname" . }}-jupyter
+  annotations: {}
+  labels:
+    app: {{ template "appname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "appname" . }}-jupyter
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        checksum/application-secrets: "{{ .Values.application.secretChecksum }}"
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "appname" . }}-jupyter
+        track: "{{ .Values.application.track }}"
+        tier: "{{ .Values.application.tier }}"
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.jupyter.repository }}:{{ .Values.image.jupyter.tag }}"
+        imagePullPolicy: {{ .Values.image.jupyter.pullPolicy }}
+        {{- if .Values.application.jupyter.secrets }}
+        command: "start-notebook.sh"
+        args: ["--NotebookApp.token={{ .Values.jupyter.ACCESS_TOKEN }}"]
+        envFrom:
+        - secretRef:
+            name: {{ .Values.application.jupyter.secretName }}
+        {{- end }}
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+        {{- with .Values.application.jupyter.env }}
+        {{- range $key, $val := . }}
+        {{- if $val }}
+          - name: "{{ tpl $key $  }}"
+            value: "{{ tpl $val $  }}"
+        {{- end }}
+        {{- end }}
+        {{- end }}
+
+        volumeMounts:
+        - name: hd1-vol
+          mountPath: {{ .Values.jupyter.harddisks.hd1 }}
+          readOnly: true
+        - name: hd2-vol
+          mountPath: {{ .Values.jupyter.harddisks.hd2 }}
+        - name: hd3-vol
+          mountPath: {{ .Values.jupyter.harddisks.hd3 }}
+        ports:
+        - name: "{{ .Values.service.jupyter.name }}"
+          containerPort: {{ .Values.service.jupyter.internalPort }}
+        
+      volumes:
+      - name: hd1-vol
+        persistentVolumeClaim:
+          claimName: jupyter-hd1-pvc
+      - name: hd2-vol
+        persistentVolumeClaim:
+          claimName: jupyter-hd2-pvc
+      - name: hd3-vol
+        persistentVolumeClaim:
+          claimName: jupyter-hd3-pvc
+      
+---
+{{- if .Values.service.jupyter.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-jupyter
+{{- if .Values.service.jupyter.annotations }}
+  annotations:
+{{ toYaml .Values.service.jupyter.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "appname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.jupyter.type }}
+  ports:
+  - port: {{ .Values.service.jupyter.externalPort }}
+    targetPort: {{ .Values.service.jupyter.internalPort }}
+    protocol: TCP
+    name: {{ .Values.service.jupyter.name }}
+  selector:
+    app: {{ template "appname" . }}-jupyter
+{{- end }}
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: jupyter-hd1-pv
+  labels:
+    type: local
+    usage: jupyter-hd1-pv
+spec:
+  capacity:
+    storage: {{ .Values.hostPath.hd1.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.hostPath.hd1.path }}
+    type: "Directory"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jupyter-hd1-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.hostPath.hd1.size }}
+  selector:
+    matchLabels:
+      usage: jupyter-hd1-pv
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: jupyter-hd2-pv
+  labels:
+    type: local
+    usage: jupyter-hd2-pv
+spec:
+  capacity:
+    storage: {{ .Values.hostPath.hd2.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.hostPath.hd2.path }}
+    type: "Directory"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jupyter-hd2-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.hostPath.hd2.size }}
+  selector:
+    matchLabels:
+      usage: jupyter-hd2-pv
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: jupyter-hd3-pv
+  labels:
+    type: local
+    usage: jupyter-hd3-pv
+spec:
+  capacity:
+    storage: {{ .Values.hostPath.hd3.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.hostPath.hd3.path }}
+    type: "Directory"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jupyter-hd3-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.hostPath.hd3.size }}
+  selector:
+    matchLabels:
+      usage: jupyter-hd3-pv
+---
