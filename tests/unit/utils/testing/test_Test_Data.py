@@ -15,7 +15,7 @@ class test_Test_Data(TestCase):
         assert folder_exists(self.test_data.path_test_files)
 
     def test_files(self):
-        assert len(self.test_data.files()   ) == 8
+        assert len(self.test_data.files()   ) == 10
 
     def test_images(self):
         assert len(self.test_data.images()  ) == 3
