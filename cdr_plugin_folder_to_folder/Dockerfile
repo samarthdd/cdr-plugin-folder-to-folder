@@ -5,7 +5,7 @@ RUN     apk update && apk upgrade && \
 WORKDIR /app
 COPY    cdr_plugin_folder_to_folder/requirements.txt .
 RUN     pip install -r requirements.txt
-COPY    cdr_plugin_folder_to_folder .
+ADD    cdr_plugin_folder_to_folder ./cdr_plugin_folder_to_folder
 ENV     PYTHONPATH=.
 CMD     python cdr_plugin_folder_to_folder/api/Server.py
 EXPOSE 8880
