@@ -120,7 +120,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.hostPath.hd1.path }}
-    type: "DirectoryOrCreate"
+    type: "Directory"
 
 ---
 kind: PersistentVolumeClaim
@@ -153,7 +153,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.hostPath.hd2.path }}
-    type: "DirectoryOrCreate"
+    type: "Directory"
 
 ---
 kind: PersistentVolumeClaim
@@ -186,7 +186,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.hostPath.hd3.path }}
-    type: "DirectoryOrCreate"
+    type: "Directory"
 
 ---
 kind: PersistentVolumeClaim
@@ -218,7 +218,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.hostPath.notebooks.path }}
-    type: "DirectoryOrCreate"
+    type: "Directory"
 
 ---
 kind: PersistentVolumeClaim
