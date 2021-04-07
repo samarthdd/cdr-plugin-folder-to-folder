@@ -7,6 +7,7 @@ from fastapi import FastAPI
 #from cdr_plugin_folder_to_folder.api.users import router
 from cdr_plugin_folder_to_folder.processing.main import router as processing_router
 from cdr_plugin_folder_to_folder.pre_processing.main import router as pre_processing_router
+from cdr_plugin_folder_to_folder.file_distribution.main import router as file_distribution_router
 
 class Server:
 
@@ -26,6 +27,7 @@ class Server:
     def setup(self):
         self.app.include_router(processing_router, prefix="")
         self.app.include_router(pre_processing_router, prefix="")
+        self.app.include_router(file_distribution_router, prefix="/get_files")
         self.fix_logging_bug()
         return self
 
