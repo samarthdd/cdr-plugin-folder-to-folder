@@ -1,6 +1,7 @@
 import os
 import os.path
 import sys
+import threading
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
@@ -12,11 +13,37 @@ from datetime import datetime
 class Loops(object):
 
     @staticmethod
+    def ProcessDirectory(itempath, idx, use_es, es):
+        meta_service = Metadata_Service()
+        original_file_path = meta_service.get_original_file_path(itempath)
+        if os.path.isdir(itempath):
+            try:
+                File_Processing.processDirectory(itempath)
+                if use_es:
+                    log = {
+                        'file': original_file_path,
+                        'status': 'processed',
+                        'error': 'none',
+                        'timestamp': datetime.now(),
+                    }
+                    es.index(index='processed-index', id=idx, body=log)
+                meta_service.set_error(itempath, "none")
+            except Exception as error:
+                if use_es:
+                    log = {
+                        'file': original_file_path,
+                        'status': 'failed',
+                        'error': str(error),
+                        'timestamp': datetime.now(),
+                    }
+                    es.index(index='processed-index', id=idx, body=log)
+                meta_service.set_error(itempath, str(error))
+
+    @staticmethod
     def LoopHashDirectories():
         config = Config().load_values()
         rootdir = os.path.join(config.hd2_location,"data")
         directory_contents = os.listdir(rootdir)
-        meta_service = Metadata_Service()
 
         es = Elasticsearch()
         use_es = False
@@ -29,29 +56,23 @@ class Loops(object):
         except Exception as error:
             print("The connection to Elastic cannot be established")
 
-        idx = 0
+        files_count = 0
+        threads = list()
+
         for item in directory_contents:
-            idx += 1
+            files_count += 1
             itempath = os.path.join(rootdir,item)
-            original_file_path = meta_service.get_original_file_path(itempath)
-            if os.path.isdir(itempath):
-                try:
-                    File_Processing.processDirectory(itempath)
-                    if use_es:
-                        log = {
-                            'file': original_file_path,
-                            'status': 'processed',
-                            'error': 'none',
-                            'timestamp': datetime.now(),
-                        }
-                        es.index(index='processed-index', id=idx, body=log)
-                except Exception as error:
-                    if use_es:
-                        log = {
-                            'file': original_file_path,
-                            'status': 'failed',
-                            'error': str(error),
-                            'timestamp': datetime.now(),
-                        }
-                        es.index(index='processed-index', id=idx, body=log)
-                    print(error)
+            #Loops.ProcessDirectory(itempath, idx, use_es, es)
+
+            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, files_count, use_es, es,))
+            threads.append(x)
+            x.start()
+            # limit the number of parallel threads
+            if files_count % int(config.thread_count) == 0:
+                # Clean up the threads
+                #logging.info ('Files processed so far {}'.format(files_count))
+                for index, thread in enumerate(threads):
+                    thread.join()
+
+        for index, thread in enumerate(threads):
+            thread.join()
