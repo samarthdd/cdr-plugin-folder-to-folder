@@ -30,9 +30,9 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.jupyter.repository }}:{{ .Values.image.jupyter.tag }}"
         imagePullPolicy: {{ .Values.image.jupyter.pullPolicy }}
-        {{- if .Values.application.jupyter.secrets }}
-        command: "start-notebook.sh"
+        command: ["jupyter", "notebook"]
         args: ["--NotebookApp.token={{ .Values.jupyter.ACCESS_TOKEN }}"]
+        {{- if .Values.application.jupyter.secrets }}
         envFrom:
         - secretRef:
             name: {{ .Values.application.jupyter.secretName }}
@@ -59,6 +59,8 @@ spec:
           mountPath: {{ .Values.jupyter.harddisks.hd2 }}
         - name: hd3-vol
           mountPath: {{ .Values.jupyter.harddisks.hd3 }}
+        - name: notebooks-vol
+          mountPath: {{ .Values.jupyter.harddisks.notebooks }}
         ports:
         - name: "{{ .Values.service.jupyter.name }}"
           containerPort: {{ .Values.service.jupyter.internalPort }}
@@ -73,6 +75,9 @@ spec:
       - name: hd3-vol
         persistentVolumeClaim:
           claimName: jupyter-hd3-pvc
+      - name: notebooks-vol
+        persistentVolumeClaim:
+          claimName: jupyter-notebooks-pvc
       
 ---
 {{- if .Values.service.jupyter.enabled -}}
@@ -115,7 +120,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.hostPath.hd1.path }}
-    type: "Directory"
+    type: "DirectoryOrCreate"
 
 ---
 kind: PersistentVolumeClaim
@@ -148,7 +153,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.hostPath.hd2.path }}
-    type: "Directory"
+    type: "DirectoryOrCreate"
 
 ---
 kind: PersistentVolumeClaim
@@ -181,7 +186,7 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: {{ .Values.hostPath.hd3.path }}
-    type: "Directory"
+    type: "DirectoryOrCreate"
 
 ---
 kind: PersistentVolumeClaim
@@ -198,4 +203,36 @@ spec:
   selector:
     matchLabels:
       usage: jupyter-hd3-pv
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: jupyter-notebooks-pv
+  labels:
+    type: local
+    usage: jupyter-notebooks-pv
+spec:
+  capacity:
+    storage: {{ .Values.hostPath.notebooks.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.hostPath.notebooks.path }}
+    type: "DirectoryOrCreate"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jupyter-notebooks-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: ""
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.hostPath.notebooks.size }}
+  selector:
+    matchLabels:
+      usage: jupyter-notebooks-pv
 ---

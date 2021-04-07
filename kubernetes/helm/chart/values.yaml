@@ -41,7 +41,7 @@ service:
     enabled: true
     annotations: {}
     name: jupyter
-    type: NodePort
+    type: LoadBalancer
     additionalHosts: {}
     commonName:
     externalPort: 8888
@@ -56,18 +56,18 @@ ingress:
     ca_crt:
   annotations: {}
   path: /
-livenessProbe:
-  path: "/"
-  initialDelaySeconds: 30
-  timeoutSeconds: 3
-  periodSeconds: 30
-  scheme: "HTTP"
-readinessProbe:
-  path: "/"
-  initialDelaySeconds: 30
-  timeoutSeconds: 3
-  periodSeconds: 30
-  scheme: "HTTP"
+# livenessProbe:
+#   path: "/"
+#   initialDelaySeconds: 30
+#   timeoutSeconds: 3
+#   periodSeconds: 30
+#   scheme: "HTTP"
+# readinessProbe:
+#   path: "/"
+#   initialDelaySeconds: 30
+#   timeoutSeconds: 3
+#   periodSeconds: 30
+#   scheme: "HTTP"
 
 resources:
   cdrplugin:
@@ -98,10 +98,15 @@ hostPath:
   hd3:
     path: "/mnt/hd3"
     size: 1Ti
+  notebooks:
+    path: "/home/ubuntu/cdr-plugin-folder-to-folder/jupyter"
+    size: 10Gi
 
 jupyter:
   enabled: true
+  ACCESS_TOKEN: "long-secret"
   harddisks:
     hd1: "/home/jovyan/data/hd1"
     hd2: "/home/jovyan/data/hd2"
     hd3: "/home/jovyan/data/hd3"
+    notebooks: "/home/jovyan/work"
