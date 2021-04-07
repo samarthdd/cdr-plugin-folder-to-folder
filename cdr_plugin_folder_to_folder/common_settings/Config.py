@@ -11,6 +11,7 @@ DEFAULT_GW_SDK_ADDRESS   = "91.109.25.86"
 DEFAULT_GW_SDK_PORT      = "8888"
 DEFAULT_ELASTIC_HOST     = "127.0.0.1"
 DEFAULT_ELASTIC_PORT     = "9200"
+DEFAULT_THREAD_COUNT     = 10
 
 
 class Config(object):
@@ -25,6 +26,7 @@ class Config(object):
         self.root_folder    = None      # todo: see if we will need this
         self.elastic_host   = None
         self.elastic_port   = None
+        self.thread_count   = None
 
     def load_values(self):
         self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
@@ -35,6 +37,7 @@ class Config(object):
         self.root_folder     = os.getenv("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
         self.elastic_host    = os.getenv("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
         self.elastic_port    = os.getenv("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )
+        self.thread_count    = os.getenv("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
 
         create_folder(self.hd2_location)            # todo: remove this from here
         create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here
@@ -50,3 +53,4 @@ class Config(object):
         if folder_not_exists(self.hd3_location):
             raise Exception(f"{self.hd3_location} Folder not found: HD3")
         # todo: add check for GW_SDK_ADDRESS
+
