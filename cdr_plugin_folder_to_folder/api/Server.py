@@ -1,12 +1,12 @@
 import logging
 
-import fastapi
 import uvicorn
 from fastapi import FastAPI
 
 #from cdr_plugin_folder_to_folder.api.users import router
-from cdr_plugin_folder_to_folder.processing.main import router as processing_router
-from cdr_plugin_folder_to_folder.pre_processing.main import router as pre_processing_router
+from cdr_plugin_folder_to_folder.api.Processing import router as processing_router
+from cdr_plugin_folder_to_folder.api.Pre_Processor import router as pre_processing_router
+from cdr_plugin_folder_to_folder.api.File_Distributor import router as file_distribution_router
 
 class Server:
 
@@ -24,8 +24,9 @@ class Server:
         logging.getLogger().handlers.clear()                        # todo: see side effects of this
 
     def setup(self):
-        self.app.include_router(processing_router, prefix="")
-        self.app.include_router(pre_processing_router, prefix="")
+        self.app.include_router(processing_router       )
+        self.app.include_router(pre_processing_router   )
+        self.app.include_router(file_distribution_router)
         self.fix_logging_bug()
         return self
 
@@ -33,8 +34,15 @@ class Server:
         uvicorn.run("Server:app", host=self.host, port=int(self.port), log_level=self.log_level, reload=self.reload)
 
 
+# todo: refactor this into a separate class which can also be used by the individual sections (i.e. tags)
+tags_metadata = [
+    {"name": "Processing"      , "description": "Step 2"},
+    {"name": "Pre Processor"   , "description": "Step 1"},
+    {"name": "File Distributor", "description": "Util methods"},
+]
+
 # we need to do this here so that when unicorn reload is enabled the "Server:app" has an fully setup instance of the Server object
-app     = FastAPI()
+app     = FastAPI(openapi_tags=tags_metadata)
 server  = Server(app)
 server.setup()
 
