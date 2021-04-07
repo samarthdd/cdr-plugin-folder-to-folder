@@ -21,7 +21,9 @@ class test_Metadata_Service(TestCase):
                               'original_hash'       : file_sha256(self.test_file),
                               'rebuild_status'      : Status.INITIAL.value       ,
                               'target_path'         : None                       ,
-                              'xml_report_status'   : None                       }
+                              'xml_report_status'   : None                       ,
+                              'error'               : None                       ,
+                              }
 
     def test_get_hash(self):
         hash=self.metadata_service.get_hash(self.test_file)

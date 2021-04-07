@@ -17,6 +17,8 @@
 - Monitoring
 - 3 Harddisks (source, evidence and target)
 
+![cdr-plugin-folder-to-folder-architecture](https://user-images.githubusercontent.com/70108899/113837900-907a0c80-978e-11eb-8ad6-2fc862ee1821.png)
+
 
 ## Flow diagram
 
@@ -24,7 +26,15 @@
 
 ## Data mapping
 
-![image](https://user-images.githubusercontent.com/70108899/113400135-a314d000-93a1-11eb-8b5f-5d9fb3679264.png)
+![image](https://user-images.githubusercontent.com/70108899/113837649-57da3300-978e-11eb-8ac6-77ef13db2562.png)
+
+## PreProcessing Module Flow
+
+![image](https://user-images.githubusercontent.com/70108899/113837363-0df14d00-978e-11eb-89f2-a7046e7b8ddb.png)
+
+## Processing Module Flow
+
+![image](https://user-images.githubusercontent.com/70108899/113837515-38dba100-978e-11eb-9d82-8f6c32688ca5.png)
 
 ## Usage
 
