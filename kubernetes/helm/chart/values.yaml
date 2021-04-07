@@ -56,18 +56,18 @@ ingress:
     ca_crt:
   annotations: {}
   path: /
-# livenessProbe:
-#   path: "/"
-#   initialDelaySeconds: 30
-#   timeoutSeconds: 3
-#   periodSeconds: 30
-#   scheme: "HTTP"
-# readinessProbe:
-#   path: "/"
-#   initialDelaySeconds: 30
-#   timeoutSeconds: 3
-#   periodSeconds: 30
-#   scheme: "HTTP"
+livenessProbe:
+  path: "/health"
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  periodSeconds: 30
+  scheme: "HTTP"
+readinessProbe:
+  path: "/health"
+  initialDelaySeconds: 30
+  timeoutSeconds: 3
+  periodSeconds: 30
+  scheme: "HTTP"
 
 resources:
   cdrplugin:

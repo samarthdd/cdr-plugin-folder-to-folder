@@ -1,0 +1,31 @@
+# This is a workflow to build AMI with ICAP server
+
+name: cdr-plugin-ci
+env:
+  AWS_DEFAULT_REGION: eu-west-1
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: 
+     - main
+     - add_jupuyter
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy-cdr-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update CDR pluging folder to folder
+        uses: appleboy/ssh-action@master
+        with:
+          host: "34.252.146.245"
+          username: ubuntu
+          key: '${{ secrets.SSH_KEY }}'
+          script: |
+            set -e
+            cd ~/cdr-plugin-folder-to-folder/
+            git pull
+            cp .env.sample .env
+            sudo docker-compose build
+            sudo docker-compose up --force -d
