@@ -34,12 +34,14 @@ class Server:
         uvicorn.run("Server:app", host=self.host, port=int(self.port), log_level=self.log_level, reload=self.reload)
 
 
-# we need to do this here so that when unicorn reload is enabled the "Server:app" has an fully setup instance of the Server object
+# todo: refactor this into a separate class which can also be used by the individual sections (i.e. tags)
 tags_metadata = [
     {"name": "Processing"      , "description": "Step 2"},
     {"name": "Pre Processor"   , "description": "Step 1"},
     {"name": "File Distributor", "description": "Util methods"},
 ]
+
+# we need to do this here so that when unicorn reload is enabled the "Server:app" has an fully setup instance of the Server object
 app     = FastAPI(openapi_tags=tags_metadata)
 server  = Server(app)
 server.setup()
