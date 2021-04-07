@@ -25,7 +25,8 @@ echo "Done installing helm"
 # get source code
 cd ~
 BRANCH=${BRANCH:-main}
-git clone https://github.com/filetrust/cdr-plugin-folder-to-folder.git --branch $BRANCH && cd cdr-plugin-folder-to-folder
+GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-filetrust/cdr-plugin-folder-to-folder}
+git clone https://github.com/${GITHUB_REPOSITORY}.git --branch $BRANCH && cd cdr-plugin-folder-to-folder
 
 # build docker images
 sudo apt-get install \
