@@ -49,6 +49,8 @@ sudo docker run -d -p 30500:5000 --restart always --name registry registry:2
 cd ~/cdr-plugin-folder-to-folder
 sudo docker build cdr_plugin_folder_to_folder -f cdr_plugin_folder_to_folder/Dockerfile -t localhost:30500/cdr-plugin-folder-to-folder
 sudo docker push localhost:30500/cdr-plugin-folder-to-folder
+sudo docker build jupyter -f jupyter/Dockerfile -t localhost:30500/cdr-plugin-f2f-jupyter
+sudo docker push localhost:30500/cdr-plugin-f2f-jupyter
 
 # install cdr plugin folder to folder API helm charts
 sudo mkdir -p /mnt/hd1 /mnt/hd2 /mnt/hd3
@@ -76,6 +78,9 @@ mkdir -p /mnt/hd1 /mnt/hd2 /mnt/hd3
 
 helm upgrade --install cdr-plugin-f2f \
   --set image.cdrplugin.repository=localhost:30500/cdr-plugin-folder-to-folder \
+  --set image.cdrplugin.tag=latest \
+  --set image.jupyter.repository=localhost:30500/cdr-plugin-f2f-jupyter \
+  --set image.jupyter.tag=latest \
   --set ingress.tls.enabled=false \
   --set image.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
   --set image.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \
