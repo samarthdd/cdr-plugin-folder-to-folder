@@ -7,4 +7,3 @@ esxcli.log
 **/*.tfstate*
 **/*auto.tfvars
 !default.auto.tfvars
-alpine

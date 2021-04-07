@@ -6,7 +6,7 @@ terraform {
   required_providers {
     vsphere = {
       source  = "hashicorp/vsphere"
-      version = "1.25.0"
+      version = "1.15.0"
     }
     null = {
       source  = "hashicorp/null"
@@ -38,13 +38,41 @@ data "vsphere_host" "host" {
 #  ┃ ┃┣━┛┃  ┃ ┃┣━┫ ┃┃
 #  ┗━┛╹  ┗━╸┗━┛╹ ╹╺┻┛
 
+locals {
+  uploads = [
+    for item in var.esxi_upload :
+    {
+      id        = sha256(join(" ", [item.datastore, item.destination]))
+      datastore = item.datastore
+      source    = item.source
+      destination = format("/vmfs/volumes/%s/%s",
+        item.datastore,
+        can(regex("/$", item.destination)) ? basename(item.source) : trimprefix(item.destination, "/")
+      )
+      basename = can(regex("/$", item.destination)) ? basename(item.source) : basename(trimprefix(item.destination, "/"))
+      dirname = format("/vmfs/volumes/%s/%s",
+        item.datastore,
+        trimprefix(dirname(item.destination), "/")
+      )
+      convert = item.vmdk_convert
+    }
+  ]
+}
+
+output "uploads" {
+  value = yamlencode({ uploads = local.uploads })
+}
+
 resource "null_resource" "upload" {
-  count = length(var.esxi_upload)
+  count = length(local.uploads)
 
   triggers = {
-    source      = var.esxi_upload[count.index].source
-    datastore   = var.esxi_upload[count.index].datastore
-    destination = var.esxi_upload[count.index].destination
+    source      = local.uploads[count.index].source
+    datastore   = local.uploads[count.index].datastore
+    destination = local.uploads[count.index].destination
+    dirname     = local.uploads[count.index].destination
+    basename    = local.uploads[count.index].destination
+    convert     = local.uploads[count.index].convert
   }
 
   connection {
@@ -55,14 +83,26 @@ resource "null_resource" "upload" {
     password = var.esxi_credentials.password
   }
 
+  provisioner "remote-exec" {
+    inline = ["mkdir -p ${local.uploads[count.index].dirname}"]
+  }
+
   provisioner "file" {
-    source = var.esxi_upload[count.index].source
-    destination = format("/vmfs/volumes/%s/%s",
-      var.esxi_upload[count.index].datastore,
-      can(regex("/$", var.esxi_upload[count.index].destination)) ?
-      basename(var.esxi_upload[count.index].source) :
-      trimprefix(var.esxi_upload[count.index].destination, "/")
-    )
+    source      = local.uploads[count.index].source
+    destination = local.uploads[count.index].destination
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      local.uploads[count.index].convert ? <<-EOF
+        set -ex
+        cd '${local.uploads[count.index].dirname}'
+        mv '${local.uploads[count.index].basename}' '${local.uploads[count.index].id}.vmdk'
+        vmkfstools -d thin -i '${local.uploads[count.index].id}.vmdk' '${local.uploads[count.index].basename}'
+        rm -f '${local.uploads[count.index].id}.vmdk'
+      EOF
+      : "true"
+    ]
   }
 }
 
