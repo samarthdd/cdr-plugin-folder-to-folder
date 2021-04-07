@@ -1,6 +1,7 @@
 import os
 import os.path
 import sys
+import threading
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
@@ -55,8 +56,23 @@ class Loops(object):
         except Exception as error:
             print("The connection to Elastic cannot be established")
 
-        idx = 0
+        files_count = 0
+        threads = list()
+
         for item in directory_contents:
-            idx += 1
+            files_count += 1
             itempath = os.path.join(rootdir,item)
-            Loops.ProcessDirectory(itempath, idx, use_es, es)
+            #Loops.ProcessDirectory(itempath, idx, use_es, es)
+
+            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, files_count, use_es, es,))
+            threads.append(x)
+            x.start()
+            # limit the number of parallel threads
+            if files_count % int(config.thread_count) == 0:
+                # Clean up the threads
+                #logging.info ('Files processed so far {}'.format(files_count))
+                for index, thread in enumerate(threads):
+                    thread.join()
+
+        for index, thread in enumerate(threads):
+            thread.join()
