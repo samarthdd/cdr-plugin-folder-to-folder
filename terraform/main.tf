@@ -136,6 +136,8 @@ resource "vsphere_virtual_machine" "this" {
   wait_for_guest_net_timeout = 0
   wait_for_guest_ip_timeout  = 0
   guest_id                   = var.vm[count.index].guest_id
+  num_cpus                   = var.vm[count.index].num_cpus
+  memory                     = var.vm[count.index].memory
 
   disk {
     label        = "disk0"
