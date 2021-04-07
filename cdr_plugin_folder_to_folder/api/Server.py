@@ -50,5 +50,8 @@ app     = FastAPI(openapi_tags=tags_metadata)
 server  = Server(app)
 server.setup()
 
-if __name__ == "__main__":
-    server.start()
+def run_if_main():
+    if __name__ == "__main__":
+        server.start()
+
+run_if_main()
