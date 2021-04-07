@@ -36,7 +36,9 @@ class Metadata_Service:
                     "evidence_file_paths": None                          ,
                     "rebuild_status"     : Status.INITIAL.value          ,
                     "xml_report_status"  : None                          ,
-                    "target_path"        : None                          }
+                    "target_path"        : None                          ,
+                    "error"              : None
+                     }
 
         return self.metadata
 
@@ -94,5 +96,7 @@ class Metadata_Service:
     def set_status_comleted(self, medadata_folder):
         self.set_status(medadata_folder, Status.COMPLETED.value)
 
-
-
+    def set_error(self, medadata_folder, error_details):
+        self.get_from_file(medadata_folder)
+        self.metadata["error"] = error_details
+        self.write_metadata_to_file(self.metadata, medadata_folder)
