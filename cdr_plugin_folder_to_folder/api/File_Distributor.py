@@ -1,7 +1,9 @@
 from cdr_plugin_folder_to_folder.file_distribution.File_Distributor import File_Distributor
 from fastapi import APIRouter
 
-router = APIRouter()
+router_params = { "prefix": "/file-distributor"  ,
+                  "tags"  : ['File Distributor'] }
+router        = APIRouter(**router_params)
 file_distributor = File_Distributor()
 
 @router.get("/hd1/{num_of_files}")

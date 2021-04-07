@@ -1,7 +1,10 @@
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from fastapi import APIRouter
 
-router = APIRouter()
+router_params = { "prefix": "/file-distributor"  ,
+                  "tags"  : ['File Distributor'] }
+router = APIRouter(**router_params)
+
 pre_processor = Pre_Processor()
 
 @router.get("/pre-process")
