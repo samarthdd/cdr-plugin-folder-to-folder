@@ -45,6 +45,7 @@ class Loops(object):
                             'timestamp': datetime.now(),
                         }
                         es.index(index='processed-index', id=idx, body=log)
+                    meta_service.set_error(itempath, "none")
                 except Exception as error:
                     if use_es:
                         log = {
@@ -54,4 +55,4 @@ class Loops(object):
                             'timestamp': datetime.now(),
                         }
                         es.index(index='processed-index', id=idx, body=log)
-                    print(error)
+                    meta_service.set_error(itempath, str(error))
