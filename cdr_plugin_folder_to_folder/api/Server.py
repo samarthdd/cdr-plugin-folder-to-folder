@@ -4,9 +4,10 @@ import uvicorn
 from fastapi import FastAPI
 
 #from cdr_plugin_folder_to_folder.api.users import router
-from cdr_plugin_folder_to_folder.api.Processing import router as processing_router
-from cdr_plugin_folder_to_folder.api.Pre_Processor import router as pre_processing_router
-from cdr_plugin_folder_to_folder.api.File_Distributor import router as file_distribution_router
+from cdr_plugin_folder_to_folder.api.routes.Processing import router as router_processing
+from cdr_plugin_folder_to_folder.api.routes.Pre_Processor import router as router_pre_processing
+from cdr_plugin_folder_to_folder.api.routes.File_Distributor import router as router_file_distribution
+from cdr_plugin_folder_to_folder.api.routes.Health import router as router_health
 
 class Server:
 
@@ -24,9 +25,10 @@ class Server:
         logging.getLogger().handlers.clear()                        # todo: see side effects of this
 
     def setup(self):
-        self.app.include_router(processing_router       )
-        self.app.include_router(pre_processing_router   )
-        self.app.include_router(file_distribution_router)
+        self.app.include_router(router_processing       )
+        self.app.include_router(router_pre_processing   )
+        self.app.include_router(router_file_distribution)
+        self.app.include_router(router_health           )
         self.fix_logging_bug()
         return self
 
