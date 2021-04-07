@@ -15,4 +15,4 @@ def health():
 
 @router.get("/version")
 def version():
-    return { "version": "v0.5.1"}
+    return { "version": "v0.5.2"}
