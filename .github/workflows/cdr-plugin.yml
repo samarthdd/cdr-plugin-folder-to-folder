@@ -63,7 +63,7 @@ jobs:
         SSH_PASSWORD=${{ secrets.ICAP_SSH_PASSWORD }}
         GW_SDK_ADDRESS=${{ github.event.inputs.gw_sdk_address }}
         BRANCH=$( echo $REF | cut -d"/" -f3)
-        GITHUB_REPOSITORY=${{ env.GITHUB_REPOSITORY }}
+        GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
         EOF
         sed -i 's/<vm_name>/cdr-plugin/g' ova-export.json
         RANDOM_STR=${{ github.sha }}-${{ github.run_number }}
