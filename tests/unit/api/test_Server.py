@@ -13,7 +13,7 @@ class test_Server(TestCase):
 
     def setUp(self) -> None:
         app = FastAPI()
-        self.server = Server(app=app)
+        self.server = Server(app=app, reload=False)
 
     def test_setup(self):
         self.server.setup()
@@ -24,7 +24,7 @@ class test_Server(TestCase):
                               host='0.0.0.0',
                               port=8880,
                               log_level='info',
-                              reload=True)
+                              reload=False)
         self.server.start()
         assert mock_run.mock_calls == [expected_call]
 

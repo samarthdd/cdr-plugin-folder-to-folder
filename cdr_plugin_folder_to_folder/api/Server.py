@@ -13,12 +13,12 @@ from cdr_plugin_folder_to_folder.api.routes.Health import router as router_healt
 
 class Server:
 
-    def __init__(self, app, port="8880"):
+    def __init__(self, app, port="8880", reload=True):
         self.host       = "0.0.0.0"
         self.log_level  = "info"
         self.port       = to_int(port)                                    # todo: move to globally configurable value (set via Env variables)
         self.app        = app
-        self.reload     = True                                              # automatically reloads server on code changes
+        self.reload     = reload                                              # automatically reloads server on code changes
 
     def fix_logging_bug(self):
         # there were duplicated entries on logs

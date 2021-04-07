@@ -4,14 +4,26 @@ from osbot_utils.utils.Dev import pprint
 
 from cdr_plugin_folder_to_folder.api.Client import Client
 from cdr_plugin_folder_to_folder.common_settings.Config import API_VERSION
+from cdr_plugin_folder_to_folder.utils.testing.Temp_API_Server import Temp_API_Server
 
 
 class test_Client(TestCase):
+    api_server = None
+    url_server = None
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.api_server = Temp_API_Server()
+        cls.api_server.start_server()
+        cls.url_server = cls.api_server.server_url()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.api_server.stop_server()
 
     def setUp(self):
-        self.url_server = 'http://127.0.0.1:8880'
-        #self.url_server = 'http://34.248.199.106:8880'
         self.client = Client(url_server=self.url_server)
+
 
     def test__resolve_url(self):
         assert self.client._resolve_url('aaa' ) == f"{self.url_server}/aaa"
@@ -53,5 +65,5 @@ class test_Client(TestCase):
         pprint(result)
 
     def test_version(self):
-       result = self.client.version()
-       assert result['version'] == API_VERSION
+        result = self.client.version()
+        assert result['version'] == API_VERSION
