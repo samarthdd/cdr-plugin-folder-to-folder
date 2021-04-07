@@ -21,6 +21,10 @@ application:
       GW_SDK_ADDRESS: "54.246.71.220"
       GW_SDK_PORT: "1346"
     secrets: {}
+  jupyter:
+    env: {}
+    secrets: {}
+
 
 service:
   cdrplugin:
@@ -33,6 +37,15 @@ service:
     externalPort: 8880
     internalPort: 8880
     url: ""
+  jupyter:
+    enabled: true
+    annotations: {}
+    name: jupyter
+    type: LoadBalancer
+    additionalHosts: {}
+    commonName:
+    externalPort: 8888
+    internalPort: 8888
 ingress:
   enabled: true
   tls:
@@ -44,13 +57,13 @@ ingress:
   annotations: {}
   path: /
 livenessProbe:
-  path: "/"
+  path: "/health"
   initialDelaySeconds: 30
   timeoutSeconds: 3
   periodSeconds: 30
   scheme: "HTTP"
 readinessProbe:
-  path: "/"
+  path: "/health"
   initialDelaySeconds: 30
   timeoutSeconds: 3
   periodSeconds: 30
@@ -85,4 +98,15 @@ hostPath:
   hd3:
     path: "/mnt/hd3"
     size: 1Ti
+  notebooks:
+    path: "/home/ubuntu/cdr-plugin-folder-to-folder/jupyter"
+    size: 10Gi
 
+jupyter:
+  enabled: true
+  ACCESS_TOKEN: "long-secret"
+  harddisks:
+    hd1: "/home/jovyan/data/hd1"
+    hd2: "/home/jovyan/data/hd2"
+    hd3: "/home/jovyan/data/hd3"
+    notebooks: "/home/jovyan/work"
