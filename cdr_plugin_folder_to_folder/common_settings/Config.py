@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 from osbot_utils.utils.Files import folder_not_exists, path_combine, folder_create, create_folder
 
@@ -12,6 +13,7 @@ DEFAULT_GW_SDK_PORT      = "8080"
 DEFAULT_ELASTIC_HOST     = "127.0.0.1"
 DEFAULT_ELASTIC_PORT     = "9200"
 DEFAULT_THREAD_COUNT     = 10
+DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"91.109.25.70", "Port":"8080"}]}'
 
 API_VERSION              = "v0.5.3"
 
@@ -28,6 +30,7 @@ class Config(object):
         self.elastic_host   = None
         self.elastic_port   = None
         self.thread_count   = None
+        self.endpoints      = None
 
     def load_values(self):
         self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
@@ -39,6 +42,9 @@ class Config(object):
         self.elastic_host    = os.getenv("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
         self.elastic_port    = os.getenv("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )
         self.thread_count    = os.getenv("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
+
+        json_string          = os.getenv("ENDPOINTS"      , DEFAULT_ENDPOINTS      )
+        self.endpoints       = json.loads(json_string)
 
         create_folder(self.hd2_location)            # todo: remove this from here
         create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here
