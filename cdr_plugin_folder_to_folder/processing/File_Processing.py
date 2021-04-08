@@ -115,12 +115,11 @@ class File_Processing(object):                                       # todo: add
 
         hash = ntpath.basename(dir)
         if len(hash) != 64:
-            print("Enexpected hash length for: ", dir)
-            return False
+            raise ValueError("Unexpected hash length")
 
         meta_service = Metadata_Service()
         if not meta_service.is_initial_status(dir):
-            return False
+            return
 
         meta_service.set_status_inprogress(dir)
 
@@ -131,19 +130,15 @@ class File_Processing(object):                                       # todo: add
 
         metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
         if not (FileService.file_exist(metadata_file_path)):
-            print("File does not exist: ", metadata_file_path)
-            return False
+            raise ValueError("The metadate.json file does not exist")
 
         encodedFile = FileService.base64encode(source_path)
         if not encodedFile:
-            print("Cannot encode: ", source_path)
-            return False
+            raise ValueError("Failed to encode the file")
 
         File_Processing.do_rebuild(hash, encodedFile, dir)
 
         meta_service.set_status_comleted(dir)
-
-        return True
 
     @staticmethod
     def main(argv):
