@@ -13,12 +13,12 @@ from datetime import datetime
 class Loops(object):
 
     @staticmethod
-    def ProcessDirectory(itempath, idx, use_es, es):
+    def ProcessDirectory(endpoint, itempath, idx, use_es, es):
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
         if os.path.isdir(itempath):
             try:
-                File_Processing.processDirectory(itempath)
+                File_Processing.processDirectory(endpoint, itempath)
                 if use_es:
                     log = {
                         'file': original_file_path,
@@ -64,7 +64,9 @@ class Loops(object):
             itempath = os.path.join(rootdir,item)
             #Loops.ProcessDirectory(itempath, idx, use_es, es)
 
-            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, files_count, use_es, es,))
+            endpoint = "http://" + config.endpoints['Endpoints'][0]['IP'] + ":" + config.endpoints['Endpoints'][0]['Port']
+
+            x = threading.Thread(target=Loops.ProcessDirectory, args=(endpoint, itempath, files_count, use_es, es,))
             threads.append(x)
             x.start()
             # limit the number of parallel threads

@@ -18,10 +18,9 @@ class File_Processing(object):
     meta_service = Metadata_Service()
 
     @staticmethod
-    def base64request(endpoint, base64enc_file):
+    def base64request(endpoint, api_route, base64enc_file):
         try:
-            url = "http://" + File_Processing.config.gw_sdk_address + ":" \
-                + str(File_Processing.config.gw_sdk_port) + "/" + endpoint
+            url = endpoint + "/" + api_route
 
             payload = json.dumps({
               "Base64": base64enc_file
@@ -37,11 +36,9 @@ class File_Processing(object):
             raise ValueError(str(e))
 
     @staticmethod
-    def xmlreport_request(fileID):
+    def xmlreport_request(endpoint, fileID):
         try:
-            url = "http://" + File_Processing.config.gw_sdk_address \
-                + ":" + str(File_Processing.config.gw_sdk_port) \
-                + "/api/Analyse/xmlreport?fileId=" + fileID
+            url = endpoint + "/api/Analyse/xmlreport?fileId=" + fileID
 
             payload = ""
             headers = {
@@ -55,20 +52,20 @@ class File_Processing(object):
             raise ValueError(str(e))
 
     @staticmethod
-    def analyse (base64enc_file):
-        return File_Processing.base64request("api/Analyse/base64", base64enc_file)
+    def analyse (endpoint, base64enc_file):
+        return File_Processing.base64request(endpoint, "api/Analyse/base64", base64enc_file)
 
     @staticmethod
-    def rebuild (base64enc_file):
-        return File_Processing.base64request("api/rebuild/base64", base64enc_file)
+    def rebuild (endpoint, base64enc_file):
+        return File_Processing.base64request(endpoint, "api/rebuild/base64", base64enc_file)
 
     @staticmethod
-    def filetypedetection (base64enc_file):
-        return File_Processing.base64request("api/FileTypeDetection/base64", base64enc_file)
+    def filetypedetection (endpoint, base64enc_file):
+        return File_Processing.base64request(endpoint, "api/FileTypeDetection/base64", base64enc_file)
 
     @staticmethod
-    def get_xmlreport(hash, fileId, dir):
-        xmlreport = File_Processing.xmlreport_request(fileId)
+    def get_xmlreport(endpoint, hash, fileId, dir):
+        xmlreport = File_Processing.xmlreport_request(endpoint, fileId)
         if not xmlreport:
             raise ValueError('Failed to create the XML report')
 
@@ -76,8 +73,8 @@ class File_Processing(object):
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
     @staticmethod
-    def do_rebuild(hash, encodedFile, dir):
-        response = File_Processing.rebuild(encodedFile)
+    def do_rebuild(endpoint, hash, encodedFile, dir):
+        response = File_Processing.rebuild(endpoint, encodedFile)
         result = response.text
         if not result:
             raise ValueError('Failed to rebuild the file')
@@ -101,10 +98,10 @@ class File_Processing(object):
 
         # get XML report
         if fileIdKey in headers:
-            File_Processing.get_xmlreport(hash, headers[fileIdKey], dir)
+            File_Processing.get_xmlreport(endpoint, hash, headers[fileIdKey], dir)
 
     @staticmethod
-    def processDirectory (dir):
+    def processDirectory (endpoint, dir):
 
         hash = ntpath.basename(dir)
         if len(hash) != 64:
@@ -128,7 +125,7 @@ class File_Processing(object):
         if not encodedFile:
             raise ValueError("Failed to encode the file")
 
-        File_Processing.do_rebuild(hash, encodedFile, dir)
+        File_Processing.do_rebuild(endpoint, hash, encodedFile, dir)
 
         File_Processing.meta_service.set_status_comleted(dir)
 
