@@ -12,10 +12,6 @@ on:
         description: IP address of GW SDK
         default: "54.246.71.220"
         required: true
-      monitoring_ip:
-        description: IP address of Monitoring server
-        default: "52.30.24.9"
-        required: true
       create_ova:
         description: Create OVA
         default: "true"
