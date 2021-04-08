@@ -37,6 +37,25 @@ class File_Processing(object):                                       # todo: add
             return ""
 
     @staticmethod
+    def xmlreport_request(fileID):
+        config = Config().load_values()                             # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
+        try:
+            url = "http://" + config.gw_sdk_address + ":" + str(config.gw_sdk_port) \
+                  + "/api/Analyse/xmlreport?fileId=" + fileID
+
+            payload = ""
+            headers = {
+                'Content-Type': 'application/octet-stream'
+            }
+
+            response = requests.request("GET", url, headers=headers, data=payload)
+            return response.text
+
+        except Exception as e:
+            print("ERROR: ".format(e))
+            return ""
+
+    @staticmethod
     def analyse (base64enc_file):
         return File_Processing.base64request("api/Analyse/base64", base64enc_file)
 
@@ -49,29 +68,24 @@ class File_Processing(object):                                       # todo: add
         return File_Processing.base64request("api/FileTypeDetection/base64", base64enc_file)
 
     @staticmethod
-    def create_report(hash, encodedFile):
-        config = Config().load_values()                     # todo refactor out of this method (since this should be loaded once, not everytime it is executed)
+    def create_report(hash, encodedFile, dir):
         xmlreport = File_Processing.analyse(encodedFile)
         if not xmlreport:
-            print("Cannot get xml report")
-            return
-
-        report_folder = os.path.join(config.hd2_location,"data")     # todo: this should not be calculated here
-        folder_create(report_folder)                                    # todo: this folder should not be created here
-
-        report_file_folder = os.path.join(report_folder,hash)           # todo: this should not be calculated here
-        folder_create(report_file_folder)                               # todo: this folder should not be created here
+            raise ValueError('Failed to create the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
 
-        json_save_file_pretty(json_obj, os.path.join(report_file_folder, "report.json"))
+        json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
+
+    @staticmethod
+    def get_xmlreport(hash, fileId, processed_path):
+        pass
 
     @staticmethod
     def do_rebuild(hash, encodedFile, processed_path):
         result = File_Processing.rebuild(encodedFile)
         if not result:
-            print("Cannot rebuild file")
-            return
+            raise ValueError('Failed to rebuild the file')
 
         dirname = ntpath.dirname(processed_path)
         basename = ntpath.basename(processed_path)
@@ -116,7 +130,7 @@ class File_Processing(object):                                       # todo: add
 
         processed_path = meta_service.get_processed_file_path(dir)
 
-        File_Processing.create_report(hash, encodedFile)
+        File_Processing.create_report(hash, encodedFile, dir)
         File_Processing.do_rebuild(hash, encodedFile, processed_path)
 
         meta_service.set_status_comleted(dir)
