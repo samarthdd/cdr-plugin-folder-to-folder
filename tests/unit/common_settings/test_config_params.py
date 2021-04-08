@@ -19,7 +19,8 @@ class test_Config(TestCase):
         self.assertEqual(self.config.hd3_location   , os.environ.get("HD3_LOCATION"   , DEFAULT_HD3_LOCATION))
         self.assertEqual(self.config.root_folder    , os.environ.get("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER))
         self.assertEqual(self.config.endpoints      , json.loads(os.environ.get("ENDPOINTS"      , DEFAULT_ENDPOINTS)))
-
+        assert self.config.endpoints['Endpoints'][0]['IP']
+        assert self.config.endpoints['Endpoints'][0]['Port']
 
         assert folder_exists(self.config.root_folder )
         assert folder_exists(self.config.hd1_location)
