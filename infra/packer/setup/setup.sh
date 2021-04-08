@@ -44,7 +44,7 @@ sudo docker-compose up -d --build
 # create script to mount hard disks and upgrade helm chart
 tee -a > ~/setup.sh <<EOF
 #!/bin/bash
-GW_SDK_ADDRESS=$1
+GW_SDK_ADDRESS=\$1
 if [[ -z "$GW_SDK_ADDRESS" ]] ; then
     echo "Please pass glasswall SDK IP address as an argument"
     exit 0
