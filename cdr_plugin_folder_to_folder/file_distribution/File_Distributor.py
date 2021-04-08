@@ -115,22 +115,3 @@ class File_Distributor:
         except Exception as error:
             logger.error(f"File_Distributor: get_hd2_status_hash_file : {error}")
             raise error
-
-    def hard_discs_details(self):
-
-        return {
-            "hd1_path": environ.get('HD1_LOCATION'),
-            "hd2_path": environ.get('HD2_LOCATION'),
-            "hd3_path": environ.get('HD3_LOCATION')
-        }
-
-    def configure_hard_discs(self, hd1_path=None, hd2_path=None, hd3_path=None):
-        environ["MODE"]="1"
-        if hd1_path:
-            environ['HD1_LOCATION'] = hd1_path
-        if hd2_path:
-            environ['HD2_LOCATION'] = hd2_path
-        if hd3_path:
-            environ['HD3_LOCATION'] = hd3_path
-
-        return self.hard_discs_details()
