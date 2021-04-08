@@ -83,7 +83,8 @@ class File_Processing(object):                                       # todo: add
 
     @staticmethod
     def do_rebuild(hash, encodedFile, dir):
-        result = File_Processing.rebuild(encodedFile).text
+        response = File_Processing.rebuild(encodedFile)
+        result = response.text
         if not result:
             raise ValueError('Failed to rebuild the file')
 
@@ -102,8 +103,12 @@ class File_Processing(object):                                       # todo: add
         else:
             FileService.wrtie_file(dirname, basename + ".html", result)
 
+        headers = response.headers
+        fileIdKey = "X-Adaptation-File-Id"
+
         # get XML report
-        File_Processing.create_report(hash, encodedFile, dir)
+        if fileIdKey in headers:
+            File_Processing.get_xmlreport(hash, headers[fileIdKey], dir)
 
     @staticmethod
     def processDirectory (dir):
