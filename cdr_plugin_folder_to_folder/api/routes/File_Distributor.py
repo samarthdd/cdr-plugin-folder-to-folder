@@ -40,3 +40,8 @@ def get_hd2_status_files():
 def get_hd3_files(num_of_files: int):
     list=file_distributor.get_hd3_files(num_of_files=num_of_files)
     return list
+
+@router.get("/configure_hard_discs}")
+def get_hd3_files(hd1_path: str=None,hd2_path: str=None,hd3_path: str=None):
+    list=file_distributor.configure_hard_discs(hd1_path=hd1_path,hd2_path=hd2_path,hd3_path=hd3_path)
+    return list

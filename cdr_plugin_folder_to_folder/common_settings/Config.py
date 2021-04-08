@@ -17,7 +17,8 @@ DEFAULT_THREAD_COUNT     = 10
 class Config(object):
 
     def __init__(self):
-        load_dotenv()                   # Load configuration from .env file that should exist in the root of the repo
+        if os.environ.get("MODE",None):
+            load_dotenv()                   # Load configuration from .env file that should exist in the root of the repo
         self.gw_sdk_address = None
         self.gw_sdk_port    = None
         self.hd1_location   = None
