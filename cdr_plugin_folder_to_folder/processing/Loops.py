@@ -59,12 +59,15 @@ class Loops(object):
         files_count = 0
         threads = list()
 
+        endpoints_count = len(config.endpoints['Endpoints'])
+
         for item in directory_contents:
             files_count += 1
             itempath = os.path.join(rootdir,item)
             #Loops.ProcessDirectory(itempath, idx, use_es, es)
 
-            endpoint = "http://" + config.endpoints['Endpoints'][0]['IP'] + ":" + config.endpoints['Endpoints'][0]['Port']
+            endpoint_index = files_count % endpoints_count
+            endpoint = "http://" + config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + config.endpoints['Endpoints'][endpoint_index]['Port']
 
             x = threading.Thread(target=Loops.ProcessDirectory, args=(endpoint, itempath, files_count, use_es, es,))
             threads.append(x)
