@@ -58,7 +58,7 @@ chmod +x ~/setup.sh
 
 # install vmware tools
 sudo apt install open-vm-tools
-sudo apt install open-vm-tools-desktop
+sudo apt install open-vm-tools-desktop -y
 
 # allow password login (useful when deployed to esxi)
 SSH_PASSWORD=${SSH_PASSWORD:-glasswall}
