@@ -13,7 +13,6 @@ def get_hd1_files(num_of_files: int):
     file_path=file_distributor.get_hd1_files(num_of_files=num_of_files)
     return FileResponse(file_path, media_type='application/octet-stream', filename=ntpath.basename(file_path))
 
-
 @router.get("/hd2/metadata/{num_of_files}")
 def get_hd2_metadata_files(num_of_files: int):
     file_distributor = File_Distributor()

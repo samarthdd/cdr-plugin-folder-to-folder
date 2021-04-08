@@ -15,6 +15,7 @@ class File_Distributor:
         self.hd2_base_location  = self.config.hd2_location
         self.hd3_base_location  = self.config.hd3_location
         self.zip_folder         = os.path.join(os.getcwd(),"zip_folder")
+
         folder_delete_all(self.zip_folder)
         create_folder(self.zip_folder)
 
@@ -149,7 +150,6 @@ class File_Distributor:
 
             target_file_path = os.path.join(self.zip_folder, zip_name)
             zip_files(self.temp_folder, file_pattern='*.*', target_file=target_file_path)
-
             folder_delete_all(self.temp_folder)
 
             return target_file_path

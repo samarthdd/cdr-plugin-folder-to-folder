@@ -22,14 +22,14 @@ class test_File_Distributor(TestCase):
 
 
     def test__init__(self):
-        assert self.file_distributor.config is not None
-        assert self.file_distributor.hd1_base_location  is not None
-        assert self.file_distributor.hd2_base_location  is not None
-        assert self.file_distributor.hd3_base_location  is not None
+        assert self.file_distributor.config             is   not None
+        assert self.file_distributor.hd1_base_location  is   not None
+        assert self.file_distributor.hd2_base_location  is   not None
+        assert self.file_distributor.hd3_base_location  is   not None
 
     def test_get_hd1_files(self):
         response=self.file_distributor.get_hd1_files(1)
-        assert response is not None
+        assert response  is not None
         assert os.path.exists(response)
 
     def test_get_hd3_files(self):
