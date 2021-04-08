@@ -9,65 +9,30 @@ variable "esxi_credentials" {
   description = "ESXi connection details"
 }
 
-variable "instance_count" {
-  type        = number
-  description = "Count of instances"
-  default     = 1
-}
+variable "ovf_urls" {
+  type = object({
+    sdk             = string
+    workflow        = string
+    offline_desktop = string
+  })
 
-variable "name_prefix" {
-  type        = string
-  description = "Name prefix for the instances"
-  default     = "sdk"
-}
-
-variable "datastore" {
-  type        = string
-  description = "Datastore name"
-  default     = "datastore1"
-}
-
-variable "ovf_source" {
-  type        = string
-  description = "Local path or URL to OVF"
-}
-
-variable "network" {
-  type        = string
-  description = "Network name"
-  default     = "VMs"
-}
-
-variable "vcpu_count" {
-  type        = number
-  description = "Count of vCPU per instance"
-  default     = 1
-
+  description = "URLs to OVAs"
   validation {
-    condition     = var.vcpu_count >= 1
-    error_message = "Error: var.vcpu_count must be >= 1."
+    condition     = alltrue([for url in values(var.ovf_urls) : can(regex("https?://.+\\.ov[af]", url))])
+    error_message = "URLs have to be valid HTTP/S urls to file ending with .ova or .ovf extention."
   }
 }
 
-variable "memory_mib" {
-  type        = number
-  description = "Count of RAM per instance in MiB"
-  default     = 1024
+variable "instances_count" {
+  type = object({
+    sdk             = number
+    workflow        = number
+    offline_desktop = number
+  })
 
+  description = "Count of instances to create"
   validation {
-    condition     = var.memory_mib >= 1024
-    error_message = "Error: var.memory_mib must be >= 1024."
+    condition     = alltrue([for n in values(var.instances_count) : n >= 1])
+    error_message = "Count must be >= 1."
   }
-}
-
-variable "auto_power_on" {
-  type        = bool
-  description = "Will power on instances if true"
-  default     = false
-}
-
-variable "boot_disk_size" {
-  type        = number
-  description = "HDD size of GiB "
-  default     = 0
 }

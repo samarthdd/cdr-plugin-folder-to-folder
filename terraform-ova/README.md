@@ -30,7 +30,7 @@ Now, we have to initialize Terraform.
 terraform init
 ```
 
-Configure VMs using variables. See an example at *default.auto.tfvars*. See the list of variables in *variables.tf* or refer to the table below.
+Configure VMs modules using variables from esxi-instance module. See an example at *esxi-instance/variables.tf*. See the list of variables in *variables.tf* or refer to the table below.
 
 |         Variable | Description                      |
 | ---------------: | -------------------------------- |

@@ -16,43 +16,29 @@ provider "esxi" {
   esxi_password = var.esxi_credentials.password
 }
 
-resource "esxi_guest" "this" {
-  count      = var.instance_count
-  guest_name = "${var.name_prefix}-${count.index}"
-
-  disk_store = var.datastore
-  ovf_source = var.ovf_source
-
-  numvcpus       = var.vcpu_count
-  memsize        = var.memory_mib
-  boot_disk_size = var.boot_disk_size > 0 ? var.boot_disk_size : null
-
-  power = var.auto_power_on ? "on" : "off"
-
-  notes = <<-EOF
-    Source OVA/OVF URL: ${var.ovf_source}
-  EOF
-
-  network_interfaces {
-    virtual_network = var.network
-  }
+module "sdk" {
+  source         = "./esxi-instance"
+  name_prefix    = "sdk"
+  ovf_source     = var.ovf_urls.sdk
+  instance_count = 2
+  vcpu_count     = 4
+  memory_mib     = 2048
 }
 
-locals {
-  info = {
-    for vm in esxi_guest.this :
-    vm.guest_name => {
-      ip_address     = vm.ip_address
-      ovf_source     = vm.ovf_source
-      guestos        = vm.guestos
-      vcpu_count     = vm.numvcpus
-      memory_mib     = vm.memsize
-      boot_disk_size = coalesce(vm.boot_disk_size, "Default from OVA/OVF")
-    }
-  }
+module "offline_desktop" {
+  source         = "./esxi-instance"
+  name_prefix    = "offline-desktop"
+  ovf_source     = var.ovf_urls.offline_desktop
+  instance_count = 1
+  vcpu_count     = 2
+  memory_mib     = 2048
 }
 
-output "name" {
-  value       = yamlencode(local.info)
-  description = "General information about the instances"
+module "workflow" {
+  source         = "./esxi-instance"
+  name_prefix    = "workflow"
+  ovf_source     = var.ovf_urls.workflow
+  instance_count = 1
+  vcpu_count     = 2
+  memory_mib     = 2048
 }
