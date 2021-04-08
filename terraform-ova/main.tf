@@ -23,7 +23,36 @@ resource "esxi_guest" "this" {
   disk_store = var.datastore
   ovf_source = var.ovf_source
 
+  numvcpus       = var.vcpu_count
+  memsize        = var.memory_mib
+  boot_disk_size = var.boot_disk_size > 0 ? var.boot_disk_size : null
+
+  power = var.auto_power_on ? "on" : "off"
+
+  notes = <<-EOF
+    Source OVA/OVF URL: ${var.ovf_source}
+  EOF
+
   network_interfaces {
     virtual_network = var.network
   }
+}
+
+locals {
+  info = {
+    for vm in esxi_guest.this :
+    vm.guest_name => {
+      ip_address     = vm.ip_address
+      ovf_source     = vm.ovf_source
+      guestos        = vm.guestos
+      vcpu_count     = vm.numvcpus
+      memory_mib     = vm.memsize
+      boot_disk_size = coalesce(vm.boot_disk_size, "Default from OVA/OVF")
+    }
+  }
+}
+
+output "name" {
+  value       = yamlencode(local.info)
+  description = "General information about the instances"
 }
