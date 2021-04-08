@@ -25,7 +25,8 @@ echo "Done installing helm"
 # get source code
 cd ~
 BRANCH=${BRANCH:-main}
-git clone https://github.com/filetrust/cdr-plugin-folder-to-folder.git --branch $BRANCH && cd cdr-plugin-folder-to-folder
+GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-filetrust/cdr-plugin-folder-to-folder}
+git clone https://github.com/${GITHUB_REPOSITORY}.git --branch $BRANCH && cd cdr-plugin-folder-to-folder
 
 # build docker images
 sudo apt-get install \
@@ -47,21 +48,26 @@ sudo docker run -d -p 30500:5000 --restart always --name registry registry:2
 
 # build images
 cd ~/cdr-plugin-folder-to-folder
-sudo docker build cdr_plugin_folder_to_folder -f cdr_plugin_folder_to_folder/Dockerfile -t localhost:30500/cdr-plugin-folder-to-folder
+sudo docker build . -f cdr_plugin_folder_to_folder/Dockerfile -t localhost:30500/cdr-plugin-folder-to-folder
 sudo docker push localhost:30500/cdr-plugin-folder-to-folder
+sudo docker build jupyter -f jupyter/Dockerfile -t localhost:30500/cdr-plugin-f2f-jupyter
+sudo docker push localhost:30500/cdr-plugin-f2f-jupyter
 
 # install cdr plugin folder to folder API helm charts
 sudo mkdir -p /mnt/hd1 /mnt/hd2 /mnt/hd3
-GW_SDK_PORT=${GW_SDK_PORT-1346}
-helm upgrade --install cdr-plugin-f2f  \
-    --set image.cdrplugin.repository=localhost:30500/cdr-plugin-folder-to-folder \
-    --set image.cdrplugin.tag=latest \
-    --set application.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
-    --set application.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \
-    --set application.cdrplugin.env.HD3_LOCATION="/mnt/hd3" \
-    --set image.cdrplugin.env.GW_SDK_ADDRESS=$GW_SDK_ADDRESS \
-    --set ingress.tls.enabled=false \
-    --atomic kubernetes/helm/chart/
+GW_SDK_PORT=${GW_SDK_PORT:-1346}
+helm upgrade --install cdr-plugin-f2f \
+  --set image.cdrplugin.repository=localhost:30500/cdr-plugin-folder-to-folder \
+  --set image.cdrplugin.tag=latest \
+  --set image.jupyter.repository=localhost:30500/cdr-plugin-f2f-jupyter \
+  --set image.jupyter.tag=latest \
+  --set ingress.tls.enabled=false \
+  --set image.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
+  --set image.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \
+  --set image.cdrplugin.env.HD3_LOCATION="/mnt/hd3" \
+  --set image.cdrplugin.env.GW_SDK_ADDRESS=$GW_SDK_ADDRESS \
+  --set image.cdrplugin.env.GW_SDK_PORT=$GW_SDK_PORT \
+  --atomic kubernetes/helm/chart/
 
 # create script to mount hard disks and upgrade helm chart
 tee -a > ~/setup.sh <<EOF
@@ -76,6 +82,9 @@ mkdir -p /mnt/hd1 /mnt/hd2 /mnt/hd3
 
 helm upgrade --install cdr-plugin-f2f \
   --set image.cdrplugin.repository=localhost:30500/cdr-plugin-folder-to-folder \
+  --set image.cdrplugin.tag=latest \
+  --set image.jupyter.repository=localhost:30500/cdr-plugin-f2f-jupyter \
+  --set image.jupyter.tag=latest \
   --set ingress.tls.enabled=false \
   --set image.cdrplugin.env.HD1_LOCATION="/mnt/hd1" \
   --set image.cdrplugin.env.HD2_LOCATION="/mnt/hd2" \

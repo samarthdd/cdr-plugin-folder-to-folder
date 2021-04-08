@@ -1,4 +1,5 @@
 from osbot_utils.utils.Files import path_combine, files_list
+from osbot_utils.utils.Misc import list_filter
 
 
 class Test_Data:
@@ -7,7 +8,8 @@ class Test_Data:
         self.path_test_files = path_combine(__file__, '../../../../test_data/scenario-2/hd1')
 
     def files(self):
-        return files_list(self.path_test_files)
+        files = files_list(self.path_test_files)
+        return list_filter(files, lambda x: x.find('.DS_Store') == -1)      # todo: add better method to OSBot-utils
 
     def json(self):
         return self.jsons().pop()
