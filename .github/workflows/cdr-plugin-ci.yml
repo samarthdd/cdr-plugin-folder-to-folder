@@ -18,7 +18,7 @@ jobs:
       - name: Update CDR pluging folder to folder
         uses: appleboy/ssh-action@master
         with:
-          host: "34.248.199.106"
+          host: "34.253.17.169"
           username: ubuntu
           key: '${{ secrets.SSH_KEY }}'
           script: |

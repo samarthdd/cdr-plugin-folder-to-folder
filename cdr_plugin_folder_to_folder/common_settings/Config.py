@@ -13,6 +13,7 @@ DEFAULT_ELASTIC_HOST     = "127.0.0.1"
 DEFAULT_ELASTIC_PORT     = "9200"
 DEFAULT_THREAD_COUNT     = 10
 
+API_VERSION              = "v0.5.3"
 
 class Config(object):
 

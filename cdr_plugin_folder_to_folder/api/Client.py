@@ -1,4 +1,6 @@
-from osbot_utils.utils.Http import GET, GET_json
+from urllib.parse import urljoin
+
+from osbot_utils.utils.Http import GET_json
 
 
 class Client:
@@ -6,22 +8,21 @@ class Client:
     def __init__(self, url_server):
         self.server_ip = url_server
 
-    def resolve_url(self, path):
-        if path.startswith('/'):
-            path = path[1:]
-        return f"{self.server_ip}/{path}"
+    # helper methods
+    def _resolve_url(self, path=""):
+        return urljoin(self.server_ip, path)
 
-    def request_get(self, path):
-        url = self.resolve_url(path)
+    def _request_get(self, path):
+        url = self._resolve_url(path)
         return GET_json(url)
 
+    # API methods
     def health(self):
-        return self.request_get('/health')
+        return self._request_get('/health')
 
     def version(self):
-        return self.request_get('/version')
-
+        return self._request_get('/version')
 
     def file_distributor_hd1(self, num_of_files):
         path = f"/file-distributor/hd1/{num_of_files}"
-        return self.request_get(path)
+        return self._request_get(path)
