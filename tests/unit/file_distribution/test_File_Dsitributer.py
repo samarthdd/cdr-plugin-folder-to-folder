@@ -19,6 +19,7 @@ class test_File_Distributor(TestCase):
     def tearDown(self) -> None:
         pass
 
+
     def test__init__(self):
         assert self.file_distributor.config is not None
         assert self.file_distributor.hd1_base_location  is not None
@@ -64,5 +65,7 @@ class test_File_Distributor(TestCase):
         response = self.file_distributor.configure_hard_discs(hd1_path=os.environ.get('HD1_LOCATION'),hd2_path=os.environ.get('HD2_LOCATION'),hd3_path=os.environ.get('HD3_LOCATION'))
         assert response is not None
         assert os.environ.get("MODE") is "1"
+        if os.environ.get('MODE',None):
+            del os.environ['MODE']
 
 
