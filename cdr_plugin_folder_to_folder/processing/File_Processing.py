@@ -82,10 +82,13 @@ class File_Processing(object):                                       # todo: add
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
     @staticmethod
-    def do_rebuild(hash, encodedFile, processed_path):
+    def do_rebuild(hash, encodedFile, dir):
         result = File_Processing.rebuild(encodedFile).text
         if not result:
             raise ValueError('Failed to rebuild the file')
+
+        meta_service = Metadata_Service()
+        processed_path = meta_service.get_processed_file_path(dir)
 
         dirname = ntpath.dirname(processed_path)
         basename = ntpath.basename(processed_path)
@@ -128,10 +131,8 @@ class File_Processing(object):                                       # todo: add
             print("Cannot encode: ", source_path)
             return False
 
-        processed_path = meta_service.get_processed_file_path(dir)
-
         File_Processing.create_report(hash, encodedFile, dir)
-        File_Processing.do_rebuild(hash, encodedFile, processed_path)
+        File_Processing.do_rebuild(hash, encodedFile, dir)
 
         meta_service.set_status_comleted(dir)
 
