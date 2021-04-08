@@ -28,13 +28,10 @@ class File_Processing(object):                                       # todo: add
               'Content-Type': 'application/json'
             }
 
-            response = requests.request("POST", url, headers=headers, data=payload)
-
-            return response.text
+            return requests.request("POST", url, headers=headers, data=payload)
      
         except Exception as e:
-            print("ERROR: ".format(e))
-            return ""
+            raise ValueError(str(e))
 
     @staticmethod
     def xmlreport_request(fileID):
@@ -52,8 +49,7 @@ class File_Processing(object):                                       # todo: add
             return response.text
 
         except Exception as e:
-            print("ERROR: ".format(e))
-            return ""
+            raise ValueError(str(e))
 
     @staticmethod
     def analyse (base64enc_file):
@@ -69,21 +65,25 @@ class File_Processing(object):                                       # todo: add
 
     @staticmethod
     def create_report(hash, encodedFile, dir):
-        xmlreport = File_Processing.analyse(encodedFile)
+        xmlreport = File_Processing.analyse(encodedFile).text
         if not xmlreport:
             raise ValueError('Failed to create the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
-
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
     @staticmethod
-    def get_xmlreport(hash, fileId, processed_path):
-        pass
+    def get_xmlreport(hash, fileId, dir):
+        xmlreport = File_Processing.xmlreport_request(fileId)
+        if not xmlreport:
+            raise ValueError('Failed to create the XML report')
+
+        json_obj = xmltodict.parse(xmlreport)
+        json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
     @staticmethod
     def do_rebuild(hash, encodedFile, processed_path):
-        result = File_Processing.rebuild(encodedFile)
+        result = File_Processing.rebuild(encodedFile).text
         if not result:
             raise ValueError('Failed to rebuild the file')
 
