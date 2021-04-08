@@ -18,9 +18,8 @@ API_VERSION              = "v0.5.3"
 class Config(object):
 
     def __init__(self):
-
         if not os.getenv("MODE",None):
-            load_dotenv()  # Load configuration from .env file that should exist in the root of the repo
+            load_dotenv(override=True)  # Load configuration from .env file that should exist in the root of the repo
         self.gw_sdk_address = None
         self.gw_sdk_port    = None
         self.hd1_location   = None

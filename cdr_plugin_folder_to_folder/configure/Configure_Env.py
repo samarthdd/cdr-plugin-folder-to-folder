@@ -49,7 +49,6 @@ class Configure_Env:
             environ["MODE"]="1"
             if gw_address:
                 environ['GW_SDK_ADDRESS'] = gw_address
-                print(environ['GW_SDK_ADDRESS'])
             if gw_port:
                 environ['GW_SDK_PORT'] = gw_port
             return self.gw_sdk_details()
