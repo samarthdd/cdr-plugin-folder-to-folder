@@ -7,3 +7,5 @@ esxcli.log
 **/*.tfstate*
 **/*auto.tfvars
 !default.auto.tfvars
+bin/*.executable
+bin/*.sha256sum

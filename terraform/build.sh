@@ -33,7 +33,9 @@ apk add \
 	less \
 	logrotate \
 	openssh \
-	ssmtp
+	open-vm-tools \
+	curl \
+	make
 
 step 'Enable services'
 rc-update add acpid default
@@ -42,3 +44,11 @@ rc-update add crond default
 rc-update add net.eth0 default
 rc-update add net.lo boot
 rc-update add termencoding boot
+
+step 'Install Terraform'
+install /mnt/bin/terraform /usr/local/bin/terraform -o root -g root -m 0755 -D
+/usr/local/bin/terraform version
+
+step 'Copy Terraform scripts'
+cp -rpf /mnt/terraform /opt/terraform
+make -C /opt/terraform init

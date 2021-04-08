@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -ex
+set -e
 
 SCRIPT_PATH="$(dirname "$0" | xargs realpath)"
 
@@ -19,20 +19,17 @@ download() {
     else
       curl -fsSLo "$OUTPUT" "$URL"
     fi
-  elif command -v wget 1>/dev/null; then
-    if [ "$OUTPUT" = '' ]; then
-      wget -q --content-disposition "$URL"
-    else
-      wget -qO "$OUTPUT" "$URL"
-    fi
+  else
+    echo 'error: cannot download' 2>&1
+    exit 1
   fi
 }
 
-if [ ! -f "$EXE_PATH" ] || ! sha256sum -c "$CHECKSUM_PATH" --status; then
+if [ ! -f "$EXE_PATH" ] || ! sha256sum -c "$CHECKSUM_PATH" -s; then
   cd "$(mktemp -d)"
   download "$TERRAFORM_URL"
   download "$TERRAFORM_CHECKSUM_URL" checksum
-  sha256sum -c checksum --ignore-missing
+  grep -F terraform_0.14.9_linux_amd64.zip checksum | sha256sum -c -
   unzip terraform*.zip
   install -m 0755 terraform "$EXE_PATH"
   sha256sum "$EXE_PATH" > "$CHECKSUM_PATH"
