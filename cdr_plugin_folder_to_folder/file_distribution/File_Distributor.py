@@ -2,6 +2,7 @@ import os
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 
 import logging as logger
+from os import environ
 logger.basicConfig(level=logger.INFO)
 
 class File_Distributor:
@@ -114,6 +115,3 @@ class File_Distributor:
         except Exception as error:
             logger.error(f"File_Distributor: get_hd2_status_hash_file : {error}")
             raise error
-
-    def download_file(self,file_path):
-        pass
