@@ -30,9 +30,25 @@ Now, we have to initialize Terraform.
 terraform init
 ```
 
-Configure VMs using variables. See an example at *default.auto.tfvars*.
+Configure VMs using variables. See an example at *default.auto.tfvars*. See the list of variables in *variables.tf* or refer to the table below.
+
+|         Variable | Description                      |
+| ---------------: | -------------------------------- |
+| esxi_credentials | ESXi connection details          |
+|   instance_count | Count of instances               |
+|      name_prefix | Name prefix for the instances    |
+|        datastore | Datastore name                   |
+|       ovf_source | Local path or URL to OVF         |
+|          network | Network name                     |
+|       vcpu_count | Count of vCPU per instance       |
+|       memory_mib | Count of RAM per instance in MiB |
+|    auto_power_on | Will power on instances if true  |
+|   boot_disk_size | HDD size of GiB                  |
+
 
 ## 3. Apply
+
+Now you can apply the changes.
 
 ```shell
 terraform apply
