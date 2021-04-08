@@ -102,6 +102,9 @@ class File_Processing(object):                                       # todo: add
         else:
             FileService.wrtie_file(dirname, basename + ".html", result)
 
+        # get XML report
+        File_Processing.create_report(hash, encodedFile, dir)
+
     @staticmethod
     def processDirectory (dir):
 
@@ -131,7 +134,6 @@ class File_Processing(object):                                       # todo: add
             print("Cannot encode: ", source_path)
             return False
 
-        File_Processing.create_report(hash, encodedFile, dir)
         File_Processing.do_rebuild(hash, encodedFile, dir)
 
         meta_service.set_status_comleted(dir)
