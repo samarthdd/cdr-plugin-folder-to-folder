@@ -56,6 +56,10 @@ sudo docker-compose up -d --build --force
 EOF
 chmod +x ~/setup.sh
 
+# install vmware tools
+sudo apt install open-vm-tools
+sudo apt install open-vm-tools-desktop
+
 # allow password login (useful when deployed to esxi)
 SSH_PASSWORD=${SSH_PASSWORD:-glasswall}
 printf "${SSH_PASSWORD}\n${SSH_PASSWORD}" | sudo passwd ubuntu
