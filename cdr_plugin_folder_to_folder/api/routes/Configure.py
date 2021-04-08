@@ -18,14 +18,14 @@ class CONFIGARATION(BaseModel):
 
 router = APIRouter(**router_params)
 
+@router.post("/configure_env/",response_model=CONFIGARATION)
+def configure_environment(item: CONFIGARATION):
+    #response=configure_env.configure_hard_discs(hd1_path=item.hd1_path, hd2_path=item.hd2_path, hd3_path=item.hd3_path)
+    #response=configure_env.configure_gw_sdk_endpoints(gw_address=item.gw_address,gw_port=item.gw_port)
+    response = configure_env.configure(hd1_path=item.hd1_path, hd2_path=item.hd2_path, hd3_path=item.hd3_path,gw_address=item.gw_address, gw_port=item.gw_port)
+    return response
+
 @router.post("/reset")
-def reset():
+def resets_configarations():
     list=configure_env.reset_mode()
     return list
-
-@router.post("/configure_env/",response_model=CONFIGARATION)
-def configure(item: CONFIGARATION):
-    configure_env.configure_hard_discs(hd1_path=item.hd1_path, hd2_path=item.hd2_path, hd3_path=item.hd3_path)
-    configure_env.configure_gw_sdk_endpoints(gw_address=item.gw_address,gw_port=item.gw_port)
-    return item
-

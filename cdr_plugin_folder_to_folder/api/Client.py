@@ -23,6 +23,6 @@ class Client:
     def version(self):
         return self._request_get('/version')
 
-    def file_distributor_hd1(self, num_of_files):
-        path = f"/file-distributor/hd1/{num_of_files}"
-        return self._request_get(path)
+    # def file_distributor_hd1(self, num_of_files):
+    #     path = f"/file-distributor/hd1/{num_of_files}"
+    #     return self._request_get(path)

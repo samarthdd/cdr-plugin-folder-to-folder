@@ -5,8 +5,8 @@ router_params = { "prefix": "/pre-processor"  ,
                   "tags"  : ['Pre Processor'] }
 router = APIRouter(**router_params)
 
-@router.get("/pre-process")
-def start_pre_process():
+@router.post("/pre-process")
+def pre_process_hd1_data_to_hd2():
     pre_processor = Pre_Processor()
     pre_processor.process_files()
     return {"Processing is done"}
