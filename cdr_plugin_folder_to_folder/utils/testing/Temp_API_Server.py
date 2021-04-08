@@ -48,7 +48,7 @@ class Temp_API_Server:
     def server_url(self):
         return f"http://127.0.0.1:{self.port}"
 
-    def wait_for_server_ok(self, max_attempts=10, wait_interval=0.1):
+    def wait_for_server_ok(self, max_attempts=20, wait_interval=0.1):
         for i in range(0,max_attempts):
             status = self.http_GET('/health')
             if status:
