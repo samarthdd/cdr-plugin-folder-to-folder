@@ -19,13 +19,13 @@ class test_Configure_Env(TestCase):
         path = f"{self.prefix}/configure_env/"
         response = self.client.POST(
             path,
-            json={"hd1_path": "string","hd2_path": "string","hd3_path": "string","gw_address": "127.0.0.1","gw_port": "8000"},
+            json={'hd1_path': './test_data/scenario-1/hd1','hd2_path': './test_data/scenario-1/hd2','hd3_path': './test_data/scenario-1/hd3','gw_address': '127.0.0.1','gw_port': '8000'},
         )
         assert response is not None
         assert response == {
-                      "hd1_path": "string",
-                      "hd2_path": "string",
-                      "hd3_path": "string",
+                      "hd1_path": "./test_data/scenario-1/hd1",
+                      "hd2_path": "./test_data/scenario-1/hd2",
+                      "hd3_path": "./test_data/scenario-1/hd3",
                       "gw_address": "127.0.0.1",
                       "gw_port": "8000"
                     }
