@@ -4,7 +4,7 @@ from multiprocessing.context import Process
 from unittest import TestCase, mock
 from unittest.mock import patch, call
 
-from fastapi import FastAPI
+from fastapi_offline import FastAPIOffline as FastAPI
 from osbot_utils.utils.Dev import pprint
 
 from cdr_plugin_folder_to_folder.api.Server import Server, run_if_main

@@ -1,5 +1,6 @@
 git+https://github.com/owasp-sbot/OSBot-Utils.git
 fastapi
+fastapi-offline
 python-dateutil
 python-dotenv
 python-json-logger
