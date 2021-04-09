@@ -52,7 +52,12 @@ class Loops(object):
     @staticmethod
     def ProcessDirectory(itempath, file_index):
         endpoint_index = file_index % Loops.config.endpoints_count
-        Loops.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index)
+        for idx in range(Loops.config.endpoints_count):
+            if Loops.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
+                break
+            # The Endpoint failed to process the file
+            # Retry it with the next one
+            endpoint_index = (endpoint_index + 1) % Loops.config.endpoints_count
 
     @staticmethod
     def LoopHashDirectories():
