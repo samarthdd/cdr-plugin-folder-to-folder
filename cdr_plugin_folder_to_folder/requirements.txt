@@ -11,6 +11,7 @@ urllib3
 uvicorn
 wheel
 xmltodict
+aiofiles
 
 # for testing
 coveralls
