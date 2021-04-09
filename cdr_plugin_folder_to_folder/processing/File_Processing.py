@@ -64,10 +64,10 @@ class File_Processing(object):
         return File_Processing.base64request(endpoint, "api/FileTypeDetection/base64", base64enc_file)
 
     @staticmethod
-    def get_xmlreport(endpoint, hash, fileId, dir):
+    def get_xmlreport(endpoint, fileId, dir):
         xmlreport = File_Processing.xmlreport_request(endpoint, fileId)
         if not xmlreport:
-            raise ValueError('Failed to create the XML report')
+            raise ValueError('Failed to obtain the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
@@ -98,7 +98,7 @@ class File_Processing(object):
 
         # get XML report
         if fileIdKey in headers:
-            File_Processing.get_xmlreport(endpoint, hash, headers[fileIdKey], dir)
+            File_Processing.get_xmlreport(endpoint, headers[fileIdKey], dir)
         else:
             raise ValueError("No X-Adaptation-File-Id header found in the response")
 
@@ -130,9 +130,3 @@ class File_Processing(object):
 
         File_Processing.meta_service.set_status_comleted(dir)
 
-    @staticmethod
-    def main(argv):
-        File_Processing.processDirectory("C:\\gw_test\\hd2\\data\\32823a0dbe4dd137873cd286a592436ef738b10ce16e746a1ec64fb07c027615")
-
-if __name__ == "__main__":
-    File_Processing.main(sys.argv[1:])
