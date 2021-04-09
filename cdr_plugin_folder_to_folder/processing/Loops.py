@@ -12,10 +12,18 @@ from datetime import datetime
 
 class Loops(object):
 
+    config = Config().load_values()
+
     @staticmethod
-    def ProcessDirectory(endpoint, itempath, idx, use_es, es):
+    def ProcessDirectory(itempath, file_index, use_es, es):
+
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
+
+        endpoints_count = len(Loops.config.endpoints['Endpoints'])
+        endpoint_index = file_index % endpoints_count
+        endpoint = "http://" + Loops.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + Loops.config.endpoints['Endpoints'][endpoint_index]['Port']
+
         if os.path.isdir(itempath):
             try:
                 File_Processing.processDirectory(endpoint, itempath)
@@ -26,7 +34,7 @@ class Loops(object):
                         'error': 'none',
                         'timestamp': datetime.now(),
                     }
-                    es.index(index='processed-index', id=idx, body=log)
+                    es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, "none")
             except Exception as error:
                 if use_es:
@@ -36,46 +44,38 @@ class Loops(object):
                         'error': str(error),
                         'timestamp': datetime.now(),
                     }
-                    es.index(index='processed-index', id=idx, body=log)
+                    es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, str(error))
 
     @staticmethod
     def LoopHashDirectories():
-        config = Config().load_values()
-        rootdir = os.path.join(config.hd2_location,"data")
+        rootdir = os.path.join(Loops.config.hd2_location,"data")
         directory_contents = os.listdir(rootdir)
 
         es = Elasticsearch()
         use_es = False
 
         try:
-            es = Elasticsearch([{'host': config.elastic_host, 'port': int(config.elastic_port)}])
+            es = Elasticsearch([{'host': Loops.config.elastic_host, 'port': int(Loops.config.elastic_port)}])
             # ignore 400 cause by IndexAlreadyExistsException when creating an index
             es.indices.create(index='processed-index', ignore=400)
             use_es = True
         except Exception as error:
             print("The connection to Elastic cannot be established")
 
-        files_count = 0
+        file_index = 0
         threads = list()
 
-        endpoints_count = len(config.endpoints['Endpoints'])
-
         for item in directory_contents:
-            files_count += 1
+            file_index += 1
             itempath = os.path.join(rootdir,item)
-            #Loops.ProcessDirectory(itempath, idx, use_es, es)
 
-            endpoint_index = files_count % endpoints_count
-            endpoint = "http://" + config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + config.endpoints['Endpoints'][endpoint_index]['Port']
-
-            x = threading.Thread(target=Loops.ProcessDirectory, args=(endpoint, itempath, files_count, use_es, es,))
+            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, file_index, use_es, es,))
             threads.append(x)
             x.start()
             # limit the number of parallel threads
-            if files_count % int(config.thread_count) == 0:
+            if file_index % int(Loops.config.thread_count) == 0:
                 # Clean up the threads
-                #logging.info ('Files processed so far {}'.format(files_count))
                 for index, thread in enumerate(threads):
                     thread.join()
 
