@@ -6,10 +6,6 @@ router_params = { "prefix": "/processing"  ,
 
 router = APIRouter(**router_params)
 
-@router.get("/")
-def read_root():
-    return "FastAPI Home"
-
 @router.get("/loop")
 def run_the_loop():
     Loops.LoopHashDirectories()
