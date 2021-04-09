@@ -41,10 +41,10 @@ class Server:
 
 # todo: refactor this into a separate class which can also be used by the individual sections (i.e. tags)
 tags_metadata = [
-    {"name": "Processing"      , "description": "Step 2"},
+    {"name": "Configaration"   , "description": "Step 0"},
     {"name": "Pre Processor"   , "description": "Step 1"},
+    {"name": "Processing"      , "description": "Step 2"},
     {"name": "File Distributor", "description": "Util methods"},
-    {"name": "Configaration"   , "description": "Configaration Env"},
 ]
 
 # we need to do this here so that when unicorn reload is enabled the "cdr_plugin_folder_to_folder.api.Server:app" has an fully setup instance of the Server object

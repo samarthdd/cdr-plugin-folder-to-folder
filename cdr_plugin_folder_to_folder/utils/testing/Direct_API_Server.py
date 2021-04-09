@@ -22,6 +22,10 @@ class Direct_API_Server:
         self.client = TestClient(self.app)
         return self
 
+
+    def GET_FILE(self, path='/', headers=None):
+        return self.client.get(path, headers=headers)
+
     def GET(self, path='/', headers=None):
         return self.client.get(path, headers=headers).json()
 

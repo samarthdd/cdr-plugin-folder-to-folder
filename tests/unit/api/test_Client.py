@@ -59,10 +59,10 @@ class test_Client(TestCase):
         result = self.client.health()
         assert result['status'] == 'ok'
 
-    def test_file_distributor_hd1(self):
-        num_of_files = 1
-        result = self.client.file_distributor_hd1(num_of_files)
-        pprint(result)
+    # def test_file_distributor_hd1(self):
+    #     num_of_files = 1
+    #     result = self.client.file_distributor_hd1(num_of_files)
+    #     pprint(result)
 
     def test_version(self):
         result = self.client.version()
