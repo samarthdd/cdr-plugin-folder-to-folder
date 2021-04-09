@@ -47,8 +47,9 @@ rc-update add termencoding boot
 
 step 'Install Terraform'
 install /mnt/bin/terraform /usr/local/bin/terraform -o root -g root -m 0755 -D
-/usr/local/bin/terraform version
+terraform version
 
 step 'Copy Terraform scripts'
 cp -rpf /mnt/terraform /opt/terraform
-make -C /opt/terraform init
+cd /opt/terraform
+terraform init
