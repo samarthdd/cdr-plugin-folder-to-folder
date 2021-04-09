@@ -28,6 +28,7 @@ services:
       ports:
         - 8880:8880
       restart: always
+      env_file: ${PWD}/.env
 
   # Elastic and Kibana
 
