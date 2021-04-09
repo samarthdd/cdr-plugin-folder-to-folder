@@ -24,3 +24,6 @@ class Direct_API_Server:
 
     def GET(self, path='/', headers=None):
         return self.client.get(path, headers=headers).json()
+
+    def POST(self, path='/', headers=None,json=None):
+        return self.client.post(path, headers=headers,json=json).json()

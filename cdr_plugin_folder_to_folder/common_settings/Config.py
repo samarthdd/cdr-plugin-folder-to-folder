@@ -7,8 +7,8 @@ DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test
 DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd1'                )
 DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd2'                )
 DEFAULT_HD3_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd3'                )
-DEFAULT_GW_SDK_ADDRESS   = "91.109.25.86"
-DEFAULT_GW_SDK_PORT      = "8888"
+DEFAULT_GW_SDK_ADDRESS   = "91.109.25.70"
+DEFAULT_GW_SDK_PORT      = "8080"
 DEFAULT_ELASTIC_HOST     = "127.0.0.1"
 DEFAULT_ELASTIC_PORT     = "9200"
 DEFAULT_THREAD_COUNT     = 10
@@ -18,7 +18,8 @@ API_VERSION              = "v0.5.3"
 class Config(object):
 
     def __init__(self):
-        load_dotenv()                   # Load configuration from .env file that should exist in the root of the repo
+        if not os.getenv("MODE",None):
+            load_dotenv(override=True)  # Load configuration from .env file that should exist in the root of the repo
         self.gw_sdk_address = None
         self.gw_sdk_port    = None
         self.hd1_location   = None
