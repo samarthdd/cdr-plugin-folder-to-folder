@@ -1,7 +1,7 @@
 from multiprocessing.context import Process
 from urllib.parse import urljoin
 
-from fastapi import FastAPI
+from fastapi_offline import FastAPIOffline as FastAPI
 from osbot_utils.utils.Http import GET_json
 from osbot_utils.utils.Misc import random_port, wait_for
 

@@ -1,7 +1,7 @@
 import logging
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi_offline import FastAPIOffline as FastAPI
 
 #from cdr_plugin_folder_to_folder.api.users import router
 from osbot_utils.utils.Misc import to_int

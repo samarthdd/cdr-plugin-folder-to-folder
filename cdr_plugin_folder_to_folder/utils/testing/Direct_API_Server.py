@@ -1,4 +1,4 @@
-from fastapi                                import FastAPI
+from fastapi_offline import FastAPIOffline as FastAPI
 from starlette.testclient                   import TestClient
 from cdr_plugin_folder_to_folder.api.Server import Server
 
