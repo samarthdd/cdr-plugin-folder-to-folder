@@ -54,6 +54,8 @@ Configure VMs modules using variables from esxi-instance module. See an example 
 
 ## 2. VMDK
 
+> See an example in vmdk.tf.example
+
 ### 2.1. Configuration
 
 Make a copy of *secret.auto.tfvars.example* and place your credentials.
