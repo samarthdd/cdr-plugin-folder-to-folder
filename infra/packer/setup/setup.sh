@@ -49,8 +49,8 @@ if [[ -z "\$GW_SDK_ADDRESS" ]] ; then
     echo "Please pass glasswall SDK IP address as an argument"
     exit 0
 fi
-sed -i "s/GW_SDK_ADDRESS=.*/GW_SDK_ADDRESS=\$GW_SDK_ADDRESS/g" .env
 cd ~/cdr-plugin-folder-to-folder
+sed -i "s/GW_SDK_ADDRESS=.*/GW_SDK_ADDRESS=\$GW_SDK_ADDRESS/g" .env
 sudo docker-compose up -d --build --force
 
 EOF
