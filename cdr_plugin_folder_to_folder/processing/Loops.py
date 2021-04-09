@@ -17,12 +17,11 @@ class Loops(object):
     config = Config().load_values()
 
     @staticmethod
-    def ProcessDirectory(itempath, file_index):
+    def ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
 
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
 
-        endpoint_index = file_index % Loops.config.endpoints_count
         endpoint = "http://" + Loops.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + Loops.config.endpoints['Endpoints'][endpoint_index]['Port']
 
         if os.path.isdir(itempath):
@@ -37,6 +36,7 @@ class Loops(object):
                     }
                     Loops.es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, "none")
+                return True
             except Exception as error:
                 if Loops.use_es:
                     log = {
@@ -47,6 +47,12 @@ class Loops(object):
                     }
                     Loops.es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, str(error))
+                return False
+
+    @staticmethod
+    def ProcessDirectory(itempath, file_index):
+        endpoint_index = file_index % Loops.config.endpoints_count
+        Loops.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index)
 
     @staticmethod
     def LoopHashDirectories():
