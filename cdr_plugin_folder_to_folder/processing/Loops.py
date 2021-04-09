@@ -12,10 +12,12 @@ from datetime import datetime
 
 class Loops(object):
 
+    es = Elasticsearch()
+    use_es = False
     config = Config().load_values()
 
     @staticmethod
-    def ProcessDirectory(itempath, file_index, use_es, es):
+    def ProcessDirectory(itempath, file_index):
 
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
@@ -27,24 +29,24 @@ class Loops(object):
         if os.path.isdir(itempath):
             try:
                 File_Processing.processDirectory(endpoint, itempath)
-                if use_es:
+                if Loops.use_es:
                     log = {
                         'file': original_file_path,
                         'status': 'processed',
                         'error': 'none',
                         'timestamp': datetime.now(),
                     }
-                    es.index(index='processed-index', id=file_index, body=log)
+                    Loops.es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, "none")
             except Exception as error:
-                if use_es:
+                if Loops.use_es:
                     log = {
                         'file': original_file_path,
                         'status': 'failed',
                         'error': str(error),
                         'timestamp': datetime.now(),
                     }
-                    es.index(index='processed-index', id=file_index, body=log)
+                    Loops.es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, str(error))
 
     @staticmethod
@@ -52,16 +54,14 @@ class Loops(object):
         rootdir = os.path.join(Loops.config.hd2_location,"data")
         directory_contents = os.listdir(rootdir)
 
-        es = Elasticsearch()
-        use_es = False
-
         try:
-            es = Elasticsearch([{'host': Loops.config.elastic_host, 'port': int(Loops.config.elastic_port)}])
+            Loops.es = Elasticsearch([{'host': Loops.config.elastic_host, 'port': int(Loops.config.elastic_port)}])
             # ignore 400 cause by IndexAlreadyExistsException when creating an index
-            es.indices.create(index='processed-index', ignore=400)
-            use_es = True
+            Loops.es.indices.create(index='processed-index', ignore=400)
+            Loops.use_es = True
         except Exception as error:
-            print("The connection to Elastic cannot be established")
+            Loops.es = Elasticsearch()
+            Loops.use_es = False
 
         file_index = 0
         threads = list()
@@ -70,7 +70,7 @@ class Loops(object):
             file_index += 1
             itempath = os.path.join(rootdir,item)
 
-            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, file_index, use_es, es,))
+            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, file_index,))
             threads.append(x)
             x.start()
             # limit the number of parallel threads
