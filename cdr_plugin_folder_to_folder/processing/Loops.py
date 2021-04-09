@@ -22,8 +22,7 @@ class Loops(object):
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
 
-        endpoints_count = len(Loops.config.endpoints['Endpoints'])
-        endpoint_index = file_index % endpoints_count
+        endpoint_index = file_index % Loops.config.endpoints_count
         endpoint = "http://" + Loops.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + Loops.config.endpoints['Endpoints'][endpoint_index]['Port']
 
         if os.path.isdir(itempath):

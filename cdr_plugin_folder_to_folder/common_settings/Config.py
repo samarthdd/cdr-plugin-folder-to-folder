@@ -31,6 +31,7 @@ class Config(object):
         self.elastic_port   = None
         self.thread_count   = None
         self.endpoints      = None
+        self.endpoints_count = None
 
     def load_values(self):
         self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
@@ -45,6 +46,8 @@ class Config(object):
 
         json_string          = os.getenv("ENDPOINTS"      , DEFAULT_ENDPOINTS      )
         self.endpoints       = json.loads(json_string)
+
+        self.endpoints_count = len(self.endpoints['Endpoints'])
 
         create_folder(self.hd2_location)            # todo: remove this from here
         create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here
