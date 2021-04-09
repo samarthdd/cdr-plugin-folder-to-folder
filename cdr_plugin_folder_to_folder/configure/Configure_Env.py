@@ -61,6 +61,16 @@ class Configure_Env:
         except Exception as error:
             raise error
 
+    def configure_endpoints(self,endpoint_string):
+        try:
+            environ['ENDPOINTS'] = endpoint_string
+            logger.info(f"ENDPOINTS : {environ['ENDPOINTS']}")
+            environ["MODE"] = "1"
+            return environ['ENDPOINTS']
+        except Exception as error:
+            raise error
+
+
 
 
 

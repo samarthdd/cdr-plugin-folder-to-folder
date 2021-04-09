@@ -36,5 +36,12 @@ class test_Configure_Env(TestCase):
         self.assertEqual(environ["GW_SDK_ADDRESS"] , gw_address)
         self.assertEqual(environ["GW_SDK_PORT"]    , gw_port)
 
+    def test_configure_multiple_gw_sdk_endpoints(self):
+        endpoint_string='{"Endpoints":[{"IP":"0.0.0.0", "Port":"8080"},{"IP":"0.0.0.1", "Port":"8080"}]}'
+        response=self.configure.configure_endpoints(endpoint_string=endpoint_string)
+        assert response is not None
+        self.assertEqual(response   , endpoint_string)
+
+
 
 
