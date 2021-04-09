@@ -1,6 +1,7 @@
+import os
 from urllib.parse import urljoin
 
-from osbot_utils.utils.Http import GET_json
+from osbot_utils.utils.Http import GET_json,POST,POST_json
 
 
 class Client:
@@ -16,6 +17,10 @@ class Client:
         url = self._resolve_url(path)
         return GET_json(url)
 
+    def _request_post(self, path):
+        url = self._resolve_url(path)
+        return POST(url=url,data=b'', headers=None)
+
     # API methods
     def health(self):
         return self._request_get('/health')
@@ -23,6 +28,8 @@ class Client:
     def version(self):
         return self._request_get('/version')
 
-    # def file_distributor_hd1(self, num_of_files):
-    #     path = f"/file-distributor/hd1/{num_of_files}"
-    #     return self._request_get(path)
+    def pre_process(self):
+        return self._request_post('/pre-processor/pre-process')
+
+    def start_process(self):
+        return self._request_post('/processing/start')
