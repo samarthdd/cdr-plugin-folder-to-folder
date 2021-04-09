@@ -99,6 +99,8 @@ class File_Processing(object):
         # get XML report
         if fileIdKey in headers:
             File_Processing.get_xmlreport(endpoint, hash, headers[fileIdKey], dir)
+        else:
+            raise ValueError("No X-Adaptation-File-Id header found in the response")
 
     @staticmethod
     def processDirectory (endpoint, dir):
@@ -114,8 +116,7 @@ class File_Processing(object):
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
-            print("File does not exist: ", source_path)
-            return False
+            raise ValueError("File does not exist")
 
         metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
         if not (FileService.file_exist(metadata_file_path)):
