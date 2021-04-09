@@ -9,7 +9,6 @@ class test_Configure_Env(TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-
         if "MODE" in environ:
             del environ["MODE"]
 

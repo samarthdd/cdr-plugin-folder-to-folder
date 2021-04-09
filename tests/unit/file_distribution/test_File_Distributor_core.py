@@ -62,5 +62,3 @@ class test_File_Distributor(TestCase):
         assert response is not None
         assert os.path.exists(response)
 
-
-

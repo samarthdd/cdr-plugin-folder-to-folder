@@ -58,8 +58,8 @@ class Configure_Env:
             if "MODE" in environ:
                 del environ["MODE"]
             return "Reset Completed"
-        except Exception as e:
-            raise e
+        except Exception as error:
+            raise error
 
 
 
