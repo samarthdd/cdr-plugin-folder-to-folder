@@ -41,7 +41,6 @@ class Server:
 
 # todo: refactor this into a separate class which can also be used by the individual sections (i.e. tags)
 tags_metadata = [
-    {"name": "Configaration"   , "description": "Step 0"},
     {"name": "Pre Processor"   , "description": "Step 1"},
     {"name": "Processing"      , "description": "Step 2"},
     {"name": "File Distributor", "description": "Util methods"},

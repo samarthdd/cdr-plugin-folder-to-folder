@@ -25,24 +25,24 @@ class ItemList(BaseModel):
     Endpoints : List[ENDPOINTS]
 
 router = APIRouter(**router_params)
-
-@router.post("/configure_env/",response_model=CONFIGARATION)
-def configure_environment(item: CONFIGARATION):
-    response = configure_env.configure(hd1_path=item.hd1_path,
-                                       hd2_path=item.hd2_path,
-                                       hd3_path=item.hd3_path,
-                                       gw_address=item.gw_address,
-                                       gw_port=item.gw_port)
-    return response
-
-
-@router.post("/configure_gw_sdk_endpoints/")
-def configure_multiple_gw_sdk_endpoints(item: ItemList):
-    json_item=item.json()
-    response = configure_env.configure_endpoints(endpoint_string=json_item)
-    return response
-
-@router.post("/reset")
-def resets_configarations():
-    list=configure_env.reset_mode()
-    return list
+#
+# @router.post("/configure_env/",response_model=CONFIGARATION)
+# def configure_environment(item: CONFIGARATION):
+#     response = configure_env.configure(hd1_path=item.hd1_path,
+#                                        hd2_path=item.hd2_path,
+#                                        hd3_path=item.hd3_path,
+#                                        gw_address=item.gw_address,
+#                                        gw_port=item.gw_port)
+#     return response
+#
+#
+# @router.post("/configure_gw_sdk_endpoints/")
+# def configure_multiple_gw_sdk_endpoints(item: ItemList):
+#     json_item=item.json()
+#     response = configure_env.configure_endpoints(endpoint_string=json_item)
+#     return response
+#
+# @router.post("/reset")
+# def resets_configarations():
+#     list=configure_env.reset_mode()
+#     return list
