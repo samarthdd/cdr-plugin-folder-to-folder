@@ -1,12 +1,19 @@
 from unittest import TestCase
 from cdr_plugin_folder_to_folder.configure.Configure_Env import Configure_Env
-from os import environ
+from os import environ,path,remove
 from dotenv import load_dotenv
 class test_Configure_Env(TestCase):
 
     def setUp(self) -> None:
         self.configure = Configure_Env()
         load_dotenv()
+        if not path.exists("./.env"):
+            with open("./.env", "w"):
+                pass
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        remove("./.env")
 
     def test_configure(self):
         hd1_path      = "./test_data/scenario-1/hd1"

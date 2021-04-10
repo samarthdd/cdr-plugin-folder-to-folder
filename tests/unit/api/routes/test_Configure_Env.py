@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 from cdr_plugin_folder_to_folder.utils.testing.Direct_API_Server import Direct_API_Server
-from os import environ
+from os import environ,path,remove
 
 class test_Configure_Env(TestCase):
 
@@ -9,6 +9,14 @@ class test_Configure_Env(TestCase):
     def setUpClass(cls) -> None:
         cls.client = Direct_API_Server().setup()
         cls.prefix = 'configaration'
+        if not path.exists("./.env"):
+            with open("./.env", "w"):
+                pass
+    @classmethod
+    def tearDownClass(cls) -> None:
+        remove("./.env")
+
+
 
     def test_configure(self):
         path = f"{self.prefix}/configure_env/"
