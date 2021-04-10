@@ -1,0 +1,78 @@
+#  ┏┳┓┏━┓╻┏┓╻
+#  ┃┃┃┣━┫┃┃┗┫
+#  ╹ ╹╹ ╹╹╹ ╹
+
+terraform {
+  required_providers {
+    vsphere = {
+      source  = "hashicorp/vsphere"
+      version = "1.15.0"
+    }
+  }
+}
+
+provider "vsphere" {
+  user                 = var.esxi_credentials.username
+  password             = var.esxi_credentials.password
+  vsphere_server       = var.esxi_credentials.host
+  allow_unverified_ssl = var.esxi_credentials.allow_unverified_ssl
+}
+
+#  ╻ ╻┏━┓╻  ┏━┓┏━┓╺┳┓
+#  ┃ ┃┣━┛┃  ┃ ┃┣━┫ ┃┃
+#  ┗━┛╹  ┗━╸┗━┛╹ ╹╺┻┛
+
+module "upload" {
+  source = "./upload"
+
+  ssh_credentials = {
+    username = var.esxi_credentials.username
+    password = var.esxi_credentials.password
+    host     = var.esxi_credentials.host
+    port     = var.esxi_credentials.ssh_port
+  }
+
+  src          = "../alpine-control-vmdk/alpine.vmdk"
+  dest         = "/vmdk/alpine.vmdk"
+  datastore    = "datastore1"
+  vmdk_convert = false
+}
+
+#  ╻ ╻┏┳┓┏━┓
+#  ┃┏┛┃┃┃┗━┓
+#  ┗┛ ╹ ╹┗━┛
+
+module "data" {
+  source    = "./data"
+  datastore = "datastore1"
+  network   = "VMs"
+}
+
+module "vms" {
+  source = "./vmdk"
+
+  depends_on = [
+    module.upload
+  ]
+
+  ssh_credentials = {
+    username = var.esxi_credentials.username
+    password = var.esxi_credentials.password
+    host     = var.esxi_credentials.host
+    port     = var.esxi_credentials.ssh_port
+  }
+
+  data = {
+    pool_id        = module.data.pool_id
+    datastore_id   = module.data.datastore_id
+    datastore_name = module.data.datastore_name
+    host_id        = module.data.host_id
+    network_id     = module.data.network_id
+  }
+
+  instance_count = 2
+  name_prefix    = "yv-test"
+  vmdk           = "/vmdk/alpine.vmdk"
+  cpu            = 2
+  ram            = 2048
+}
