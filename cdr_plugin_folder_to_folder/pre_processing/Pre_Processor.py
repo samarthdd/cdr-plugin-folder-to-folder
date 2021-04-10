@@ -5,14 +5,17 @@ import ntpath
 import logging as logger
 
 from osbot_utils.utils.Files import temp_folder, path_combine, folder_create
+from osbot_utils.utils.Misc import timestamp_utc_now
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
+from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 
 logger.basicConfig(level=logger.INFO)
 
 class Pre_Processor:
+
     def __init__(self):
 
         self.filename       =  None
@@ -32,8 +35,17 @@ class Pre_Processor:
 
         folder_create(self.data_target)                             # todo: refactor this from this __init__
         folder_create(self.status_target)
+        self.elastic = Elastic()
+
+    def log_message(self, message):
+        data = {
+            "message"  : message,
+            "timestamp":  timestamp_utc_now()
+        }
+        self.elastic.add(data)
 
     def process_files(self):
+        self.log_message("process_files")
         try:
             for folderName, subfolders, filenames in os.walk(self.hd1_location):
                 for filename in filenames:
@@ -45,9 +57,10 @@ class Pre_Processor:
             raise error
 
     def process(self,file_path):
+
         try:
             self.file_name = ntpath.basename(file_path)
-            self.hd1_path=file_path
+            self.hd1_path  = file_path
 
             # Copy File to temp path
             self.current_path = os.path.join(self.temp_folder, self.file_name)
