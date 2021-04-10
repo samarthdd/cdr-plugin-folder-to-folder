@@ -1,20 +1,12 @@
 from unittest import TestCase
 from cdr_plugin_folder_to_folder.configure.Configure_Env import Configure_Env
 from os import environ
-
+from dotenv import load_dotenv
 class test_Configure_Env(TestCase):
 
     def setUp(self) -> None:
         self.configure = Configure_Env()
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        if "MODE" in environ:
-            del environ["MODE"]
-
-    def test_reset_mode(self):
-        response=self.configure.reset_mode()
-        self.assertEqual(response,"Reset Completed")
+        load_dotenv()
 
     def test_configure(self):
         hd1_path      = "./test_data/scenario-1/hd1"
@@ -41,6 +33,7 @@ class test_Configure_Env(TestCase):
         response=self.configure.configure_endpoints(endpoint_string=endpoint_string)
         assert response is not None
         self.assertEqual(response   , endpoint_string)
+
 
 
 
