@@ -7,6 +7,6 @@ router_params = { "prefix": "/processing"  ,
 router = APIRouter(**router_params)
 
 @router.post("/start")
-def process_hd2_data_to_hd2():
+def process_hd2_data_to_hd3():
     Loops.LoopHashDirectories()
     return "Loop completed"
