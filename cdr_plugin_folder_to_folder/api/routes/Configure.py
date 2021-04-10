@@ -11,11 +11,11 @@ router_params = { "prefix": "/configaration"  ,
                   "tags"  : ['Configaration'] }
 
 class CONFIGARATION(BaseModel):
-    hd1_path   : str
-    hd2_path   : str
-    hd3_path   : str
-    gw_address : str
-    gw_port    : str
+    hd1_path   : str = "./test_data/scenario-1/hd1"
+    hd2_path   : str = "./test_data/scenario-1/hd2"
+    hd3_path   : str = "./test_data/scenario-1/hd3"
+    gw_address : str = "127.0.0.1"
+    gw_port    : str = "8080"
 
 class ENDPOINTS(BaseModel):
     IP         : str
@@ -25,24 +25,20 @@ class ItemList(BaseModel):
     Endpoints : List[ENDPOINTS]
 
 router = APIRouter(**router_params)
-#
-# @router.post("/configure_env/",response_model=CONFIGARATION)
-# def configure_environment(item: CONFIGARATION):
-#     response = configure_env.configure(hd1_path=item.hd1_path,
-#                                        hd2_path=item.hd2_path,
-#                                        hd3_path=item.hd3_path,
-#                                        gw_address=item.gw_address,
-#                                        gw_port=item.gw_port)
-#     return response
-#
-#
-# @router.post("/configure_gw_sdk_endpoints/")
-# def configure_multiple_gw_sdk_endpoints(item: ItemList):
-#     json_item=item.json()
-#     response = configure_env.configure_endpoints(endpoint_string=json_item)
-#     return response
-#
-# @router.post("/reset")
-# def resets_configarations():
-#     list=configure_env.reset_mode()
-#     return list
+
+@router.post("/configure_env/",response_model=CONFIGARATION)
+def configure_environment(item: CONFIGARATION):
+    response = configure_env.configure(hd1_path=item.hd1_path,
+                                       hd2_path=item.hd2_path,
+                                       hd3_path=item.hd3_path,
+                                       gw_address=item.gw_address,
+                                       gw_port=item.gw_port)
+    return response
+
+
+@router.post("/configure_gw_sdk_endpoints/")
+def configure_multiple_gw_sdk_endpoints(item: ItemList):
+    json_item=item.json()
+    response = configure_env.configure_endpoints(endpoint_string=json_item)
+    return response
+

@@ -18,7 +18,8 @@ class Loops(object):
 
     @staticmethod
     def ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
-
+        Loops.config = Config().load_values()
+        print(Loops.config.endpoints)
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
 
@@ -51,6 +52,7 @@ class Loops(object):
 
     @staticmethod
     def ProcessDirectory(itempath, file_index):
+        Loops.config = Config().load_values()
         endpoint_index = file_index % Loops.config.endpoints_count
         for idx in range(Loops.config.endpoints_count):
             if Loops.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
@@ -61,6 +63,7 @@ class Loops(object):
 
     @staticmethod
     def LoopHashDirectories():
+        Loops.config = Config().load_values()
         rootdir = os.path.join(Loops.config.hd2_location,"data")
         directory_contents = os.listdir(rootdir)
 

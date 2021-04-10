@@ -25,6 +25,7 @@ services:
       volumes:
         - ${PWD}/cdr_plugin_folder_to_folder:/app/cdr_plugin_folder_to_folder
         - ${PWD}/test_data:/app/test_data
+        - ${PWD}/.env.sample:/app/cdr_plugin_folder_to_folder/.env
       ports:
         - 8880:8880
       restart: always
