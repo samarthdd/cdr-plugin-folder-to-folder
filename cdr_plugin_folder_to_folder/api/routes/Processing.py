@@ -8,5 +8,6 @@ router = APIRouter(**router_params)
 
 @router.post("/start")
 def process_hd2_data_to_hd3():
-    Loops.LoopHashDirectories()
+    loops = Loops()
+    loops.LoopHashDirectories()
     return "Loop completed"
