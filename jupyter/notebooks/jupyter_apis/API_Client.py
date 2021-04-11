@@ -41,13 +41,13 @@ class API_Client:
         return self._request_post('/processing/start')
     
     def configure_environment(self, data):
-        headers = {
-            'accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
+        headers = { 'accept': 'application/json'      ,
+                    'Content-Type': 'application/json'}
         post_data = json_to_str(data)
         return self._request_http_post(path="configuration/configure_env",headers=headers,data=post_data)
 
-    def set_gw_sdk_endpoints(self,headers,data):
+    def set_gw_sdk_endpoints(self,data):
+        headers = { 'accept': 'application/json'      ,
+                    'Content-Type': 'application/json'}
         return self._request_http_post(path="configuration/configure_gw_sdk_endpoints", headers=headers, data=data)
     
