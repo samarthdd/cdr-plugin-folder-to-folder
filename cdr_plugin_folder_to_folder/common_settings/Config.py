@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from osbot_utils.utils.Files import folder_not_exists, path_combine, folder_create, create_folder
 
 # todo: refactor the whole test files so that it all comes from temp folders (not from files in the repo)
+from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
+
 DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test_data/scenario-1' )
 DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd1'                )
 DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd2'                )
@@ -20,13 +22,14 @@ API_VERSION              = "v0.5.3"
 class Config(object):
 
     def __init__(self):
-        load_dotenv(override= True)  # Load configuration from .env file that should exist in the root of the repo
+        Setup_Testing().set_test_root_dir()     # todo: fix test data so that we don't need to do this here
+        load_dotenv(override= True)             # Load configuration from .env file that should exist in the root of the repo
         self.gw_sdk_address = None
         self.gw_sdk_port    = None
         self.hd1_location   = None
         self.hd2_location   = None
         self.hd3_location   = None
-        self.root_folder    = None      # todo: see if we will need this
+        self.root_folder    = None              # todo: see if we will need this
         self.elastic_host   = None
         self.elastic_port   = None
         self.thread_count   = None

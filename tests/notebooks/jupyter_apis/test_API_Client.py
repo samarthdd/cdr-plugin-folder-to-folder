@@ -1,13 +1,11 @@
 from unittest import TestCase
 import json
-from osbot_utils.utils.Dev import pprint
 
-from cdr_plugin_folder_to_folder.api.Client import Client
 from cdr_plugin_folder_to_folder.common_settings.Config import API_VERSION
 from cdr_plugin_folder_to_folder.utils.testing.Temp_API_Server import Temp_API_Server
+from jupyter.notebooks.jupyter_apis.API_Client import API_Client
 
-
-class test_Client(TestCase):
+class test_API_Client(TestCase):
     api_server = None
     url_server = None
 
@@ -22,7 +20,7 @@ class test_Client(TestCase):
         cls.api_server.stop_server()
 
     def setUp(self):
-        self.client = Client(url_server=self.url_server)
+        self.client = API_Client(url_server=self.url_server)
 
 
     def test__resolve_url(self):
