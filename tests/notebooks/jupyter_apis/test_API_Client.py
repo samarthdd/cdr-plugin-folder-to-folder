@@ -66,18 +66,14 @@ class test_API_Client(TestCase):
         result = self.client.version()
         assert result['version'] == API_VERSION
 
-    def test_set_env(self):
-        headers = {
-            'accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
+    def test_configure_environment(self):
+        data = { "hd1_path"  : "./test_data/scenario-1/hd1",
+                 "hd2_path"  : "./test_data/scenario-1/hd1",
+                 "hd3_path"  : "./test_data/scenario-1/hd1"}
 
-        data = '{ "hd1_path" : "./test_data/scenario-1/hd1", "hd2_path" : "./test_data/scenario-1/hd1", ' \
-               '"hd3_path" : "./test_data/scenario-1/hd1", "gw_address": "string", "gw_port": "8080" }'
-
-        response=self.client.set_env(headers=headers,data=data)
+        response=self.client.configure_environment(data=data)
         assert response.status_code is 200
-        assert response.json() == json.loads(data)
+        assert response.json() == data
 
     def test_set_gw_sdk_endpoints(self):
         headers = {

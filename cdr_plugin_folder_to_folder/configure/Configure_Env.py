@@ -6,16 +6,20 @@ from os import environ,path
 import dotenv
 
 import logging as logger
+
+from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
+
 logger.basicConfig(level=logger.INFO)
 
 class Configure_Env:
     def __init__(self):
+        Setup_Testing().set_test_root_dir()
         dotenv_file = dotenv.find_dotenv()
         if not dotenv_file:
             with open("./.env", "w"):
                 pass
 
-    def configure(self, hd1_path=None, hd2_path=None, hd3_path=None,gw_address=None, gw_port=None):
+    def configure(self, hd1_path=None, hd2_path=None, hd3_path=None):
         try:
             dotenv_file = dotenv.find_dotenv()
             if hd1_path:
@@ -36,16 +40,6 @@ class Configure_Env:
                     dotenv.set_key(dotenv_file, "HD3_LOCATION", environ["HD3_LOCATION"])
                 else:
                     return 0
-            if gw_address:
-                environ['GW_SDK_ADDRESS'] = gw_address
-                dotenv.set_key(dotenv_file, "GW_SDK_ADDRESS", environ["GW_SDK_ADDRESS"])
-            if gw_port:
-                if int(gw_port):
-                    environ['GW_SDK_PORT'] = gw_port
-                    dotenv.set_key(dotenv_file, "GW_SDK_PORT", environ["GW_SDK_PORT"])
-                else:
-                    return 0
-
             return self.env_details()
 
         except Exception as error:
@@ -56,9 +50,7 @@ class Configure_Env:
             return {
                 "hd1_path": environ.get('HD1_LOCATION'),
                 "hd2_path": environ.get('HD2_LOCATION'),
-                "hd3_path": environ.get('HD3_LOCATION'),
-                "gw_address": environ.get('GW_SDK_ADDRESS'),
-                "gw_port": environ.get('GW_SDK_PORT'),
+                "hd3_path": environ.get('HD3_LOCATION')
             }
         except Exception as error:
             raise error

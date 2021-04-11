@@ -3,6 +3,8 @@ from urllib.parse import urljoin
 import requests
 import json
 from osbot_utils.utils.Http import GET_json,POST,POST_json
+from osbot_utils.utils.Json import str_to_json, json_to_str
+
 
 class API_Client:
 
@@ -38,8 +40,13 @@ class API_Client:
     def start_process(self):
         return self._request_post('/processing/start')
     
-    def set_env(self,data=None,headers=None):
-        return self._request_http_post(path="configuration/configure_env",headers=headers,data=data)
+    def configure_environment(self, data):
+        headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+        post_data = json_to_str(data)
+        return self._request_http_post(path="configuration/configure_env",headers=headers,data=post_data)
 
     def set_gw_sdk_endpoints(self,headers,data):
         return self._request_http_post(path="configuration/configure_gw_sdk_endpoints", headers=headers, data=data)
