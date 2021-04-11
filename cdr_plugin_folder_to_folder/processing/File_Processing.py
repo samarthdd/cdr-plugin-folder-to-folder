@@ -49,14 +49,8 @@ class File_Processing(object):
         except Exception as e:
             raise ValueError(str(e))
 
-    def analyse (self, endpoint, base64enc_file):
-        return self.base64request(endpoint, "api/Analyse/base64", base64enc_file)
-
     def rebuild (self, endpoint, base64enc_file):
         return self.base64request(endpoint, "api/rebuild/base64", base64enc_file)
-
-    def filetypedetection (self, endpoint, base64enc_file):
-        return self.base64request(endpoint, "api/FileTypeDetection/base64", base64enc_file)
 
     def get_xmlreport(self, endpoint, fileId, dir):
         xmlreport = self.xmlreport_request(endpoint, fileId)
