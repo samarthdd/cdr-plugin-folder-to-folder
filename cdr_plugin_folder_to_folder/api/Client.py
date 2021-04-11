@@ -40,7 +40,7 @@ class Client:
         return self._request_post('/processing/start')
 
     def set_env(self,data=None,headers=None):
-        return self._request_http_post(path="configaration/configure_env",headers=headers,data=data)
+        return self._request_http_post(path="configuration/configure_env",headers=headers,data=data)
 
     def set_gw_sdk_endpoints(self,headers,data):
-        return self._request_http_post(path="configaration/configure_gw_sdk_endpoints", headers=headers, data=data)
+        return self._request_http_post(path="configuration/configure_gw_sdk_endpoints", headers=headers, data=data)

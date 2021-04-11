@@ -7,8 +7,8 @@ from pydantic import BaseModel
 from typing import List
 
 configure_env=Configure_Env()
-router_params = { "prefix": "/configaration"  ,
-                  "tags"  : ['Configaration'] }
+router_params = { "prefix": "/configuration"  ,
+                  "tags"  : ['Configuration'] }
 
 class CONFIGARATION(BaseModel):
     hd1_path   : str = "./test_data/scenario-1/hd1"

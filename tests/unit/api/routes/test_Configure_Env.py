@@ -8,7 +8,7 @@ class test_Configure_Env(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.client = Direct_API_Server().setup()
-        cls.prefix = 'configaration'
+        cls.prefix = 'configuration'
 
     def test_configure(self):
         path = f"{self.prefix}/configure_env/"
