@@ -76,13 +76,9 @@ class test_API_Client(TestCase):
         assert response.json() == data
 
     def test_set_gw_sdk_endpoints(self):
-        headers = {
-            'accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
 
         data = '{ "Endpoints": [{ "IP": "92.109.25.70", "Port": "8080" } ] }'
-        response = self.client.set_gw_sdk_endpoints(headers=headers, data=data)
+        response = self.client.set_gw_sdk_endpoints(data=data)
 
         assert response.status_code is 200
         assert response.json() == json.loads(data)
