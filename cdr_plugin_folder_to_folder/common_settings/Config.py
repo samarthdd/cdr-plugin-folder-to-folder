@@ -15,6 +15,7 @@ DEFAULT_GW_SDK_ADDRESS   = "91.109.25.70"
 DEFAULT_GW_SDK_PORT      = "8080"
 DEFAULT_ELASTIC_HOST     = "127.0.0.1"
 DEFAULT_ELASTIC_PORT     = "9200"
+DEFAULT_ELASTIC_SCHEMA   = "http"
 DEFAULT_KIBANA_HOST      = "127.0.0.1"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
@@ -35,6 +36,7 @@ class Config(object):
         self.root_folder    = None              # todo: see if we will need this
         self.elastic_host   = None
         self.elastic_port   = None
+        self.elastic_schema = None
         self.kibana_host    = None
         self.kibana_port    = None
         self.thread_count   = None
@@ -50,6 +52,7 @@ class Config(object):
         self.root_folder     = os.getenv("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
         self.elastic_host    = os.getenv("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
         self.elastic_port    = os.getenv("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )
+        self.elastic_schema  = os.getenv("ELASTIC_SCHEMA" , DEFAULT_ELASTIC_SCHEMA )
         self.kibana_host     = os.getenv("KIBANA_HOST"    , DEFAULT_KIBANA_HOST    )
         self.kibana_port     = os.getenv("KIBANA_PORT"    , DEFAULT_KIBANA_PORT    )
         self.thread_count    = os.getenv("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
