@@ -91,5 +91,5 @@ class test_Client(TestCase):
         response = self.client.set_gw_sdk_endpoints(headers=headers, data=data)
 
         assert response.status_code is 200
-        assert json.loads(response.json()) == json.loads(data)
+        assert response.json() == json.loads(data)
 

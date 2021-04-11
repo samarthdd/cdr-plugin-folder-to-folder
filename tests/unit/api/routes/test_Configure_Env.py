@@ -9,14 +9,6 @@ class test_Configure_Env(TestCase):
     def setUpClass(cls) -> None:
         cls.client = Direct_API_Server().setup()
         cls.prefix = 'configaration'
-        if not path.exists("./.env"):
-            with open("./.env", "w"):
-                pass
-    @classmethod
-    def tearDownClass(cls) -> None:
-        remove("./.env")
-
-
 
     def test_configure(self):
         path = f"{self.prefix}/configure_env/"
@@ -41,4 +33,4 @@ class test_Configure_Env(TestCase):
             json=endpoints
         )
         assert response is not None
-        assert response == json.dumps(endpoints)
+        assert response == endpoints
