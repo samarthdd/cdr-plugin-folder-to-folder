@@ -1,5 +1,5 @@
 from unittest import TestCase
-
+import json
 from osbot_utils.utils.Dev import pprint
 
 from cdr_plugin_folder_to_folder.api.Client import Client
@@ -67,3 +67,29 @@ class test_Client(TestCase):
     def test_version(self):
         result = self.client.version()
         assert result['version'] == API_VERSION
+
+    def test_set_env(self):
+        headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+
+        data = '{ "hd1_path" : "./test_data/scenario-1/hd1", "hd2_path" : "./test_data/scenario-1/hd1", ' \
+               '"hd3_path" : "./test_data/scenario-1/hd1", "gw_address": "string", "gw_port": "8080" }'
+
+        response=self.client.set_env(headers=headers,data=data)
+        assert response.status_code is 200
+        assert response.json() == json.loads(data)
+
+    def test_set_gw_sdk_endpoints(self):
+        headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+
+        data = '{ "Endpoints": [{ "IP": "92.109.25.70", "Port": "8080" } ] }'
+        response = self.client.set_gw_sdk_endpoints(headers=headers, data=data)
+
+        assert response.status_code is 200
+        assert json.loads(response.json()) == json.loads(data)
+
