@@ -1,0 +1,12 @@
+git+https://github.com/owasp-sbot/OSBot-Utils.git
+fastapi_offline
+folderstats
+ipywidgets
+ipython-blocking
+matplotlib
+networkx
+pandas
+pydot
+python-dotenv
+qgrid
+squarify

@@ -1,0 +1,72 @@
+terraform {
+  required_version = "~> 0.14"
+  required_providers {
+    esxi = {
+      source  = "registry.terraform.io/josenk/esxi"
+      version = "~> 1.8.1"
+    }
+  }
+}
+
+provider "esxi" {
+  esxi_hostname = var.esxi_credentials.host
+  esxi_hostport = var.esxi_credentials.ssh_port
+  #esxi_hostssl  = var.esxi_credentials.ssl_port
+  esxi_username = var.esxi_credentials.username
+  esxi_password = var.esxi_credentials.password
+}
+
+variable "ovf_urls" {
+  type = object({
+    sdk             = string
+    workflow        = string
+    offline_desktop = string
+  })
+
+  description = "URLs to OVAs"
+  validation {
+    condition     = alltrue([for url in values(var.ovf_urls) : can(regex("https?://.+\\.ov[af]", url))])
+    error_message = "URLs have to be valid HTTP/S urls to file ending with .ova or .ovf extention."
+  }
+}
+
+variable "instances_count" {
+  type = object({
+    sdk             = number
+    workflow        = number
+    offline_desktop = number
+  })
+
+  description = "Count of instances to create"
+  validation {
+    condition     = alltrue([for n in values(var.instances_count) : n >= 1])
+    error_message = "Count must be >= 1."
+  }
+}
+
+module "sdk" {
+  source         = "./ova"
+  name_prefix    = "sdk"
+  ovf_source     = var.ovf_urls.sdk
+  instance_count = 2
+  vcpu_count     = 4
+  memory_mib     = 2048
+}
+
+module "offline_desktop" {
+  source         = "./ova"
+  name_prefix    = "offline-desktop"
+  ovf_source     = var.ovf_urls.offline_desktop
+  instance_count = 1
+  vcpu_count     = 2
+  memory_mib     = 2048
+}
+
+module "workflow" {
+  source         = "./ova"
+  name_prefix    = "workflow"
+  ovf_source     = var.ovf_urls.workflow
+  instance_count = 1
+  vcpu_count     = 2
+  memory_mib     = 2048
+}

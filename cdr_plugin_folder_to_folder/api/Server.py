@@ -1,7 +1,7 @@
 import logging
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi_offline import FastAPIOffline as FastAPI
 
 #from cdr_plugin_folder_to_folder.api.users import router
 from osbot_utils.utils.Misc import to_int
@@ -10,6 +10,7 @@ from cdr_plugin_folder_to_folder.api.routes.Processing import router as router_p
 from cdr_plugin_folder_to_folder.api.routes.Pre_Processor import router as router_pre_processing
 from cdr_plugin_folder_to_folder.api.routes.File_Distributor import router as router_file_distribution
 from cdr_plugin_folder_to_folder.api.routes.Health import router as router_health
+from cdr_plugin_folder_to_folder.api.routes.Configure import router as router_configure
 
 class Server:
 
@@ -31,17 +32,18 @@ class Server:
         self.app.include_router(router_pre_processing   )
         self.app.include_router(router_file_distribution)
         self.app.include_router(router_health           )
+        self.app.include_router(router_configure        )
         self.fix_logging_bug()
         return self
 
     def start(self):
         uvicorn.run("cdr_plugin_folder_to_folder.api.Server:app", host=self.host, port=self.port, log_level=self.log_level, reload=self.reload)
 
-
 # todo: refactor this into a separate class which can also be used by the individual sections (i.e. tags)
 tags_metadata = [
-    {"name": "Processing"      , "description": "Step 2"},
+    {"name": "Configuration"   , "description": "Step 0"},
     {"name": "Pre Processor"   , "description": "Step 1"},
+    {"name": "Processing"      , "description": "Step 2"},
     {"name": "File Distributor", "description": "Util methods"},
 ]
 

@@ -11,6 +11,7 @@ services:
       ports:
         - 8888:8888
       container_name: jupyter_notebook
+      restart: always
       command: "start-notebook.sh \
                  --NotebookApp.token=${ACCESS_TOKEN}"
 
@@ -24,8 +25,10 @@ services:
       volumes:
         - ${PWD}/cdr_plugin_folder_to_folder:/app/cdr_plugin_folder_to_folder
         - ${PWD}/test_data:/app/test_data
+        - ${PWD}/.env.sample:/app/cdr_plugin_folder_to_folder/.env
       ports:
         - 8880:8880
+      restart: always
 
   # Elastic and Kibana
 
@@ -45,6 +48,7 @@ services:
         hard: -1
     ports:
       - 9200:9200
+    restart: always
 
   kib01:
     image: docker.elastic.co/kibana/kibana:7.12.0
@@ -57,6 +61,7 @@ services:
       #- logging.level=WARN
       - ELASTICSEARCH_URL=http://es01:9200
       - ELASTICSEARCH_HOSTS=["http://es01:9200"]
+    restart: always
 
   # minio
 
@@ -70,6 +75,7 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: ${ACCESS_TOKEN}
     command: server /data
+    restart: always
 
 
   # docker logs (using file beat)

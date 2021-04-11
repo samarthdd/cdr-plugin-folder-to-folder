@@ -1,6 +1,7 @@
 git+https://github.com/owasp-sbot/OSBot-Utils.git
 git+https://github.com/owasp-sbot/OSBot-Elastic.git
 fastapi
+fastapi-offline
 python-dateutil
 python-dotenv
 python-json-logger
@@ -11,6 +12,7 @@ urllib3
 uvicorn
 wheel
 xmltodict
+aiofiles
 
 # for testing
 coveralls

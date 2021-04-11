@@ -1,9 +1,13 @@
 import os
+import json
 from dotenv import load_dotenv
 from osbot_utils.utils.Files import folder_not_exists, path_combine, folder_create, create_folder
 
 # todo: refactor the whole test files so that it all comes from temp folders (not from files in the repo)
-DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test_data/scenario-2' )
+
+from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
+
+DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test_data/scenario-1' )
 DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd1'                )
 DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd2'                )
 DEFAULT_HD3_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , 'hd3'                )
@@ -14,24 +18,28 @@ DEFAULT_ELASTIC_PORT     = "9200"
 DEFAULT_KIBANA_HOST      = "127.0.0.1"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
+DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"91.109.25.70", "Port":"8080"}]}'
 
 API_VERSION              = "v0.5.3"
 
 class Config(object):
 
     def __init__(self):
-        load_dotenv()                   # Load configuration from .env file that should exist in the root of the repo
+        Setup_Testing().set_test_root_dir()     # todo: fix test data so that we don't need to do this here
+        load_dotenv(override= True)             # Load configuration from .env file that should exist in the root of the repo
         self.gw_sdk_address = None
         self.gw_sdk_port    = None
         self.hd1_location   = None
         self.hd2_location   = None
         self.hd3_location   = None
-        self.root_folder    = None      # todo: see if we will need this
+        self.root_folder    = None              # todo: see if we will need this
         self.elastic_host   = None
         self.elastic_port   = None
         self.kibana_host    = None
         self.kibana_port    = None
         self.thread_count   = None
+        self.endpoints      = None
+        self.endpoints_count = None
 
     def load_values(self):
         self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
@@ -45,6 +53,11 @@ class Config(object):
         self.kibana_host     = os.getenv("KIBANA_HOST"    , DEFAULT_KIBANA_HOST    )
         self.kibana_port     = os.getenv("KIBANA_PORT"    , DEFAULT_KIBANA_PORT    )
         self.thread_count    = os.getenv("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
+
+        json_string          = os.getenv("ENDPOINTS"      , DEFAULT_ENDPOINTS      )
+        self.endpoints       = json.loads(json_string)
+
+        self.endpoints_count = len(self.endpoints['Endpoints'])
 
         create_folder(self.hd2_location)            # todo: remove this from here
         create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here

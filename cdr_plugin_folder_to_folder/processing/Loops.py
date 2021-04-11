@@ -12,65 +12,83 @@ from datetime import datetime
 
 class Loops(object):
 
+    es = Elasticsearch()
+    use_es = False
+    config = Config().load_values()
+
     @staticmethod
-    def ProcessDirectory(itempath, idx, use_es, es):
+    def ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
+        Loops.config = Config().load_values()
+        print(Loops.config.endpoints)
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
+
+        endpoint = "http://" + Loops.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + Loops.config.endpoints['Endpoints'][endpoint_index]['Port']
+
         if os.path.isdir(itempath):
             try:
-                File_Processing.processDirectory(itempath)
-                if use_es:
+                File_Processing.processDirectory(endpoint, itempath)
+                if Loops.use_es:
                     log = {
                         'file': original_file_path,
                         'status': 'processed',
                         'error': 'none',
                         'timestamp': datetime.now(),
                     }
-                    es.index(index='processed-index', id=idx, body=log)
+                    Loops.es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, "none")
+                return True
             except Exception as error:
-                if use_es:
+                if Loops.use_es:
                     log = {
                         'file': original_file_path,
                         'status': 'failed',
                         'error': str(error),
                         'timestamp': datetime.now(),
                     }
-                    es.index(index='processed-index', id=idx, body=log)
+                    Loops.es.index(index='processed-index', id=file_index, body=log)
                 meta_service.set_error(itempath, str(error))
+                return False
+
+    @staticmethod
+    def ProcessDirectory(itempath, file_index):
+        Loops.config = Config().load_values()
+        endpoint_index = file_index % Loops.config.endpoints_count
+        for idx in range(Loops.config.endpoints_count):
+            if Loops.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
+                break
+            # The Endpoint failed to process the file
+            # Retry it with the next one
+            endpoint_index = (endpoint_index + 1) % Loops.config.endpoints_count
 
     @staticmethod
     def LoopHashDirectories():
-        config = Config().load_values()
-        rootdir = os.path.join(config.hd2_location,"data")
+        Loops.config = Config().load_values()
+        rootdir = os.path.join(Loops.config.hd2_location,"data")
         directory_contents = os.listdir(rootdir)
 
-        es = Elasticsearch()
-        use_es = False
-
         try:
-            es = Elasticsearch([{'host': config.elastic_host, 'port': int(config.elastic_port)}])
+            Loops.es = Elasticsearch([{'host': Loops.config.elastic_host, 'port': int(Loops.config.elastic_port)}])
             # ignore 400 cause by IndexAlreadyExistsException when creating an index
-            es.indices.create(index='processed-index', ignore=400)
-            use_es = True
+            Loops.es.indices.create(index='processed-index', ignore=400)
+            Loops.use_es = True
         except Exception as error:
-            print("The connection to Elastic cannot be established")
+            Loops.es = Elasticsearch()
+            Loops.use_es = False
 
-        files_count = 0
+        file_index = 0
         threads = list()
 
         for item in directory_contents:
-            files_count += 1
+            file_index += 1
             itempath = os.path.join(rootdir,item)
-            #Loops.ProcessDirectory(itempath, idx, use_es, es)
 
-            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, files_count, use_es, es,))
+            x = threading.Thread(target=Loops.ProcessDirectory, args=(itempath, file_index,))
             threads.append(x)
             x.start()
             # limit the number of parallel threads
-            if files_count % int(config.thread_count) == 0:
+            if file_index % int(Loops.config.thread_count) == 0:
                 # Clean up the threads
-                #logging.info ('Files processed so far {}'.format(files_count))
                 for index, thread in enumerate(threads):
                     thread.join()
 

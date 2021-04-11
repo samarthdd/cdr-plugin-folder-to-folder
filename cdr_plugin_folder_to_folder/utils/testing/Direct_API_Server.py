@@ -1,4 +1,4 @@
-from fastapi                                import FastAPI
+from fastapi_offline                        import FastAPIOffline as FastAPI
 from starlette.testclient                   import TestClient
 from cdr_plugin_folder_to_folder.api.Server import Server
 
@@ -22,5 +22,12 @@ class Direct_API_Server:
         self.client = TestClient(self.app)
         return self
 
+
+    def GET_FILE(self, path='/', headers=None):
+        return self.client.get(path, headers=headers)
+
     def GET(self, path='/', headers=None):
         return self.client.get(path, headers=headers).json()
+
+    def POST(self, path='/', headers=None,json=None):
+        return self.client.post(path, headers=headers,json=json).json()
