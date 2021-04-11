@@ -1,5 +1,7 @@
 import os
 from urllib.parse import urljoin
+import requests
+import json
 from osbot_utils.utils.Http import GET_json,POST,POST_json
 
 class API_Client:
@@ -18,6 +20,10 @@ class API_Client:
     def _request_post(self, path):
         url = self._resolve_url(path)
         return POST(url=url,data=b'', headers=None)
+    
+    def _request_http_post(self,path,data,headers):
+        url = self._resolve_url(path)
+        return requests.post(url=url, data=data, headers=headers)
 
     # API methods
     def health(self):
@@ -32,14 +38,9 @@ class API_Client:
     def start_process(self):
         return self._request_post('/processing/start')
     
-    def show_folder_structure(self, source_path):
-        response=""
-        for root, dirs, files in os.walk(source_path):
-            level = root.replace(source_path, '').count(os.sep)
-            indent = ' ' * 4 * (level)
-            print('{}{}/'.format(indent, os.path.basename(root)))
-            subindent = ' ' * 4 * (level + 1)
-            for f in files:
-                print('{}{}'.format(subindent, f))
-                
-            return response
+    def set_env(self,data=None,headers=None):
+        return self._request_http_post(path="configaration/configure_env",headers=headers,data=data)
+
+    def set_gw_sdk_endpoints(self,headers,data):
+        return self._request_http_post(path="configaration/configure_gw_sdk_endpoints", headers=headers, data=data)
+    
