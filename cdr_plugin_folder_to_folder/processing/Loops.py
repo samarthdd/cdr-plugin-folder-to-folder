@@ -22,12 +22,13 @@ class Loops(object):
         print(Loops.config.endpoints)
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
+        file_processing = File_Processing()
 
         endpoint = "http://" + Loops.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + Loops.config.endpoints['Endpoints'][endpoint_index]['Port']
 
         if os.path.isdir(itempath):
             try:
-                File_Processing.processDirectory(endpoint, itempath)
+                file_processing.processDirectory(endpoint, itempath)
                 if Loops.use_es:
                     log = {
                         'file': original_file_path,

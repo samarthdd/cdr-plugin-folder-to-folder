@@ -14,8 +14,8 @@ from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Servi
 
 class File_Processing(object):
 
-    config = Config().load_values()
-    meta_service = Metadata_Service()
+    def __init__(self):
+       self.meta_service = Metadata_Service()
 
     @staticmethod
     def base64request(endpoint, api_route, base64enc_file):
@@ -72,14 +72,13 @@ class File_Processing(object):
         json_obj = xmltodict.parse(xmlreport)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
-    @staticmethod
-    def do_rebuild(endpoint, hash, encodedFile, dir):
+    def do_rebuild(self, endpoint, hash, encodedFile, dir):
         response = File_Processing.rebuild(endpoint, encodedFile)
         result = response.text
         if not result:
             raise ValueError('Failed to rebuild the file')
 
-        processed_path = File_Processing.meta_service.get_processed_file_path(dir)
+        processed_path = self.meta_service.get_processed_file_path(dir)
 
         dirname = ntpath.dirname(processed_path)
         basename = ntpath.basename(processed_path)
@@ -102,17 +101,16 @@ class File_Processing(object):
         else:
             raise ValueError("No X-Adaptation-File-Id header found in the response")
 
-    @staticmethod
-    def processDirectory (endpoint, dir):
+    def processDirectory (self, endpoint, dir):
 
         hash = ntpath.basename(dir)
         if len(hash) != 64:
             raise ValueError("Unexpected hash length")
 
-        if not File_Processing.meta_service.is_initial_status(dir):
+        if not self.meta_service.is_initial_status(dir):
             return
 
-        File_Processing.meta_service.set_status_inprogress(dir)
+        self.meta_service.set_status_inprogress(dir)
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
@@ -126,7 +124,7 @@ class File_Processing(object):
         if not encodedFile:
             raise ValueError("Failed to encode the file")
 
-        File_Processing.do_rebuild(endpoint, hash, encodedFile, dir)
+        self.do_rebuild(endpoint, hash, encodedFile, dir)
 
-        File_Processing.meta_service.set_status_comleted(dir)
+        self.meta_service.set_status_comleted(dir)
 
