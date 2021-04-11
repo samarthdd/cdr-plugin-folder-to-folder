@@ -10,7 +10,7 @@ configure_env=Configure_Env()
 router_params = { "prefix": "/configuration"  ,
                   "tags"  : ['Configuration'] }
 
-class CONFIGARATION(BaseModel):
+class CONFIGURATION(BaseModel):
     hd1_path   : str = "./test_data/scenario-1/hd1"
     hd2_path   : str = "./test_data/scenario-1/hd2"
     hd3_path   : str = "./test_data/scenario-1/hd3"
@@ -26,8 +26,8 @@ class ItemList(BaseModel):
 
 router = APIRouter(**router_params)
 
-@router.post("/configure_env/",response_model=CONFIGARATION)
-def configure_environment(item: CONFIGARATION):
+@router.post("/configure_env/",response_model=CONFIGURATION)
+def configure_environment(item: CONFIGURATION):
     response = configure_env.configure(hd1_path=item.hd1_path,
                                        hd2_path=item.hd2_path,
                                        hd3_path=item.hd3_path,
