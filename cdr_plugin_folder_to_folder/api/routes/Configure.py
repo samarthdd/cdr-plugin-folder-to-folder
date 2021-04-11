@@ -14,8 +14,6 @@ class CONFIGURATION(BaseModel):
     hd1_path   : str = "./test_data/scenario-1/hd1"
     hd2_path   : str = "./test_data/scenario-1/hd2"
     hd3_path   : str = "./test_data/scenario-1/hd3"
-    gw_address : str = "127.0.0.1"
-    gw_port    : str = "8080"
 
 class ENDPOINTS(BaseModel):
     IP         : str
@@ -30,9 +28,7 @@ router = APIRouter(**router_params)
 def configure_environment(item: CONFIGURATION):
     response = configure_env.configure(hd1_path=item.hd1_path,
                                        hd2_path=item.hd2_path,
-                                       hd3_path=item.hd3_path,
-                                       gw_address=item.gw_address,
-                                       gw_port=item.gw_port)
+                                       hd3_path=item.hd3_path)
     return response
 
 

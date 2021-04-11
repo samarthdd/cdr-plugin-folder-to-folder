@@ -13,21 +13,15 @@ class test_Configure_Env(TestCase):
         hd1_path      = "./test_data/scenario-1/hd1"
         hd2_path      = "./test_data/scenario-1/hd2"
         hd3_path      = "./test_data/scenario-1/hd3"
-        gw_address    = "127.0.0.1"
-        gw_port       = "8000"
 
         response=self.configure.configure(hd1_path=hd1_path,
                                           hd2_path=hd2_path,
-                                          hd3_path=hd3_path,
-                                          gw_address=gw_address,
-                                          gw_port=gw_port)
+                                          hd3_path=hd3_path)
 
         assert response is not None
         self.assertEqual(environ["HD1_LOCATION"]   , hd1_path)
         self.assertEqual(environ["HD2_LOCATION"]   , hd2_path)
         self.assertEqual(environ["HD3_LOCATION"]   , hd3_path)
-        self.assertEqual(environ["GW_SDK_ADDRESS"] , gw_address)
-        self.assertEqual(environ["GW_SDK_PORT"]    , gw_port)
 
     def test_configure_multiple_gw_sdk_endpoints(self):
         endpoint_string='{"Endpoints":[{"IP":"0.0.0.0", "Port":"8080"},{"IP":"0.0.0.1", "Port":"8080"}]}'

@@ -3,10 +3,13 @@ from urllib.parse import urljoin
 import requests
 import json
 from osbot_utils.utils.Http import GET_json,POST,POST_json
+from osbot_utils.utils.Json import str_to_json, json_to_str
+
+DEFAULT_API_SERVER = 'http://api:8880' 
 
 class API_Client:
 
-    def __init__(self, url_server):
+    def __init__(self, url_server=DEFAULT_API_SERVER):
         self.server_ip = url_server
 
     # helper methods
@@ -34,13 +37,24 @@ class API_Client:
 
     def pre_process(self):
         return self._request_post('/pre-processor/pre-process')
-
+    
+    def process_files(self):
+        assert self.pre_process()   == '["Processing is done"]'
+        assert self.start_process() == '"Loop completed"'
+        return "all files processed "
+    
     def start_process(self):
         return self._request_post('/processing/start')
     
-    def set_env(self,data=None,headers=None):
-        return self._request_http_post(path="configuration/configure_env",headers=headers,data=data)
+    def configure_environment(self, data):
+        headers = { 'accept': 'application/json'      ,
+                    'Content-Type': 'application/json'}
+        post_data = json_to_str(data)
+        return self._request_http_post(path="configuration/configure_env",headers=headers,data=post_data)
 
-    def set_gw_sdk_endpoints(self,headers,data):
-        return self._request_http_post(path="configuration/configure_gw_sdk_endpoints", headers=headers, data=data)
+    def set_gw_sdk_endpoints(self,data):
+        headers = { 'accept': 'application/json'      ,
+                    'Content-Type': 'application/json'}
+        post_data = json_to_str(data)
+        return self._request_http_post(path="configuration/configure_gw_sdk_endpoints", headers=headers, data=post_data)
     

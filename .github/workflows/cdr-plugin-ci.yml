@@ -29,5 +29,5 @@ jobs:
             cp .env.sample .env
             echo "PWD=/home/ubuntu/cdr-plugin-folder-to-folder" >> .env
             source .env
-            sudo docker-compose build
-            sudo docker-compose up --force -d
+            docker-compose build
+            docker-compose up --force -d

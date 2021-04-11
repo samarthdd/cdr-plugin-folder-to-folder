@@ -15,9 +15,7 @@ class test_Configure_Env(TestCase):
         json_obj={
                       "hd1_path": "./test_data/scenario-1/hd1",
                       "hd2_path": "./test_data/scenario-1/hd2",
-                      "hd3_path": "./test_data/scenario-1/hd3",
-                      "gw_address": "127.0.0.1",
-                      "gw_port": "8000"
+                      "hd3_path": "./test_data/scenario-1/hd3"
                     }
         response = self.client.POST(
             path,
