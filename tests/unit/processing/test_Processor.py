@@ -26,7 +26,8 @@ class test_Processor(TestCase):
         assert folder_exists(self.config.hd1_location)
 
     def test_process_files(self):
-        Loops.LoopHashDirectories()
+        loops = Loops()
+        loops.LoopHashDirectories()
 
         assert folder_exists(self.config.hd3_location)
         assert len(os.listdir(self.config.hd3_location)) != 0

@@ -77,9 +77,9 @@ class test_API_Client(TestCase):
 
     def test_set_gw_sdk_endpoints(self):
 
-        data = '{ "Endpoints": [{ "IP": "92.109.25.70", "Port": "8080" } ] }'
+        data = { "Endpoints": [{ "IP": "92.109.25.70", "Port": "8080" } ] }
         response = self.client.set_gw_sdk_endpoints(data=data)
 
-        assert response.status_code is 200
-        assert response.json() == json.loads(data)
+        assert response.status_code == 200
+        assert response.json() == data
 
