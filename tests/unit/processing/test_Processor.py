@@ -25,20 +25,26 @@ class test_Processor(TestCase):
         pass
 
     def test__init__(self):
-        assert folder_exists(self.config.hd1_location)
-
-    @log_duration
-    def test_process_files(self):
         pre_processor = Pre_Processor()
         pre_processor.clear_data_and_status_folders()       # clear output folders
         pre_processor.process_files()                       # copy files across
 
+        assert folder_exists(self.config.hd1_location)
+
+    def test_process_file(self):
+        loops = Loops()
+        loops.ProcessSingleFile()
+
+        assert folder_exists(self.config.hd3_location)
+        assert len(os.listdir(self.config.hd3_location)) != 0
+
+    @log_duration
+    def test_process_files(self):
         loops = Loops()
         loops.LoopHashDirectories()
 
         assert folder_exists(self.config.hd3_location)
         assert len(os.listdir(self.config.hd3_location)) != 0
 
-    def test_process_file(self):
-        pass
+
 

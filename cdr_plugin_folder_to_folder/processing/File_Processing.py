@@ -98,7 +98,7 @@ class File_Processing:
             raise ValueError("Unexpected hash length")
 
         if not self.meta_service.is_initial_status(dir):
-            return
+            return False
 
         self.meta_service.set_status_inprogress(dir)
 
@@ -117,4 +117,6 @@ class File_Processing:
         self.do_rebuild(endpoint, hash, encodedFile, dir)
 
         self.meta_service.set_status_comleted(dir)
+
+        return True
 

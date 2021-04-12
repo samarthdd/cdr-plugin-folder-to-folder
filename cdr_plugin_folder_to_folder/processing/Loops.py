@@ -25,6 +25,15 @@ class Loops(object):
         self.use_es = False
         self.config = Config().load_values()
 
+    def IsProcessing(self):
+        return Loops.processing_started
+
+    def StopProcessing(self):
+        Loops.continue_processing = False
+
+    def HasBeenStopped(self):
+        return not Loops.continue_processing
+
     @log_duration
     def ProcessDirectoryWithEndpoint(self, itempath, file_index, endpoint_index):
         self.config = Config().load_values()
@@ -36,7 +45,7 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                file_processing.processDirectory(endpoint, itempath)
+                result = file_processing.processDirectory(endpoint, itempath)
                 log_data = {
                         'file': original_file_path,
                         'status': 'processed',
@@ -45,7 +54,7 @@ class Loops(object):
                     }
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
-                return True
+                return result
             except Exception as error:
                 log_data = {
                     'file': original_file_path,
@@ -62,10 +71,11 @@ class Loops(object):
         endpoint_index = file_index % self.config.endpoints_count
         for idx in range(self.config.endpoints_count):
             if self.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
-                break
+                return True
             # The Endpoint failed to process the file
             # Retry it with the next one
             endpoint_index = (endpoint_index + 1) % self.config.endpoints_count
+        return False
 
     @log_duration
     def LoopHashDirectories(self):
@@ -102,18 +112,35 @@ class Loops(object):
                     thread.join()
 
             if not Loops.continue_processing:
-                break;
+                break
 
         for index, thread in enumerate(threads):
             thread.join()
 
         Loops.processing_started = False
 
-    def IsProcessing(self):
-        return Loops.processing_started
 
-    def StopProcessing(self):
-        Loops.continue_processing = False
+    @log_duration
+    def ProcessSingleFile(self):
 
-    def HasBeenStopped(self):
-        return not Loops.continue_processing
+        # Do nothing if the processing loop is running
+        if Loops.processing_started:
+            return
+
+        rootdir = os.path.join(self.config.hd2_location, "data")
+
+        if folder_exists(rootdir) is False:
+            return
+
+        directory_contents = os.listdir(rootdir)
+        file_index = 0
+
+        for item in directory_contents:
+
+            file_index += 1
+            itempath = os.path.join(rootdir,item)
+
+            if self.ProcessDirectory(itempath, file_index):
+                # finish it once a file is processed
+                return
+
