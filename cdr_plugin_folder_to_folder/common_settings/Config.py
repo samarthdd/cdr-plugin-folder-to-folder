@@ -23,6 +23,8 @@ DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"91.109.25.70", "Port":"8080"}]}
 
 API_VERSION              = "v0.5.3"
 
+# todo add caching support to this class since at the moment this is being loaded from quite a lot of places
+#      one option is to have an method returning the values (which can be cached)
 class Config(object):
 
     def __init__(self):

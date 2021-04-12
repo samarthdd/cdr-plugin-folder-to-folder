@@ -8,6 +8,7 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Elastic.Kibana import Kibana
 
+@pytest.mark.skip
 # todo create a number of test objects in setUpClass (so that asserts have data to test against)
 class test_Kibana(TestCase):
 

@@ -1,5 +1,8 @@
 import json
 from unittest import TestCase
+
+import pytest
+
 from cdr_plugin_folder_to_folder.configure.Configure_Env import Configure_Env
 from os import environ,path,remove
 from dotenv import load_dotenv
@@ -23,6 +26,7 @@ class test_Configure_Env(TestCase):
         self.assertEqual(environ["HD2_LOCATION"]   , hd2_path)
         self.assertEqual(environ["HD3_LOCATION"]   , hd3_path)
 
+    @pytest.mark.skip("this is breaking current .env file (this needs to run on a temp .env file)")
     def test_configure_multiple_gw_sdk_endpoints(self):
         endpoint_string='{"Endpoints":[{"IP":"0.0.0.0", "Port":"8080"},{"IP":"0.0.0.1", "Port":"8080"}]}'
         response=self.configure.configure_endpoints(endpoint_string=endpoint_string)

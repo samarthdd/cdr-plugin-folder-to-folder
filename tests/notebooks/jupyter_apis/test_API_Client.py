@@ -1,6 +1,8 @@
 from unittest import TestCase
 import json
 
+import pytest
+
 from cdr_plugin_folder_to_folder.common_settings.Config import API_VERSION
 from cdr_plugin_folder_to_folder.utils.testing.Temp_API_Server import Temp_API_Server
 from jupyter.notebooks.jupyter_apis.API_Client import API_Client
@@ -75,9 +77,10 @@ class test_API_Client(TestCase):
         assert response.status_code is 200
         assert response.json() == data
 
+    @pytest.mark.skip("this is breaking current .env file (this needs to run on a temp .env file)")
     def test_set_gw_sdk_endpoints(self):
 
-        data = { "Endpoints": [{ "IP": "92.109.25.70", "Port": "8080" } ] }
+        data = { "Endpoints": [{ "IP": "91.109.25.70", "Port": "8080" } ] }
         response = self.client.set_gw_sdk_endpoints(data=data)
 
         assert response.status_code == 200

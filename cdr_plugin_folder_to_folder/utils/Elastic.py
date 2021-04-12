@@ -1,7 +1,10 @@
 import osbot_elastic.elastic.ES
 from osbot_elastic.Elastic_Search import Elastic_Search
 from osbot_elastic.elastic.Index import Index
+from osbot_utils.decorators.lists.group_by import group_by
+from osbot_utils.decorators.lists.index_by import index_by
 from osbot_utils.decorators.methods.cache import cache
+from osbot_utils.decorators.methods.cache_on_self import cache_on_self
 from osbot_utils.utils.Http import GET_json
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
@@ -30,19 +33,19 @@ class Elastic:
             return False
 
     # cached objects
-    @cache
+    @cache_on_self
     def index(self) -> Index:
         return self.elastic().api_index()
 
-    @cache
+    @cache_on_self
     def index_pattern(self):
         return Index_Pattern(kibana=self.kibana(), pattern_name=self.index_pattern_name)
 
-    @cache
+    @cache_on_self
     def elastic(self) -> Elastic_Search:
         return self.connect()
 
-    @cache
+    @cache_on_self
     def kibana(self) -> Kibana:
         kibana_host = self.config.kibana_host
         kibana_port = self.config.kibana_port
@@ -53,16 +56,25 @@ class Elastic:
     def add(self, data, refresh=False):
         return self.elastic().add(data, id_key=self.id_key, refresh=refresh)
 
-    def setup(self, delete_existing=True):
+    def get_data(self, record_id):
+        result = self.elastic().get_data(id=record_id)
+        if result:
+            return result.get('_source')
+        return {}
+
+    @index_by
+    @group_by
+    def search_using_lucene(self, query='*', size=10000):
+        return list(self.elastic().search_using_lucene(query, size=size))
+
+    def setup(self, delete_existing=False):
         if delete_existing:
             self.index().delete_index()
             self.index_pattern().delete()
 
         self.index().create()
         self.index_pattern().create(time_field=self.time_field)
-        #self.elastic().create_index()  # make sure index exists
-
-        #for_osbot_elastic.create_index_pattern(time_field=self.time_field)  # make sure index pattern exists
+        return self
 
 
 #environ['ELASTIC_SERVER'] = self.config.elastic_host

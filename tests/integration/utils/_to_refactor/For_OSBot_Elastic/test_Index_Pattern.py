@@ -8,7 +8,7 @@ from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Elastic.Index_Pattern import Index_Pattern
 from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Elastic.Kibana import Kibana
 
-
+@pytest.mark.skip
 class test_Index_Pattern(TestCase):
 
     def setUp(self) -> None:
