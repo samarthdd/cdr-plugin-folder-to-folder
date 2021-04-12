@@ -4,15 +4,20 @@ import ntpath
 
 import logging as logger
 
-from osbot_utils.utils.Files import temp_folder, path_combine, folder_create
+from osbot_utils.utils.Files import temp_folder, path_combine, folder_create, folder_delete_all
+from osbot_utils.utils.Misc import timestamp_utc_now
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.pre_processing.utils.file_service import File_Service
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
+from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
+from cdr_plugin_folder_to_folder.utils.Log_Duration import Log_Duration, log_duration
+from cdr_plugin_folder_to_folder.utils.Logging import Logging, log_info, log_debug
 
 logger.basicConfig(level=logger.INFO)
 
 class Pre_Processor:
+
     def __init__(self):
 
         self.filename       =  None
@@ -30,9 +35,26 @@ class Pre_Processor:
         self.hash_json      =  []
         self.id             =  0
 
+        self.file_name      = None                              # set in process() method
+        self.current_path   = None
+        self.base_folder    = None
+        self.dst_folder     = None
+        self.dst_file_name  = None
+
         folder_create(self.data_target)                             # todo: refactor this from this __init__
         folder_create(self.status_target)
 
+        self.logging = Logging()
+
+
+    @log_duration
+    def clear_data_and_status_folders(self):
+        folder_delete_all(self.data_target)
+        folder_delete_all(self.status_target)
+        folder_create(self.data_target)
+        folder_create(self.status_target)
+
+    @log_duration
     def process_files(self):
         try:
             for folderName, subfolders, filenames in os.walk(self.hd1_location):
@@ -44,10 +66,11 @@ class Pre_Processor:
             logger.error(f"PreProcessor: process_files : {error}")
             raise error
 
-    def process(self,file_path):
+    @log_duration
+    def process(self, file_path):
         try:
             self.file_name = ntpath.basename(file_path)
-            self.hd1_path=file_path
+            self.hd1_path  = file_path
 
             # Copy File to temp path
             self.current_path = os.path.join(self.temp_folder, self.file_name)

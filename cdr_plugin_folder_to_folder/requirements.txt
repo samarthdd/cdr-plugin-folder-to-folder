@@ -1,4 +1,5 @@
 git+https://github.com/owasp-sbot/OSBot-Utils.git
+git+https://github.com/owasp-sbot/OSBot-Elastic.git
 fastapi
 fastapi-offline
 python-dateutil
@@ -20,3 +21,7 @@ pytest-cov
 
 # logging
 elasticsearch==7.12.0
+
+# needed for OSBOT-Elastic
+git+https://github.com/owasp-sbot/OSBot-AWS.git
+boto3

@@ -9,10 +9,11 @@ from osbot_utils.utils.Files import folder_create
 from osbot_utils.utils.Json import json_save_file_pretty
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
+from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 
-class File_Processing(object):
+class File_Processing:
 
     def __init__(self):
        self.meta_service = Metadata_Service()
@@ -60,6 +61,7 @@ class File_Processing(object):
         json_obj = xmltodict.parse(xmlreport)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
+    @log_duration
     def do_rebuild(self, endpoint, hash, encodedFile, dir):
         response = self.rebuild(endpoint, encodedFile)
         result = response.text
@@ -89,6 +91,7 @@ class File_Processing(object):
         else:
             raise ValueError("No X-Adaptation-File-Id header found in the response")
 
+    @log_duration
     def processDirectory (self, endpoint, dir):
         hash = ntpath.basename(dir)
         if len(hash) != 64:
