@@ -1,6 +1,6 @@
-import hashlib
-import json
 import os
+import json
+import ntpath
 
 import logging as logger
 
@@ -20,15 +20,15 @@ class FileStatus(Enum):
 
 class Status:
 
-    STATUS_FILE_NAME = "hash.json"
+    STATUS_FILE_NAME = "status.json"
 
     def __init__(self):
         self.config = Config().load_values()
         self.status_folder = os.path.join(self.config.hd2_location, "status")
-        self.status_data = {    "files_count"          : "0"     ,
-                                "files_to_process"     : "0"     ,
-                                "processed_files"      : "0"     ,
-                                "failed_to_process"    : "0"     ,
+        self.status_data = {    "files_count"          : 0     ,
+                                "files_to_process"     : 0     ,
+                                "processed_files"      : 0     ,
+                                "failed_to_process"    : 0     ,
                                 "file_list"            : []
                             }
         self.id = 0
@@ -48,14 +48,24 @@ class Status:
         return self.status_data
 
     def write_to_file(self):
+        print(self.get_status_file_path())
+        print(self.status_data)
         json_save_file_pretty(self.status_data, self.get_status_file_path())
 
-    def add_file(self, hash, file_path)
+    def add_file(self, hash, file_name):
         self.id=self.id+1
-
 
         json_data={}
 
-        json_data["id"]=self.id
-        json_data["file_name"]=self.file_name
-        json_data["original_hash"]=self.original_hash
+        json_data["id"] = self.id
+        json_data["hash"] = hash
+        json_data["file_name"] = file_name
+        json_data["file_status"] = FileStatus.INITIAL.value
+
+        self.status_data["file_list"].append(json_data)
+
+        self.status_data["files_count"] += 1
+
+
+
+
