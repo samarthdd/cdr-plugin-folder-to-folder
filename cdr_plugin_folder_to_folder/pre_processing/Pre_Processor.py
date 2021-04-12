@@ -13,6 +13,7 @@ from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Servi
 from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 from cdr_plugin_folder_to_folder.utils.Log_Duration import Log_Duration, log_duration
 from cdr_plugin_folder_to_folder.utils.Logging import Logging, log_info, log_debug
+from osbot_utils.utils.Json import json_save_file_pretty
 
 logger.basicConfig(level=logger.INFO)
 
@@ -147,6 +148,6 @@ class Pre_Processor:
             self.hash_json.append(json_data)
             hash_file_name="hash.json"
 
-            self.file_service.wrtie_json_file(self.status_target,hash_file_name,self.hash_json)
+            json_save_file_pretty(self.hash_json, os.path.join(self.status_target, hash_file_name))
         except Exception as error:
             raise error
