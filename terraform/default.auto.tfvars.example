@@ -5,7 +5,7 @@ ovf_urls = {
 }
 
 instances_count = {
-  sdk             = 3
-  workflow        = 3
+  sdk             = 1
+  workflow        = 1
   offline_desktop = 1
 }

@@ -71,7 +71,7 @@ module "vms" {
   }
 
   instance_count = 2
-  name_prefix    = "yv-test"
+  name_prefix    = "demo"
   vmdk           = "/vmdk/alpine.vmdk"
   cpu            = 2
   ram            = 2048

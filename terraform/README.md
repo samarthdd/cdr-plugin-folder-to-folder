@@ -24,10 +24,15 @@ sudo bash ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle
 ### 1.2. Configuration
 
 Make a copy of *secret.auto.tfvars.example* and place your credentials.
+Make a copy of *default.auto.tfvars.example* and place your OVA URLs or local paths.
+Make a copy of *ova.tf.example* without any changes.
 
 ```shell
 cp -pv secret.auto.tfvars.example secret.auto.tfvars
+cp -pv default.auto.tfvars.example default.auto.tfvars
+cp -pv ova.tf.example ova.tf
 "${VISUAL}" secret.auto.tfvars
+"${VISUAL}" secret.auto.tfvars default.auto.tfvars
 ```
 
 Now, we have to initialize Terraform.

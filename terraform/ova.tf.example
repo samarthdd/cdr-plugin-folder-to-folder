@@ -11,7 +11,6 @@ terraform {
 provider "esxi" {
   esxi_hostname = var.esxi_credentials.host
   esxi_hostport = var.esxi_credentials.ssh_port
-  #esxi_hostssl  = var.esxi_credentials.ssl_port
   esxi_username = var.esxi_credentials.username
   esxi_password = var.esxi_credentials.password
 }
