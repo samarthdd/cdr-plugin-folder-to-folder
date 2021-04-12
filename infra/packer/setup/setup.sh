@@ -41,20 +41,6 @@ cp .env.sample .env
 echo "PWD=/home/ubuntu/cdr-plugin-folder-to-folder" >> .env
 sudo docker-compose up -d --build
 
-# create script to mount hard disks and upgrade helm chart
-tee -a > ~/setup.sh <<EOF
-#!/bin/bash
-GW_SDK_ADDRESS=\$1
-if [[ -z "\$GW_SDK_ADDRESS" ]] ; then
-    echo "Please pass glasswall SDK IP address as an argument"
-    exit 0
-fi
-cd ~/cdr-plugin-folder-to-folder
-sed -i "s/GW_SDK_ADDRESS=.*/GW_SDK_ADDRESS=\$GW_SDK_ADDRESS/g" .env
-sudo docker-compose up -d --build --force
-
-EOF
-chmod +x ~/setup.sh
 
 # install vmware tools
 sudo apt install open-vm-tools
