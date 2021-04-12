@@ -39,11 +39,11 @@ class test_Pre_Processor(TestCase):
     def test_process_files(self):
         path_data   = self.pre_processor.data_target
         path_status = self.pre_processor.status_target
-        #self.pre_processor.clear_data_and_status_folders()
+        self.pre_processor.clear_data_and_status_folders()
 
-        #assert len(files_list(path_data   )) == 0
-        #assert len(files_list(path_status )) == 0
-        #assert len(files_list(self.path_h1)) > 0
+        assert len(files_list(path_data   )) == 0
+        assert len(files_list(path_status )) == 0
+        assert len(files_list(self.path_h1)) > 0
 
 
         self.pre_processor.process_files()
