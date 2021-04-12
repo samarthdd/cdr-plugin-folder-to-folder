@@ -1,6 +1,7 @@
 import cdr_plugin_folder_to_folder
-from   os                           import chdir
+from os import chdir, environ
 from   osbot_utils.utils.Files      import parent_folder
+
 
 class Setup_Testing:
 
@@ -14,3 +15,11 @@ class Setup_Testing:
         path_repo = self.path_repo_root()
         chdir(path_repo)
         return path_repo
+
+    def set_config_for_local_testing(self, config=None):
+        from cdr_plugin_folder_to_folder.utils.Logging import logging
+        if config is None:
+            config = logging.elastic().config
+        config.kibana_host  = '127.0.0.1'
+        config.elastic_host = '127.0.0.1'
+        logging.setup()

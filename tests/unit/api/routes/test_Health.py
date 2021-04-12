@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-
 from osbot_utils.utils.Dev import pprint
 
 from cdr_plugin_folder_to_folder.common_settings.Config import API_VERSION
@@ -18,7 +17,6 @@ class test_Health(TestCase):
 
     def test_health(self):
         assert self.client.GET("/health") == {'status': 'ok'}
-
 
     def test_status(self):
         pprint(self.client.GET("/status"))

@@ -2,6 +2,7 @@ import json
 
 import requests
 from osbot_utils.decorators.lists.index_by import index_by
+from osbot_utils.utils.Http import GET
 from requests.auth import HTTPBasicAuth
 
 
@@ -13,38 +14,42 @@ class Kibana:
         self.schema     = schema        or 'http'
         self.username   = None
         self.password   = None
+        self.enabled    = False
 
     # helper methods
-
-    def delete_request(self, path):
-        url = f'{self.schema}://{self.host}:{self.port}/{path}'
-        kwargs = self.get_request_kwargs()
-
-        response = requests.delete(url, **kwargs)
-        return json.loads(response.text)
-
+    # todo refactor these methods to the schema: request_{METHOD}
     def get_request_kwargs(self):
         headers = {'Content-Type': 'application/json', 'kbn-xsrf': 'kibana'}
-        kwargs = {"headers": headers}
+        kwargs  = {"headers": headers}
         if self.username and self.password:
             kwargs['auth'] = HTTPBasicAuth(self.username, self.password)
         return kwargs
 
-    def get_request(self, path):
-        url = f'{self.schema}://{self.host}:{self.port}/{path}'
-        kwargs = self.get_request_kwargs()
+    def delete_request(self, path):
+        if self.enabled:
+            url      = self.request_url(path)
+            kwargs   = self.get_request_kwargs()
+            response = requests.delete(url, **kwargs)
+            return json.loads(response.text)
 
-        response = requests.get(url, **kwargs)
-        return json.loads(response.text)
+    def get_request(self, path):
+        if self.enabled:
+            url      = self.request_url(path)
+            kwargs   = self.get_request_kwargs()
+            response = requests.get(url, **kwargs)
+            return json.loads(response.text)
 
     def post_request(self, path, payload):  # todo refactor out setup section (which will be same for all requests)
-        data = json.dumps(payload)
-        url = f'{self.schema}://{self.host}:{self.port}/{path}'
-        kwargs = self.get_request_kwargs()
+        if self.enabled:
+            data     = json.dumps(payload)
+            url      = self.request_url(path)
+            kwargs   = self.get_request_kwargs()
+            response = requests.post(url, data, **kwargs)
 
-        response = requests.post(url, data, **kwargs)
+            return json.loads(response.text)
 
-        return json.loads(response.text)
+    def request_url(self, path):
+        return f'{self.schema}://{self.host}:{self.port}/{path}'
 
     def parse_kibana_object(self, kibana_object):
         result = {  "id"        : kibana_object.get('id'        ),
@@ -59,10 +64,22 @@ class Kibana:
 
     def parse_kibana_objects(self, kibana_objects):
         results = []
-        for kibana_object in kibana_objects:
-            results.append(self.parse_kibana_object(kibana_object))
+        if kibana_objects:
+            for kibana_object in kibana_objects:
+                results.append(self.parse_kibana_object(kibana_object))
         return results
 
+    def server_online(self):
+        try:
+            root_http = GET(self.request_url('/'))          # check that we can reach the server ok
+            assert root_http.find('kibana') > 0             #
+            self.enabled = True                             # if all is good, set the enabled flag
+        except:
+            return False
+
+    def setup(self):
+        self.server_online()
+        return self
     # api methods
 
     @index_by
@@ -80,8 +97,11 @@ class Kibana:
            type: visualization, dashboard, search, index-pattern, config, and timelion-sheet
         """
         path            = f"api/saved_objects/_find?type={object_type}&search_fields={search_fields}&search={search_query}&per_page={results_per_page}"
-        kibana_objects  = self.get_request(path).get('saved_objects')
-        return self.parse_kibana_objects(kibana_objects)
+        result          = self.get_request(path)
+        if result:
+            kibana_objects = result.get('saved_objects')
+            return self.parse_kibana_objects(kibana_objects)
+        return {}
 
 
     @index_by

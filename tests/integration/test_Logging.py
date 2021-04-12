@@ -5,6 +5,7 @@ from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import random_text, list_set
 
 from cdr_plugin_folder_to_folder.utils.Logging import Logging
+from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
 
 
 class test_Logging(TestCase):
@@ -15,9 +16,10 @@ class test_Logging(TestCase):
         cls.index_name = 'temp_log_index'
         cls.logging = Logging(index_name=cls.index_name)
         cls.elastic = cls.logging.elastic()
-        if cls.elastic.server_online() is False:
-            pytest.skip('Elastic server not available')
+        Setup_Testing().set_config_for_local_testing(config=cls.elastic.config)
         cls.logging.setup()
+        if cls.elastic.enabled is False:
+            pytest.skip('Elastic server not available')
 
     @classmethod
     def tearDownClass(cls) -> None:
