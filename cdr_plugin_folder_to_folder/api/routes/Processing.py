@@ -10,4 +10,12 @@ router = APIRouter(**router_params)
 def process_hd2_data_to_hd3():
     loops = Loops()
     loops.LoopHashDirectories()
+    if loops.HasBeenStopped():
+        return "Loop stopped"
     return "Loop completed"
+
+@router.post("/stop")
+def stop_processing():
+    loops = Loops()
+    loops.StopProcessing()
+    return "Loop stopped"

@@ -18,6 +18,9 @@ from cdr_plugin_folder_to_folder.utils.Logging import log_error, log_info
 
 class Loops(object):
 
+    continue_processing = False
+    processing_started = False
+
     def __init__(self):
         self.use_es = False
         self.config = Config().load_values()
@@ -66,7 +69,14 @@ class Loops(object):
 
     @log_duration
     def LoopHashDirectories(self):
-        #self.config = Config().load_values()
+
+        #Allow only a single loop to be run at a time
+        if Loops.processing_started:
+            return
+
+        Loops.continue_processing = True
+        Loops.processing_started = True
+
         rootdir = os.path.join(self.config.hd2_location, "data")
 
         if folder_exists(rootdir) is False:
@@ -78,6 +88,7 @@ class Loops(object):
         threads = list()
 
         for item in directory_contents:
+
             file_index += 1
             itempath = os.path.join(rootdir,item)
 
@@ -90,5 +101,19 @@ class Loops(object):
                 for index, thread in enumerate(threads):
                     thread.join()
 
+            if not Loops.continue_processing:
+                break;
+
         for index, thread in enumerate(threads):
             thread.join()
+
+        Loops.processing_started = False
+
+    def IsProcessing(self):
+        return Loops.processing_started
+
+    def StopProcessing(self):
+        Loops.continue_processing = False
+
+    def HasBeenStopped(self):
+        return not Loops.continue_processing
