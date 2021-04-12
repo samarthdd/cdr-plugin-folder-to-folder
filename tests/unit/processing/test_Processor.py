@@ -30,12 +30,13 @@ class test_Processor(TestCase):
         pre_processor.process_files()                       # copy files across
 
         assert folder_exists(self.config.hd1_location)
+        assert folder_exists(self.config.hd2_location)
+        assert folder_exists(self.config.hd3_location)
 
     def test_process_file(self):
         loops = Loops()
         loops.ProcessSingleFile()
 
-        assert folder_exists(self.config.hd3_location)
         assert len(os.listdir(self.config.hd3_location)) != 0
 
     @log_duration
@@ -43,7 +44,6 @@ class test_Processor(TestCase):
         loops = Loops()
         loops.LoopHashDirectories()
 
-        assert folder_exists(self.config.hd3_location)
         assert len(os.listdir(self.config.hd3_location)) != 0
 
 
