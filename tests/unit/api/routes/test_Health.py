@@ -13,11 +13,15 @@ class test_Health(TestCase):
     def setUpClass(cls) -> None:
         cls.client = Direct_API_Server().setup()
 
+    def test_root(self):
+        assert self.client.GET("/") == {'status': 'ok'}
+
     def test_health(self):
         assert self.client.GET("/health") == {'status': 'ok'}
 
-    def test_root(self):
-        assert self.client.GET("/") == {'status': 'ok'}
+
+    def test_status(self):
+        pprint(self.client.GET("/status"))
 
     def test_version(self):
         assert self.client.GET("/version") == { "version": API_VERSION }

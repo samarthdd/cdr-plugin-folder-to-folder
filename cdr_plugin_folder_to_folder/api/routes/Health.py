@@ -1,3 +1,4 @@
+from cdr_plugin_folder_to_folder.api.Status import Status
 from cdr_plugin_folder_to_folder.common_settings.Config import API_VERSION
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from fastapi import APIRouter
@@ -7,12 +8,16 @@ router_params = { "prefix": ""  ,
 router = APIRouter(**router_params)
 
 @router.get("/")
-def version():
+def root():
     return health()
 
 @router.get("/health")
 def health():
     return { "status": "ok"}
+
+@router.get("/status")
+def status():
+    return Status().now()
 
 @router.get("/version")
 def version():
