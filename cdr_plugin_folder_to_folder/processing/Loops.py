@@ -2,6 +2,7 @@ import os
 import os.path
 import sys
 import threading
+import asyncio
 
 from osbot_utils.utils.Files import create_folder, folder_exists
 
@@ -20,6 +21,7 @@ class Loops(object):
 
     continue_processing = False
     processing_started = False
+    lock = asyncio.Lock()
 
     def __init__(self):
         self.use_es = False
@@ -78,12 +80,7 @@ class Loops(object):
         return False
 
     @log_duration
-    def LoopHashDirectories(self):
-
-        #Allow only a single loop to be run at a time
-        if Loops.processing_started:
-            return
-
+    def LoopHashDirectoriesInternal(self):
         Loops.continue_processing = True
         Loops.processing_started = True
 
@@ -119,6 +116,23 @@ class Loops(object):
 
         Loops.processing_started = False
 
+    @log_duration
+    async def LoopHashDirectoriesAsync(self):
+        await Loops.lock.acquire()
+        try:
+            self.LoopHashDirectoriesInternal()
+        finally:
+            Loops.lock.release()
+
+    @log_duration
+    def LoopHashDirectories(self):
+        #Allow only a single loop to be run at a time
+        if Loops.processing_started:
+            return
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.LoopHashDirectoriesAsync())
 
     @log_duration
     def ProcessSingleFile(self):
