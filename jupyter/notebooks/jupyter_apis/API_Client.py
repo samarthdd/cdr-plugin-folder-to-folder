@@ -45,6 +45,9 @@ class API_Client:
     
     def start_process(self):
         return self._request_post('/processing/start')
+
+    def stop_process(self):
+        return self._request_post('/processing/stop')
     
     def configure_environment(self, data):
         headers = { 'accept': 'application/json'      ,

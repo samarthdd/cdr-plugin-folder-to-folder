@@ -19,3 +19,9 @@ def stop_processing():
     loops = Loops()
     loops.StopProcessing()
     return "Loop stopped"
+
+@router.post("/single_file")
+def process_single_file():
+    loops = Loops()
+    loops.ProcessSingleFile()
+    return "File has been processed"
