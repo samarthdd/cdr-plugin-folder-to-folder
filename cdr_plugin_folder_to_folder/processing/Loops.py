@@ -136,12 +136,12 @@ class Loops(object):
 
     @log_duration
     def ProcessSingleFile(self):
-
         # Do nothing if the processing loop is running
         if Loops.processing_started:
             return
 
         rootdir = os.path.join(self.config.hd2_location, "data")
+        meta_service = Metadata_Service()
 
         if folder_exists(rootdir) is False:
             return
@@ -154,7 +154,8 @@ class Loops(object):
             file_index += 1
             itempath = os.path.join(rootdir,item)
 
-            if self.ProcessDirectory(itempath, file_index):
+            if meta_service.is_initial_status(itempath):
+                self.ProcessDirectory(itempath, file_index)
                 # finish it once a file is processed
                 return
 
