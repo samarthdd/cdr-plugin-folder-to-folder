@@ -33,6 +33,13 @@ class test_Processor(TestCase):
         assert folder_exists(self.config.hd2_location)
         assert folder_exists(self.config.hd3_location)
 
+    def test_flags(self):
+        loops = Loops()
+
+        assert loops.IsProcessing() == False
+        Loops.StopProcessing()
+        assert loops.HasBeenStopped() == True
+
     def test_process_file(self):
         loops = Loops()
         loops.ProcessSingleFile()
