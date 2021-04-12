@@ -1,6 +1,7 @@
 import inspect
 from datetime import datetime
 
+from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import timestamp_utc_now, date_now, date_time_now
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
@@ -15,12 +16,15 @@ class Logging:
         self.index_name    = index_name
         self.time_field    = 'timestamp'
         self.refresh_index = False
+        self.enabled       = True
 
     def elastic(self):
         return Elastic(index_name=self.index_name, time_field=self.time_field)
 
     def setup(self, delete_existing=False):
-        self.elastic().setup(delete_existing=delete_existing)
+        self.enabled = self.elastic().server_online()
+        if self.enabled:
+            self.elastic().setup(delete_existing=delete_existing)
         return self
 
     def get_logs(self):
@@ -45,8 +49,10 @@ class Logging:
                  "message"      : message       ,
                  "data"         : data          ,
                  self.time_field: datetime.utcnow()}
-
-        return self.elastic().add(data=data, refresh=self.refresh_index)
+        if self.enabled:
+            return self.elastic().add(data=data, refresh=self.refresh_index)
+        # if elastic server is not avaiable, log messages to console
+        pprint(data)
 
     def critical(self, message, data=None, duration=''):  return self.log_message("CRITICAL", message ,data=data, duration=duration)
     def debug   (self, message, data=None, duration=''):  return self.log_message("DEBUG"   , message ,data=data, duration=duration)
