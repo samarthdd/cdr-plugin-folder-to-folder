@@ -9,6 +9,7 @@ from osbot_utils.utils.Files import create_folder, folder_exists
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 
 from elasticsearch import Elasticsearch
 from datetime import datetime
@@ -26,6 +27,8 @@ class Loops(object):
     def __init__(self):
         self.use_es = False
         self.config = Config().load_values()
+        self.status = Status()
+        self.status.get_from_file()
 
     def IsProcessing(self):
         return Loops.processing_started
@@ -89,15 +92,15 @@ class Loops(object):
         if folder_exists(rootdir) is False:
             return
 
-        directory_contents = os.listdir(rootdir)
-
         file_index = 0
         threads = list()
 
-        for item in directory_contents:
+        file_list = self.status.get_file_list()
 
-            file_index += 1
-            itempath = os.path.join(rootdir,item)
+        for index in range(len(file_list)):
+
+            itempath = os.path.join(rootdir,file_list[index]["hash"])
+            file_index = file_list[index]["id"]
 
             x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_index,))
             threads.append(x)

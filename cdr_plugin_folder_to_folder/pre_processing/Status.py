@@ -1,6 +1,5 @@
 import os
 import json
-import ntpath
 
 import logging as logger
 
@@ -20,7 +19,7 @@ class FileStatus(Enum):
 
 class Status:
 
-    STATUS_FILE_NAME = "status.json"
+    STATUS_FILE_NAME = "hash.json"
 
     def __init__(self):
         self.config = Config().load_values()
@@ -36,8 +35,7 @@ class Status:
     def get_status_file_path(self):
         return os.path.join(self.status_folder, Status.STATUS_FILE_NAME)
 
-    def get_from_file(self, status_folder):
-        self.status_folder=status_folder
+    def get_from_file(self):
         try:
             with open(self.get_status_file_path()) as json_file:
                 self.status_data = json.load(json_file)
@@ -63,9 +61,10 @@ class Status:
         json_data["file_status"] = FileStatus.INITIAL.value
 
         self.status_data["file_list"].append(json_data)
-
         self.status_data["files_count"] += 1
 
+    def get_file_list(self):
+        return self.status_data["file_list"]
 
 
 
