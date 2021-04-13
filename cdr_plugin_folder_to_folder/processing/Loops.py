@@ -81,12 +81,10 @@ class Loops(object):
 
     @log_duration
     def LoopHashDirectoriesInternal(self):
-        Loops.continue_processing = True
-        Loops.processing_started = True
-
         rootdir = os.path.join(self.config.hd2_location, "data")
 
         if folder_exists(rootdir) is False:
+            log_error("ERROR: rootdir does not exist: " + rootdir)
             return
 
         directory_contents = os.listdir(rootdir)
@@ -114,30 +112,36 @@ class Loops(object):
         for index, thread in enumerate(threads):
             thread.join()
 
-        Loops.processing_started = False
-
+    @log_duration
     async def LoopHashDirectoriesAsync(self):
         await Loops.lock.acquire()
         try:
+            Loops.continue_processing = True
+            Loops.processing_started = True
+
             self.LoopHashDirectoriesInternal()
         finally:
+            Loops.processing_started = False
             Loops.lock.release()
 
     @log_duration
     def LoopHashDirectories(self):
         #Allow only a single loop to be run at a time
-        if Loops.processing_started:
-            return
+        if self.IsProcessing():
+            log_error("ERROR: Attempt to start processing while processing is in progress")
+            return False
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self.LoopHashDirectoriesAsync())
+        return True
 
     @log_duration
     def ProcessSingleFile(self):
         # Do nothing if the processing loop is running
-        if Loops.processing_started:
-            return
+        if self.IsProcessing():
+            log_error("ERROR: Attempt to start processing while processing is in progress")
+            return False
 
         rootdir = os.path.join(self.config.hd2_location, "data")
         meta_service = Metadata_Service()
@@ -156,5 +160,7 @@ class Loops(object):
             if meta_service.is_initial_status(itempath):
                 self.ProcessDirectory(itempath, file_index)
                 # finish it once a file is processed
-                return
+                return True
+
+        return False
 
