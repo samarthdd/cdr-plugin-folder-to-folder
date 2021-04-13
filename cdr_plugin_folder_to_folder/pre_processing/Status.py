@@ -70,10 +70,9 @@ class Status:
     def get_file_list(self):
         return self.status_data["file_list"]
 
-    async def update_status_async(self, index, updated_status):
+    async def update_counters_async(self, index, updated_status):
         await Status.lock.acquire()
         try:
-            self.status_data["file_list"][index]["file_status"] = updated_status
             if updated_status == FileStatus.IN_PROGRESS.value:
                 self.status_data["in_progress"] += 1
             elif updated_status == FileStatus.COMPLETED.value:
@@ -86,6 +85,6 @@ class Status:
     def update_status(self, index, updated_status):
         self.status_data["file_list"][index]["file_status"] = updated_status
 
-#        loop = asyncio.new_event_loop()
-#        asyncio.set_event_loop(loop)
-#        loop.run_until_complete(self.update_status_async(index, updated_status))
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.update_counters_async(index, updated_status))
