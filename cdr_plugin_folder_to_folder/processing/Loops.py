@@ -81,9 +81,6 @@ class Loops(object):
 
     @log_duration
     def LoopHashDirectoriesInternal(self):
-        Loops.continue_processing = True
-        Loops.processing_started = True
-
         rootdir = os.path.join(self.config.hd2_location, "data")
 
         if folder_exists(rootdir) is False:
@@ -119,6 +116,9 @@ class Loops(object):
     async def LoopHashDirectoriesAsync(self):
         await Loops.lock.acquire()
         try:
+            Loops.continue_processing = True
+            Loops.processing_started = True
+
             self.LoopHashDirectoriesInternal()
         finally:
             Loops.processing_started = False
@@ -127,7 +127,8 @@ class Loops(object):
     @log_duration
     def LoopHashDirectories(self):
         #Allow only a single loop to be run at a time
-        if Loops.processing_started:
+        if self.IsProcessing():
+            log_error("ERROR: Attempt to start processing while processing is in progress")
             return
 
         loop = asyncio.new_event_loop()
@@ -137,7 +138,8 @@ class Loops(object):
     @log_duration
     def ProcessSingleFile(self):
         # Do nothing if the processing loop is running
-        if Loops.processing_started:
+        if self.IsProcessing():
+            log_error("ERROR: Attempt to start processing while processing is in progress")
             return
 
         rootdir = os.path.join(self.config.hd2_location, "data")
