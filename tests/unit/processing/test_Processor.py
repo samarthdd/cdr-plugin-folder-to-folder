@@ -40,7 +40,7 @@ class test_Processor(TestCase):
         loops.StopProcessing()
         assert loops.HasBeenStopped() == True
 
-    def test_process_file(self):
+    def test_process_single_file(self):
         loops = Loops()
         loops.ProcessSingleFile()
 

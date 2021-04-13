@@ -10,6 +10,7 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status
+from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 
 from elasticsearch import Elasticsearch
 from datetime import datetime
@@ -71,9 +72,9 @@ class Loops(object):
                 return False
 
     @log_duration
-    def ProcessDirectory(self, itempath, file_index):
+    def ProcessDirectory(self, itempath, file_index, process_index):
         self.config = Config().load_values()
-        endpoint_index = file_index % self.config.endpoints_count
+        endpoint_index = process_index % self.config.endpoints_count
         for idx in range(self.config.endpoints_count):
             if self.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
                 return True
@@ -83,7 +84,7 @@ class Loops(object):
         return False
 
     @log_duration
-    def LoopHashDirectoriesInternal(self):
+    def LoopHashDirectoriesInternal(self, thread_count, do_single = False):
         Loops.continue_processing = True
         Loops.processing_started = True
 
@@ -96,17 +97,26 @@ class Loops(object):
         threads = list()
 
         file_list = self.status.get_file_list()
+        process_index = 0
 
         for index in range(len(file_list)):
 
+            if file_list[index]["file_status"] != FileStatus.INITIAL.value:
+                continue
+
+            process_index += 1
             itempath = os.path.join(rootdir,file_list[index]["hash"])
             file_index = file_list[index]["id"]
 
-            x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_index,))
+            x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_index, process_index,))
             threads.append(x)
             x.start()
+
+            if do_single:
+                break
+
             # limit the number of parallel threads
-            if file_index % int(self.config.thread_count) == 0:
+            if file_index % int(thread_count) == 0:
                 # Clean up the threads
                 for index, thread in enumerate(threads):
                     thread.join()
@@ -123,7 +133,7 @@ class Loops(object):
     async def LoopHashDirectoriesAsync(self):
         await Loops.lock.acquire()
         try:
-            self.LoopHashDirectoriesInternal()
+            self.LoopHashDirectoriesInternal(self.config.thread_count)
         finally:
             Loops.lock.release()
 
@@ -139,26 +149,5 @@ class Loops(object):
 
     @log_duration
     def ProcessSingleFile(self):
-        # Do nothing if the processing loop is running
-        if Loops.processing_started:
-            return
-
-        rootdir = os.path.join(self.config.hd2_location, "data")
-        meta_service = Metadata_Service()
-
-        if folder_exists(rootdir) is False:
-            return
-
-        directory_contents = os.listdir(rootdir)
-        file_index = 0
-
-        for item in directory_contents:
-
-            file_index += 1
-            itempath = os.path.join(rootdir,item)
-
-            if meta_service.is_initial_status(itempath):
-                self.ProcessDirectory(itempath, file_index)
-                # finish it once a file is processed
-                return
+        self.LoopHashDirectoriesInternal(1, True)
 
