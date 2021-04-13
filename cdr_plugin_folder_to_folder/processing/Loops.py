@@ -51,7 +51,10 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                file_processing.processDirectory(endpoint, itempath)
+                if not file_processing.processDirectory(endpoint, itempath):
+                    # File cannot be processed
+                    return False
+
                 log_data = {
                         'file': original_file_path,
                         'status': FileStatus.COMPLETED.value,
@@ -79,11 +82,10 @@ class Loops(object):
         endpoint_index = process_index % self.config.endpoints_count
         for idx in range(self.config.endpoints_count):
             if self.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
-                return True
+                return
             # The Endpoint failed to process the file
             # Retry it with the next one
             endpoint_index = (endpoint_index + 1) % self.config.endpoints_count
-        return False
 
     @log_duration
     def LoopHashDirectoriesInternal(self, thread_count, do_single = False):
