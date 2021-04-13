@@ -98,7 +98,7 @@ class File_Processing:
             raise ValueError("Unexpected hash length")
 
         if not self.meta_service.is_initial_status(dir):
-            return False
+            raise ValueError("File metadata is not in initial state")
 
         self.meta_service.set_status_inprogress(dir)
 

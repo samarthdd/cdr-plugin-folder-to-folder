@@ -51,7 +51,7 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                result = file_processing.processDirectory(endpoint, itempath)
+                file_processing.processDirectory(endpoint, itempath)
                 log_data = {
                         'file': original_file_path,
                         'status': FileStatus.COMPLETED.value,
@@ -61,7 +61,7 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
-                return result
+                return True
             except Exception as error:
                 log_data = {
                     'file': original_file_path,
