@@ -116,7 +116,6 @@ class Loops(object):
 
         Loops.processing_started = False
 
-    @log_duration
     async def LoopHashDirectoriesAsync(self):
         await Loops.lock.acquire()
         try:

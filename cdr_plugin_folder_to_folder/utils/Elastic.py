@@ -65,7 +65,7 @@ class Elastic:
         return self
 
     def create_index_and_index_pattern(self, delete_existing=False):
-        if self.server_online():
+        if self.enabled:
             if delete_existing:
                 self.index().delete_index()
                 self.index_pattern().delete()
@@ -77,21 +77,23 @@ class Elastic:
     # class methods
 
     def add(self, data, refresh=False):
-        return self.elastic().add(data, id_key=self.id_key, refresh=refresh)
+        if self.enabled:
+            return self.elastic().add(data, id_key=self.id_key, refresh=refresh)
+
+    def delete(self, record_id):
+        if self.enabled:
+            return self.elastic().delete_data_by_id(id=record_id)
 
     def get_data(self, record_id):
-        result = self.elastic().get_data(id=record_id)
-        if result:
-            return result.get('_source')
+        if self.enabled:
+            result = self.elastic().get_data(id=record_id)
+            if result:
+                return result.get('_source')
         return {}
 
     @index_by
     @group_by
     def search_using_lucene(self, query='*', size=10000):
-        return list(self.elastic().search_using_lucene(query, size=size))
-
-
-#environ['ELASTIC_SERVER'] = self.config.elastic_host
-#environ['ELASTIC_PORT'  ] = self.config.elastic_port
-#environ['KIBANA_SERVER' ] = self.config.kibana_host
-#environ['KIBANA_PORT'   ] = self.config.kibana_port
+        if self.enabled:
+            return list(self.elastic().search_using_lucene(query, size=size))
+        return []
