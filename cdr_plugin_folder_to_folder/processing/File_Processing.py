@@ -116,7 +116,5 @@ class File_Processing:
 
         self.do_rebuild(endpoint, hash, encodedFile, dir)
 
-        self.meta_service.set_status_comleted(dir)
-
         return True
 

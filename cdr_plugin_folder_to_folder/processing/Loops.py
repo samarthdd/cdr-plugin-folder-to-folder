@@ -54,21 +54,23 @@ class Loops(object):
                 result = file_processing.processDirectory(endpoint, itempath)
                 log_data = {
                         'file': original_file_path,
-                        'status': 'processed',
+                        'status': FileStatus.COMPLETED.value,
                         'error': 'none',
                         'timestamp': datetime.now(),
                     }
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
+                meta_service.set_status(FileStatus.COMPLETED.value)
                 return result
             except Exception as error:
                 log_data = {
                     'file': original_file_path,
-                    'status': 'failed',
+                    'status': FileStatus.FAILED.value,
                     'error': str(error),
                 }
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
+                meta_service.set_status(itempath, FileStatus.FAILED.value)
                 return False
 
     @log_duration

@@ -89,9 +89,6 @@ class Metadata_Service:
     def set_status_inprogress(self, medadata_folder):
         self.set_status(medadata_folder, FileStatus.IN_PROGRESS.value)
 
-    def set_status_comleted(self, medadata_folder):
-        self.set_status(medadata_folder, FileStatus.COMPLETED.value)
-
     def set_error(self, medadata_folder, error_details):
         self.get_from_file(medadata_folder)
         self.metadata["error"] = error_details
