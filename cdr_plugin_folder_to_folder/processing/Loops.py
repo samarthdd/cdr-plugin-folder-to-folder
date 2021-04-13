@@ -64,6 +64,7 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
+                self.status.update_status(file_index,FileStatus.COMPLETED.value)
                 return True
             except Exception as error:
                 log_data = {
@@ -74,6 +75,7 @@ class Loops(object):
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED.value)
+                self.status.update_status(file_index,FileStatus.FAILED.value)
                 return False
 
     @log_duration
@@ -90,6 +92,8 @@ class Loops(object):
     @log_duration
     def LoopHashDirectoriesInternal(self, thread_count, do_single = False):
 
+        self.status.get_from_file()
+
         rootdir = os.path.join(self.config.hd2_location, "data")
 
         if folder_exists(rootdir) is False:
@@ -103,9 +107,6 @@ class Loops(object):
         process_index = 0
 
         for index in range(len(file_list)):
-
-            if file_list[index]["file_status"] != FileStatus.INITIAL.value:
-                continue
 
             process_index += 1
             itempath = os.path.join(rootdir,file_list[index]["hash"])
@@ -129,6 +130,8 @@ class Loops(object):
 
         for index, thread in enumerate(threads):
             thread.join()
+
+        self.status.write_to_file()
 
     @log_duration
     async def LoopHashDirectoriesAsync(self):

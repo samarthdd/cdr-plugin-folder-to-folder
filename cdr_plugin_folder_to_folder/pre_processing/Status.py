@@ -54,11 +54,12 @@ class Status:
         json_save_file_pretty(self.status_data, self.get_status_file_path())
 
     def add_file(self, hash, file_name):
-        self.id=self.id+1
 
         json_data={}
 
         json_data["id"] = self.id
+        self.id=self.id+1
+
         json_data["hash"] = hash
         json_data["file_name"] = file_name
         json_data["file_status"] = FileStatus.INITIAL.value
@@ -69,7 +70,7 @@ class Status:
     def get_file_list(self):
         return self.status_data["file_list"]
 
-    async def update_status(self, index, updated_status):
+    async def update_status_async(self, index, updated_status):
         await Status.lock.acquire()
         try:
             self.status_data["file_list"][index]["file_status"] = updated_status
@@ -82,3 +83,9 @@ class Status:
         finally:
             Status.lock.release()
 
+    def update_status(self, index, updated_status):
+        self.status_data["file_list"][index]["file_status"] = updated_status
+
+#        loop = asyncio.new_event_loop()
+#        asyncio.set_event_loop(loop)
+#        loop.run_until_complete(self.update_status_async(index, updated_status))
