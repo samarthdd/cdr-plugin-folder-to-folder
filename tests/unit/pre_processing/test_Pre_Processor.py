@@ -29,9 +29,6 @@ class test_Pre_Processor(TestCase):
         metadata_elastic = self.pre_processor.meta_service.metadata_elastic
         Setup_Testing().set_config_for_local_testing(config=metadata_elastic.elastic().config)
         metadata_elastic.setup()
-        assert metadata_elastic.elastic().enabled
-
-        
 
     def tearDown(self) -> None:
         pass
