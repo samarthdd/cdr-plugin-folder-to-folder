@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 
 import logging as logger
 
@@ -14,20 +15,22 @@ logger.basicConfig(level=logger.INFO)
 class FileStatus(Enum):
     INITIAL = "Initial"
     IN_PROGRESS = "In Progress"
-    COMPLETED = "Completed"
+    COMPLETED = "Completed Successfully"
     FAILED = "Completed with errors" 
 
 class Status:
 
     STATUS_FILE_NAME = "hash.json"
+    lock = asyncio.Lock()
 
     def __init__(self):
         self.config = Config().load_values()
         self.status_folder = os.path.join(self.config.hd2_location, "status")
         self.status_data = {    "files_count"          : 0     ,
                                 "files_to_process"     : 0     ,
-                                "processed_files"      : 0     ,
-                                "failed_to_process"    : 0     ,
+                                "completed"            : 0     ,
+                                "failed"               : 0     ,
+                                "in_progress"          : 0     ,
                                 "file_list"            : []
                             }
         self.id = 0
@@ -66,5 +69,16 @@ class Status:
     def get_file_list(self):
         return self.status_data["file_list"]
 
-
+    async def update_status(self, index, updated_status):
+        await Status.lock.acquire()
+        try:
+            self.status_data["file_list"][index]["file_status"] = updated_status
+            if updated_status == FileStatus.IN_PROGRESS.value:
+                self.status_data["in_progress"] += 1
+            elif updated_status == FileStatus.COMPLETED.value:
+                self.status_data["completed"] += 1
+            elif updated_status == FileStatus.FAILED.value:
+                self.status_data["failed"] += 1
+        finally:
+            Status.lock.release()
 
