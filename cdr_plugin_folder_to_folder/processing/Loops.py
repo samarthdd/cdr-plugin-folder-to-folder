@@ -154,5 +154,10 @@ class Loops(object):
 
     @log_duration
     def ProcessSingleFile(self):
+        if self.IsProcessing():
+            log_error("ERROR: Attempt to start processing while processing is in progress")
+            return False
+
         self.LoopHashDirectoriesInternal(1, True)
+        return True
 
