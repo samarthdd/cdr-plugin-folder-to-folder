@@ -13,6 +13,8 @@ from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Servi
 from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 from cdr_plugin_folder_to_folder.utils.Log_Duration import Log_Duration, log_duration
 from cdr_plugin_folder_to_folder.utils.Logging import Logging, log_info, log_debug
+from osbot_utils.utils.Json import json_save_file_pretty
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 
 logger.basicConfig(level=logger.INFO)
 
@@ -33,13 +35,14 @@ class Pre_Processor:
         self.meta_service   =  Metadata_Service()
 
         self.hash_json      =  []
-        self.id             =  0
 
         self.file_name      = None                              # set in process() method
         self.current_path   = None
         self.base_folder    = None
         self.dst_folder     = None
         self.dst_file_name  = None
+
+        self.status = Status()
 
         folder_create(self.data_target)                             # todo: refactor this from this __init__
         folder_create(self.status_target)
@@ -137,16 +140,7 @@ class Pre_Processor:
 
     def update_status(self):
         try:
-            self.id=self.id+1
-            json_data={}
-
-            json_data["id"]=self.id
-            json_data["file_name"]=self.file_name
-            json_data["original_hash"]=self.original_hash
-
-            self.hash_json.append(json_data)
-            hash_file_name="hash.json"
-
-            self.file_service.wrtie_json_file(self.status_target,hash_file_name,self.hash_json)
+            self.status.add_file(self.original_hash, self.file_name)
+            self.status.write_to_file()
         except Exception as error:
             raise error

@@ -7,17 +7,13 @@ import logging as logger
 from osbot_utils.utils.Files import file_sha256, file_name
 from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
+from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 
 from enum import Enum
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
 
 logger.basicConfig(level=logger.INFO)
-
-class Status(Enum):
-     INITIAL = "Initial"
-     IN_PROGRESS = "In Progress"
-     COMPLETED = "Completed"
 
 class Metadata_Service:
 
@@ -37,7 +33,7 @@ class Metadata_Service:
                           "original_file_paths": hd1_path                      ,  # todo: DC: check why we need this (since I think this is part of the file_path variable)
                           "original_hash"      : self.get_hash(self.file_path) ,
                           "evidence_file_paths": None                          ,
-                          "rebuild_status"     : Status.INITIAL.value          ,
+                          "rebuild_status"     : FileStatus.INITIAL.value          ,
                           "xml_report_status"  : None                          ,
                           "target_path"        : None                          ,
                           "error"              : None
@@ -87,7 +83,7 @@ class Metadata_Service:
         return self.metadata["rebuild_status"]
 
     def is_initial_status(self, medadata_folder):
-        return (self.get_status(medadata_folder) == Status.INITIAL.value)
+        return (self.get_status(medadata_folder) == FileStatus.INITIAL.value)
 
     def set_status(self, medadata_folder, status):
         self.get_from_file(medadata_folder)
@@ -95,10 +91,7 @@ class Metadata_Service:
         self.write_metadata_to_file(self.metadata, medadata_folder)
 
     def set_status_inprogress(self, medadata_folder):
-        self.set_status(medadata_folder, Status.IN_PROGRESS.value)
-
-    def set_status_comleted(self, medadata_folder):
-        self.set_status(medadata_folder, Status.COMPLETED.value)
+        self.set_status(medadata_folder, FileStatus.IN_PROGRESS.value)
 
     def set_error(self, medadata_folder, error_details):
         self.get_from_file(medadata_folder)
