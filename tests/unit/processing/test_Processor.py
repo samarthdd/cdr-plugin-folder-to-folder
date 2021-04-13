@@ -40,6 +40,7 @@ class test_Processor(TestCase):
         loops.StopProcessing()
         assert loops.HasBeenStopped() == True
 
+    @log_duration
     def test_process_file(self):
         loops = Loops()
         loops.ProcessSingleFile()
@@ -53,5 +54,11 @@ class test_Processor(TestCase):
 
         assert len(os.listdir(self.config.hd3_location)) != 0
 
+    @log_duration
+    def test_processing_inprogress(self):
+        loops = Loops()
+        Loops.processing_started = True
+        assert (False == loops.ProcessSingleFile())
+        assert (False == loops.LoopHashDirectories())
 
 

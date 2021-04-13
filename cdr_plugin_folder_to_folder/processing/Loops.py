@@ -129,18 +129,19 @@ class Loops(object):
         #Allow only a single loop to be run at a time
         if self.IsProcessing():
             log_error("ERROR: Attempt to start processing while processing is in progress")
-            return
+            return False
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self.LoopHashDirectoriesAsync())
+        return True
 
     @log_duration
     def ProcessSingleFile(self):
         # Do nothing if the processing loop is running
         if self.IsProcessing():
             log_error("ERROR: Attempt to start processing while processing is in progress")
-            return
+            return False
 
         rootdir = os.path.join(self.config.hd2_location, "data")
         meta_service = Metadata_Service()
@@ -159,5 +160,7 @@ class Loops(object):
             if meta_service.is_initial_status(itempath):
                 self.ProcessDirectory(itempath, file_index)
                 # finish it once a file is processed
-                return
+                return True
+
+        return False
 
