@@ -116,5 +116,4 @@ class File_Processing:
 
         self.do_rebuild(endpoint, hash, encodedFile, dir)
 
-        return True
 
