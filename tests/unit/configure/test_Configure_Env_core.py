@@ -12,6 +12,7 @@ class test_Configure_Env(TestCase):
         self.configure = Configure_Env()
         load_dotenv()
 
+    @pytest.mark.skip("this is breaking current .env file (this needs to run on a temp .env file)")
     def test_configure(self):
         hd1_path      = "./test_data/scenario-1/hd1"
         hd2_path      = "./test_data/scenario-1/hd2"

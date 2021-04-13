@@ -11,6 +11,8 @@ from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 
 from enum import Enum
 
+from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
+
 logger.basicConfig(level=logger.INFO)
 
 class Metadata_Service:
@@ -18,22 +20,23 @@ class Metadata_Service:
     METADATA_FILE_NAME = "metadata.json"
 
     def __init__(self):
-        self.file_path = None
-        self.medadata_folder = None
-        self.metadata = {}
-        self.config = Config().load_values()
+        self.file_path        = None
+        self.medadata_folder  = None
+        self.metadata         = {}
+        self.config           = Config().load_values()
+        self.metadata_elastic = Metadata_Elastic().setup()
 
     def get_metadata(self, file_path, hd1_path):
         # Create metadata json
         self.file_path=file_path
-        self.metadata = {"file_name"          : file_name(self.file_path)     ,
-                    "original_file_paths": hd1_path                      ,  # todo: DC: check why we need this (since I think this is part of the file_path variable)
-                    "original_hash"      : self.get_hash(self.file_path) ,
-                    "evidence_file_paths": None                          ,
-                    "rebuild_status"     : FileStatus.INITIAL.value      ,
-                    "xml_report_status"  : None                          ,
-                    "target_path"        : None                          ,
-                    "error"              : None
+        self.metadata = { "file_name"          : file_name(self.file_path)     ,
+                          "original_file_paths": hd1_path                      ,  # todo: DC: check why we need this (since I think this is part of the file_path variable)
+                          "original_hash"      : self.get_hash(self.file_path) ,
+                          "evidence_file_paths": None                          ,
+                          "rebuild_status"     : FileStatus.INITIAL.value          ,
+                          "xml_report_status"  : None                          ,
+                          "target_path"        : None                          ,
+                          "error"              : None
                      }
 
         return self.metadata
@@ -58,7 +61,8 @@ class Metadata_Service:
     def write_metadata_to_file(self, metadata, medadata_folder):
         self.metadata = metadata
         self.medadata_folder = medadata_folder
-        json_save_file_pretty(self.metadata, self.get_metadata_file_path())
+        json_save_file_pretty(self.metadata, self.get_metadata_file_path())     # save metadata to file storage
+        self.metadata_elastic.add_metadata(metadata)                            # save metadata to elastic
 
     def get_hash(self,file_path):
         return file_sha256(file_path)

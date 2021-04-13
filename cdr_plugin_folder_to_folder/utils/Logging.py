@@ -1,6 +1,7 @@
 import inspect
 from datetime import datetime
 
+from osbot_utils.decorators.methods.cache_on_self import cache_on_self
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import timestamp_utc_now, date_now, date_time_now
 
@@ -12,19 +13,24 @@ DEFAULT_LOGS_INDEX_NAME = 'application_logs'
 class Logging:
 
     def __init__(self, index_name=DEFAULT_LOGS_INDEX_NAME):
-        self.config        = Config()
+        #self.config        = Config()
         self.index_name    = index_name
         self.time_field    = 'timestamp'
         self.refresh_index = False
-        self.enabled       = True
+        self.enabled       = False
 
+    @cache_on_self
     def elastic(self):
         return Elastic(index_name=self.index_name, time_field=self.time_field)
 
     def setup(self, delete_existing=False):
-        self.enabled = self.elastic().server_online()
-        if self.enabled:
-            self.elastic().setup(delete_existing=delete_existing)
+        elastic = self.elastic()
+        elastic.setup()
+        if elastic.enabled:
+            elastic.create_index_and_index_pattern(delete_existing=delete_existing)
+            self.enabled = True
+
+
         return self
 
     def get_logs(self):
