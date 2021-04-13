@@ -87,6 +87,7 @@ class Loops(object):
         rootdir = os.path.join(self.config.hd2_location, "data")
 
         if folder_exists(rootdir) is False:
+            log_error("ERROR: rootdir does not exist: " + rootdir)
             return
 
         directory_contents = os.listdir(rootdir)
@@ -114,14 +115,13 @@ class Loops(object):
         for index, thread in enumerate(threads):
             thread.join()
 
-        Loops.processing_started = False
-
     @log_duration
     async def LoopHashDirectoriesAsync(self):
         await Loops.lock.acquire()
         try:
             self.LoopHashDirectoriesInternal()
         finally:
+            Loops.processing_started = False
             Loops.lock.release()
 
     @log_duration
