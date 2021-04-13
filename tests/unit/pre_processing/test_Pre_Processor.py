@@ -9,6 +9,7 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.Logging import log_debug
+from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
@@ -24,6 +25,12 @@ class test_Pre_Processor(TestCase):
         self.path_h2       = self.config.hd2_location
         self.path_h3       = self.config.hd3_location
         folder_create(self.path_h1)
+
+        metadata_elastic = self.pre_processor.meta_service.metadata_elastic
+        Setup_Testing().set_config_for_local_testing(config=metadata_elastic.elastic().config)
+        metadata_elastic.setup()
+        assert metadata_elastic.elastic().enabled
+
         
 
     def tearDown(self) -> None:

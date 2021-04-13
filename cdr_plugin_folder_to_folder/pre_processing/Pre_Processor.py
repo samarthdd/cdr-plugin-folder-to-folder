@@ -23,9 +23,9 @@ class Pre_Processor:
         self.filename       =  None
         self.hd1_path       =  None
         self.original_hash  =  None
-        self.config         = Config().load_values()
-        self.temp_folder    = temp_folder()                                     # todo: this should be deleted after file processing
-        self.hd1_location   = self.config.hd1_location
+        self.config         =  Config().load_values()
+        self.temp_folder    =  temp_folder()                                     # todo: this should be deleted after file processing
+        self.hd1_location   =  self.config.hd1_location
         self.data_target    =  path_combine(self.config.hd2_location , "data")
         self.status_target  =  path_combine(self.config.hd2_location , "status")
 
