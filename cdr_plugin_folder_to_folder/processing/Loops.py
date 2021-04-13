@@ -60,7 +60,7 @@ class Loops(object):
                     }
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
-                meta_service.set_status(FileStatus.COMPLETED.value)
+                meta_service.set_status(itempath, FileStatus.COMPLETED.value)
                 return result
             except Exception as error:
                 log_data = {
