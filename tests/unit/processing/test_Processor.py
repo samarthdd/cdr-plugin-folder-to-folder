@@ -51,7 +51,7 @@ class test_Processor(TestCase):
 
     @log_duration
     def test_processing_inprogress(self):
-        self.loops.processing_started = True
+        Loops.processing_started = True
         assert (False == self.loops.ProcessSingleFile())
         assert (False == self.loops.LoopHashDirectories())
 

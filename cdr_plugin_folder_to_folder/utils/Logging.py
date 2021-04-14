@@ -67,9 +67,9 @@ class Logging:
     def warning (self, message, data=None, duration=''):  return self.log_message("WARNING" , message ,data=data, duration=duration)
 
 
-logging = Logging().setup()
+logging = Logging().setup()             # todo: refactor this so that the constructor is not invoked here
 
-def log_message (*args, **kwargs): return logging.log_message(*args, **kwargs)
+def log_message (*args, **kwargs):  return logging.log_message(*args, **kwargs)     # helper static logging classes
 
 def log_critical(*args, **kwargs):  return logging.critical (*args, **kwargs)
 def log_debug   (*args, **kwargs):  return logging.debug    (*args, **kwargs)

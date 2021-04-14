@@ -3,7 +3,8 @@ import sys
 from unittest import TestCase
 
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import folder_exists, folder_create, file_copy, files_list, temp_file, file_delete
+from osbot_utils.utils.Files import folder_exists, folder_create, file_copy, files_list, temp_file, file_delete, \
+    temp_folder, folder_delete_all
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
@@ -16,16 +17,20 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 class test_Pre_Processor(TestCase):
     test_file = None
+    temp_hd1  = None
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.test_file = temp_file(contents='Static text so that we have a static hash')
-        cls.file_hash = '087a783915875b069c89d517491dd42b9e1b3619464a750e72a7ab44c06fa645'
+        cls.test_file     = temp_file(contents='Static text so that we have a static hash')
+        cls.file_hash     = '087a783915875b069c89d517491dd42b9e1b3619464a750e72a7ab44c06fa645'
+        cls.temp_hd1      = temp_folder()
         cls.pre_processor = Pre_Processor()
+        Setup_Testing().configure_pre_processor(cls.pre_processor)
 
     @classmethod
     def tearDownClass(cls) -> None:
-        file_delete(cls.test_file)
+        file_delete      (cls.test_file)
+        folder_delete_all(cls.temp_hd1 )
 
     def setUp(self) -> None:
 
@@ -35,7 +40,7 @@ class test_Pre_Processor(TestCase):
         #self.path_h2       = self.config.hd2_location
         #self.path_h3       = self.config.hd3_location
         #folder_create(self.path_h1)
-        Setup_Testing().configure_pre_processor(self.pre_processor)
+
 
 
     def tearDown(self) -> None:
@@ -43,11 +48,14 @@ class test_Pre_Processor(TestCase):
 
 
     def test__init__(self):
-        assert self.pre_processor.file_hash(self.test_file) == self.file_hash
         assert folder_exists(self.pre_processor.data_target  )
         assert folder_exists(self.pre_processor.status_target)
         #assert folder_exists(self.path_h1)
 
+    def test_file_hash(self):
+        assert self.pre_processor.file_hash(self.test_file) == self.file_hash
+
+    #def test_file_metadata(self):
 
     def test_process_files(self):
         path_data   = self.pre_processor.data_target

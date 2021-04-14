@@ -59,7 +59,9 @@ class Pre_Processor:
     def file_hash(self, file_path):
         return self.meta_service.get_hash(file_path)
 
-    @log_duration
+    def file_metadata(self, file_path):
+        pass
+
     def process_files(self):
         try:
             for folderName, subfolders, filenames in os.walk(self.hd1_location):
@@ -71,7 +73,6 @@ class Pre_Processor:
             logger.error(f"PreProcessor: process_files : {error}")
             raise error
 
-    @log_duration
     def process(self, file_path):
         try:
             self.file_name = ntpath.basename(file_path)

@@ -5,6 +5,10 @@ from   osbot_utils.utils.Files      import parent_folder
 
 class Setup_Testing:
 
+    def __init__(self, configure_logging=True):
+        if configure_logging:
+            self.configure_static_logging()             # todo refactor once this logging use of static object is also refactored 
+
     def path_repo_root(self):
         """find the root path via getting the parent folder of the location of the
            cdr_plugin_folder_to_folder module"""
@@ -17,25 +21,33 @@ class Setup_Testing:
         return path_repo
 
     def set_config_for_local_testing(self, config=None):
-        from cdr_plugin_folder_to_folder.utils.Logging import logging
-        if config is None:
-            config = logging.elastic().config
         config.kibana_host  = '127.0.0.1'
         config.elastic_host = '127.0.0.1'
-        logging.setup()
+        return self
 
     def configure_config(self, config):
-        self.set_config_for_local_testing(config=config)
+        return self.set_config_for_local_testing(config=config)
 
     def configure_elastic(self, elastic):
-        self.configure_config(config=elastic.config)
+        return self.configure_config(config=elastic.config)
+
+    def configure_logging(self, logging):
+        self.configure_config(logging.elastic().config)
+        logging.setup()
+        return self
 
     def configure_metadata_elastic(self, metadata_elastic):
         self.configure_elastic(elastic=metadata_elastic.elastic())
         metadata_elastic.setup()
+        return self
 
     def configure_pre_processor(self, pre_processor):
         metadata_elastic = pre_processor.meta_service.metadata_elastic
         self.configure_metadata_elastic(metadata_elastic=metadata_elastic)
+        return self
 
 
+    def configure_static_logging(self):
+        from cdr_plugin_folder_to_folder.utils.Logging import logging
+        self.configure_logging(logging=logging)
+        return self
