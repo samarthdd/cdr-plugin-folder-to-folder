@@ -11,6 +11,9 @@ from cdr_plugin_folder_to_folder.processing.Loops import Loops
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 
+from cdr_plugin_folder_to_folder.api.routes.Processing import process_hd2_data_to_hd3
+from cdr_plugin_folder_to_folder.api.routes.Processing import process_hd2_data_to_hd3_sequential
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
 class test_Processor(TestCase):
@@ -49,15 +52,17 @@ class test_Processor(TestCase):
 
     @log_duration
     def test_process_files(self):
-        loops = Loops()
-        loops.LoopHashDirectories()
+        #loops = Loops()
+        #loops.LoopHashDirectories()
+        process_hd2_data_to_hd3()
 
         assert len(os.listdir(self.config.hd3_location)) != 0
 
     @log_duration
     def test_process_files_sequential(self):
-        loops = Loops()
-        loops.LoopHashDirectoriesSequential()
+        #loops = Loops()
+        #loops.LoopHashDirectoriesSequential()
+        process_hd2_data_to_hd3_sequential()
 
         assert len(os.listdir(self.config.hd3_location)) != 0
 
