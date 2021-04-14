@@ -12,17 +12,17 @@ from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testin
 class test_Metadata_Elastic(TestCase):
 
     def setUp(self) -> None:
-        self.metadata_service = Metadata_Service()
         self.metadata_elastic = Metadata_Elastic()
-        self.elastic          = self.metadata_elastic.elastic()
-        Setup_Testing().set_config_for_local_testing(config=self.elastic.config)
-        self.elastic.setup()
-        if self.elastic.enabled is False:
+        self.metadata_service = Metadata_Service()
+        self.metadata_service.metadata_elastic = self.metadata_elastic
+        Setup_Testing().configure_metadata_elastic(self.metadata_elastic)
+
+        if self.metadata_elastic.enabled is False:
             pytest.skip('Elastic server not available')
 
     def test_setup(self):
         self.metadata_elastic.setup()
-        pprint(self.elastic.elastic().index_list())
+        assert self.metadata_elastic.index_name in self.metadata_elastic.elastic().elastic().index_list()
 
     def test_add_metadata(self):
         file_path           = temp_file(contents='some text')

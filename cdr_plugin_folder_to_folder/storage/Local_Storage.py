@@ -15,10 +15,10 @@ class Local_Storage:
         return self.config.hd1_location
 
     def hd2(self):
-        return self.config.hd1_location
+        return self.config.hd2_location
 
     def hd3(self):
-        return self.config.hd1_location
+        return self.config.hd3_location
 
 
 

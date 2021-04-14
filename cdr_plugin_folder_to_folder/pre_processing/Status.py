@@ -24,7 +24,7 @@ class Status:
     lock = asyncio.Lock()
 
     def __init__(self):
-        self.config = Config().load_values()
+        self.config = Config()
         self.status_folder = os.path.join(self.config.hd2_location, "status")
         self.status_data = {    "files_count"          : 0     ,
                                 "files_to_process"     : 0     ,

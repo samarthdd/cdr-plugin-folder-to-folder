@@ -23,7 +23,7 @@ class Metadata_Service:
         self.file_path        = None
         self.medadata_folder  = None
         self.metadata         = {}
-        self.config           = Config().load_values()
+        self.config           = Config()
         self.metadata_elastic = Metadata_Elastic().setup()
 
     def create_metadata(self, file_path, hd1_path):

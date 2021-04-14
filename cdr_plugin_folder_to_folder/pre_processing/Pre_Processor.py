@@ -21,7 +21,7 @@ logger.basicConfig(level=logger.INFO)
 class Pre_Processor:
 
     def __init__(self):
-        self.config = Config().load_values()
+        self.config = Config()
         self.filename       =  None
         self.hd1_path       =  None
         self.original_hash  =  None

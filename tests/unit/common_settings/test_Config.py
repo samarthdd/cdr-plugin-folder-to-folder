@@ -1,18 +1,27 @@
 from unittest import TestCase
 
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import folder_exists
+from osbot_utils.utils.Files import folder_exists, folder_delete_all
 from osbot_utils.utils.Misc import list_set
 
 from cdr_plugin_folder_to_folder.common_settings.Config import *
 
 class test_Config(TestCase):
 
+    config = None
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config  = Config()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.config.load_values()
+
     def setUp(self) -> None:
-        self.config  = Config()
+        pass
 
     def test_load_values(self):
-        assert Config.config_cache == self.config
         config = self.config
 
         self.assertEqual(config.gw_sdk_address , os.environ.get("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS))
@@ -32,10 +41,13 @@ class test_Config(TestCase):
 
         # check config_cache
         config.root_folder = 'aaa'
+        assert Config().root_folder == 'aaa'
+
         config.load_values()
-        assert config.root_folder == 'aaa'
-        config.load_values(reload=True)
-        assert config.root_folder == DEFAULT_ROOT_FOLDER
+        assert config  .root_folder == DEFAULT_ROOT_FOLDER
+        assert Config().root_folder == DEFAULT_ROOT_FOLDER
+
+
 
 
 
@@ -54,8 +66,12 @@ class test_Config(TestCase):
         assert folder_exists(self.config.hd2_location)
         assert folder_exists(self.config.hd3_location)
 
-        
-        assert self
+        folder_delete_all(root_folder)
+
+        assert folder_not_exists(self.config.root_folder)
+        assert folder_not_exists(self.config.hd1_location)
+        assert folder_not_exists(self.config.hd2_location)
+        assert folder_not_exists(self.config.hd3_location)
 
     def test_get_values(self):
         values = self.config.values()

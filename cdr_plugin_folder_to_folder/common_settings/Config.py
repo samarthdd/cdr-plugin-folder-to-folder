@@ -28,54 +28,56 @@ API_VERSION              = "v0.5.3"
 
 
 
-class Config(object):
-    config_cache = None           # static cache of config value
+class Config:
+    _instance = None
+    def __new__(cls):                                               # singleton pattern
+        if cls._instance is None:
+            cls._instance = super(Config, cls).__new__(cls)
+        return cls._instance
 
     def __init__(self):
-        Setup_Testing(configure_logging=False).set_test_root_dir()     # todo: fix test data so that we don't need to do this here
-        self.gw_sdk_address = None
-        self.gw_sdk_port    = None
-        self.hd1_location   = None
-        self.hd2_location   = None
-        self.hd3_location   = None
-        self.root_folder    = None              # todo: see if we will need this
-        self.elastic_host   = None
-        self.elastic_port   = None
-        self.elastic_schema = None
-        self.kibana_host    = None
-        self.kibana_port    = None
-        self.thread_count   = None
-        self.endpoints      = None
-        self.endpoints_count = None
-        self.load_values()
+        if hasattr(self, 'root_folder') is False:                     # only set these values first time around
+            self.gw_sdk_address  = None
+            self.gw_sdk_port     = None
+            self.hd1_location    = None
+            self.hd2_location    = None
+            self.hd3_location    = None
+            self.root_folder     = None
+            self.elastic_host    = None
+            self.elastic_port    = None
+            self.elastic_schema  = None
+            self.kibana_host     = None
+            self.kibana_port     = None
+            self.thread_count    = None
+            self.endpoints       = None
+            self.endpoints_count = None
+            self.load_values()                                      # due to the singleton pattern this will only be executed once
 
-    def load_values(self, reload=False):                # todo add check
-        if reload or Config.config_cache is None:
-            load_dotenv(override=True)                      # Load configuration from .env file that should exist in the root of the repo
-            self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
-            self.gw_sdk_port     = int(os.getenv("GW_SDK_PORT", DEFAULT_GW_SDK_PORT)   )
-            self.hd1_location    = os.getenv("HD1_LOCATION"   , DEFAULT_HD1_LOCATION   )
-            self.hd2_location    = os.getenv("HD2_LOCATION"   , DEFAULT_HD2_LOCATION   )
-            self.hd3_location    = os.getenv("HD3_LOCATION"   , DEFAULT_HD3_LOCATION   )
-            self.root_folder     = os.getenv("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
-            self.elastic_host    = os.getenv("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
-            self.elastic_port    = os.getenv("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )
-            self.elastic_schema  = os.getenv("ELASTIC_SCHEMA" , DEFAULT_ELASTIC_SCHEMA )
-            self.kibana_host     = os.getenv("KIBANA_HOST"    , DEFAULT_KIBANA_HOST    )
-            self.kibana_port     = os.getenv("KIBANA_PORT"    , DEFAULT_KIBANA_PORT    )
-            self.thread_count    = os.getenv("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
+    def load_values(self):
+        Setup_Testing(configure_logging=False).set_test_root_dir()  # todo: fix test data so that we don't need to do this here
+        load_dotenv(override=True)                                  # Load configuration from .env file that should exist in the root of the repo
+        self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
+        self.gw_sdk_port     = int(os.getenv("GW_SDK_PORT", DEFAULT_GW_SDK_PORT)   )
+        self.hd1_location    = os.getenv("HD1_LOCATION"   , DEFAULT_HD1_LOCATION   )
+        self.hd2_location    = os.getenv("HD2_LOCATION"   , DEFAULT_HD2_LOCATION   )
+        self.hd3_location    = os.getenv("HD3_LOCATION"   , DEFAULT_HD3_LOCATION   )
+        self.root_folder     = os.getenv("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
+        self.elastic_host    = os.getenv("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
+        self.elastic_port    = os.getenv("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )
+        self.elastic_schema  = os.getenv("ELASTIC_SCHEMA" , DEFAULT_ELASTIC_SCHEMA )
+        self.kibana_host     = os.getenv("KIBANA_HOST"    , DEFAULT_KIBANA_HOST    )
+        self.kibana_port     = os.getenv("KIBANA_PORT"    , DEFAULT_KIBANA_PORT    )
+        self.thread_count    = os.getenv("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
 
-            json_string          = os.getenv("ENDPOINTS"      , DEFAULT_ENDPOINTS      )
-            self.endpoints       = json.loads(json_string)
+        json_string          = os.getenv("ENDPOINTS"      , DEFAULT_ENDPOINTS      )
+        self.endpoints       = json.loads(json_string)
 
-            self.endpoints_count = len(self.endpoints['Endpoints'])
+        self.endpoints_count = len(self.endpoints['Endpoints'])
 
-            #create_folder(self.hd2_location)            # todo: remove this from here
-            #create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here
+        #create_folder(self.hd2_location)            # todo: remove this from here
+        #create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here
 
-            self.check_config()
-            Config.config_cache  = self                 #
-        return Config.config_cache
+        self.check_config()
 
     def check_config(self):
         # use temp folders if configured locations don't exist

@@ -10,7 +10,7 @@ logger.basicConfig(level=logger.INFO)
 
 class File_Distributor:
     def __init__(self):
-        self.config             = Config().load_values()
+        self.config             = Config()
         self.hd1_base_location  = self.config.hd1_location
         self.hd2_base_location  = self.config.hd2_location
         self.hd3_base_location  = self.config.hd3_location

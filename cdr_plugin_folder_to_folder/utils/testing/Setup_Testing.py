@@ -20,16 +20,15 @@ class Setup_Testing:
         chdir(path_repo)
         return path_repo
 
-    def set_config_for_local_testing(self, config=None):
-        config.kibana_host  = '127.0.0.1'
+    def configure_config(self, config):
+        config.kibana_host = '127.0.0.1'
         config.elastic_host = '127.0.0.1'
         return self
 
-    def configure_config(self, config):
-        return self.set_config_for_local_testing(config=config)
-
     def configure_elastic(self, elastic):
-        return self.configure_config(config=elastic.config)
+        self.configure_config(config=elastic.config)
+        elastic.setup()
+        return self
 
     def configure_logging(self, logging):
         self.configure_config(logging.elastic().config)

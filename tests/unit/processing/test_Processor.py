@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 class test_Processor(TestCase):
 
     def setUp(self) -> None:
-        self.config         = Config().load_values()
+        self.config         = Config()
         self.repotrs_path   = os.path.join(self.config.hd2_location,"reports")
         self.processed_path = os.path.join(self.config.hd2_location,"processed")
         self.pre_processor = Pre_Processor()

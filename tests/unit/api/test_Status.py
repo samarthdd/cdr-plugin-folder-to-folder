@@ -13,7 +13,7 @@ class test_Status(TestCase):
 
     def setUp(self) -> None:
         self.status = Status()
-        Setup_Testing().set_config_for_local_testing()
+        Setup_Testing().configure_static_logging()
 
         #self.status.config.kibana_host='127.0.0.1'
         #self.status.config.elastic_host = '127.0.0.1'
