@@ -7,7 +7,7 @@ python-dotenv
 python-json-logger
 pydantic
 requests
-starlette
+starlette == 0.13.6
 urllib3
 uvicorn
 wheel
