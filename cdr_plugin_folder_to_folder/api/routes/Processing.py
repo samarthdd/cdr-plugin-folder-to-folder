@@ -14,6 +14,14 @@ def process_hd2_data_to_hd3():
         return "Loop stopped"
     return "Loop completed"
 
+@router.post("/start-sequential")
+def process_hd2_data_to_hd3_sequential():
+    loops = Loops()
+    loops.LoopHashDirectoriesSequential()
+    if loops.HasBeenStopped():
+        return "Loop stopped"
+    return "Loop completed"
+
 @router.post("/stop")
 def stop_processing():
     loops = Loops()
