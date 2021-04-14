@@ -90,7 +90,7 @@ class Loops(object):
             endpoint_index = (endpoint_index + 1) % self.config.endpoints_count
 
     @log_duration
-    def LoopHashDirectoriesInternal(self, thread_count, do_single = False):
+    def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
         self.status.get_from_file()
 
@@ -108,10 +108,13 @@ class Loops(object):
 
         for index in range(len(file_list)):
 
-            process_index += 1
             itempath = os.path.join(rootdir,file_list[index]["hash"])
             file_index = file_list[index]["id"]
 
+            if (FileStatus.INITIAL.value != file_list[index]["file_status"]):
+                continue
+
+            process_index += 1
             x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_index, process_index,))
             threads.append(x)
             x.start()
@@ -134,13 +137,13 @@ class Loops(object):
         self.status.write_to_file()
 
     @log_duration
-    async def LoopHashDirectoriesAsync(self):
+    async def LoopHashDirectoriesAsync(self, thread_count, do_single = False):
         await Loops.lock.acquire()
         try:
             Loops.continue_processing = True
             Loops.processing_started = True
 
-            self.LoopHashDirectoriesInternal(self.config.thread_count)
+            self.LoopHashDirectoriesInternal(thread_count, do_single)
         finally:
             Loops.processing_started = False
             Loops.lock.release()
@@ -154,7 +157,19 @@ class Loops(object):
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.LoopHashDirectoriesAsync())
+        loop.run_until_complete(self.LoopHashDirectoriesAsync(self.config.thread_count))
+        return True
+
+    @log_duration
+    def LoopHashDirectoriesSequential(self):
+        #Allow only a single loop to be run at a time
+        if self.IsProcessing():
+            log_error("ERROR: Attempt to start processing while processing is in progress")
+            return False
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.LoopHashDirectoriesAsync(1))
         return True
 
     @log_duration
@@ -163,6 +178,7 @@ class Loops(object):
             log_error("ERROR: Attempt to start processing while processing is in progress")
             return False
 
-        self.LoopHashDirectoriesInternal(1, True)
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.LoopHashDirectoriesAsync(1, True))
         return True
-
