@@ -15,6 +15,7 @@ class test_Logging(TestCase):
     def setUpClass(cls) -> None:
         cls.index_name = 'temp_log_index'
         cls.logging = Logging(index_name=cls.index_name)
+
         cls.elastic = cls.logging.elastic()
         Setup_Testing().set_config_for_local_testing(config=cls.elastic.config)
         cls.logging.setup()

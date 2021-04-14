@@ -23,3 +23,19 @@ class Setup_Testing:
         config.kibana_host  = '127.0.0.1'
         config.elastic_host = '127.0.0.1'
         logging.setup()
+
+    def configure_config(self, config):
+        self.set_config_for_local_testing(config=config)
+
+    def configure_elastic(self, elastic):
+        self.configure_config(config=elastic.config)
+
+    def configure_metadata_elastic(self, metadata_elastic):
+        self.configure_elastic(elastic=metadata_elastic.elastic())
+        metadata_elastic.setup()
+
+    def configure_pre_processor(self, pre_processor):
+        metadata_elastic = pre_processor.meta_service.metadata_elastic
+        self.configure_metadata_elastic(metadata_elastic=metadata_elastic)
+
+

@@ -21,11 +21,10 @@ logger.basicConfig(level=logger.INFO)
 class Pre_Processor:
 
     def __init__(self):
-
+        self.config = Config().load_values()
         self.filename       =  None
         self.hd1_path       =  None
         self.original_hash  =  None
-        self.config         =  Config().load_values()
         self.temp_folder    =  temp_folder()                                     # todo: this should be deleted after file processing
         self.hd1_location   =  self.config.hd1_location
         self.data_target    =  path_combine(self.config.hd2_location , "data")
@@ -57,6 +56,9 @@ class Pre_Processor:
         folder_create(self.data_target)
         folder_create(self.status_target)
 
+    def file_hash(self, file_path):
+        return self.meta_service.get_hash(file_path)
+
     @log_duration
     def process_files(self):
         try:
@@ -80,7 +82,7 @@ class Pre_Processor:
             self.file_service.copy_file(self.hd1_path,self.current_path)
 
             # Get metadata
-            metadata_content=self.meta_service.get_metadata(file_path=self.current_path,hd1_path=self.hd1_path)
+            metadata_content=self.meta_service.create_metadata(file_path=self.current_path, hd1_path=self.hd1_path)
 
 
             # Get SHA 256 hash

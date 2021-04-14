@@ -26,7 +26,7 @@ class test_Metadata_Elastic(TestCase):
 
     def test_add_metadata(self):
         file_path           = temp_file(contents='some text')
-        metadata            = self.metadata_service.get_metadata(file_path=file_path, hd1_path=file_path)
+        metadata            = self.metadata_service.create_metadata(file_path=file_path, hd1_path=file_path)
         original_hash       = metadata.get('original_hash')
         result_add_metadata = self.metadata_elastic.add_metadata(metadata)
 
@@ -36,6 +36,10 @@ class test_Metadata_Elastic(TestCase):
         assert self.metadata_elastic.get_metadata   (original_hash=original_hash)               == metadata
         assert self.metadata_elastic.delete_metadata(original_hash=original_hash).get('result') == 'deleted'
         assert self.metadata_elastic.get_metadata   (original_hash=original_hash)               == {}
+
+    def test_clear_all_metadata(self):
+        self.metadata_elastic.delete_all_metadata()
+        assert len(self.metadata_elastic.get_all_metadata()) == 0
 
 
 

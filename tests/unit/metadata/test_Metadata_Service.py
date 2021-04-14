@@ -11,9 +11,9 @@ class test_Metadata_Service(TestCase):
         self.test_file        = Test_Data().images().pop()
         assert file_exists(self.test_file)
 
-    def test_get_metadata(self):
+    def test_create_metadata(self):
         hd1_path= "./test_path"
-        metadata  =self.metadata_service.get_metadata(self.test_file,hd1_path)
+        metadata  =self.metadata_service.create_metadata(self.test_file, hd1_path)
 
         assert metadata == {  'evidence_file_paths' : None                       ,
                               'file_name'           : file_name(self.test_file)  ,
