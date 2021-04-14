@@ -93,3 +93,9 @@ variable "data" {
   })
   description = "Data from module data"
 }
+
+variable "mac_addresses" {
+  type        = list(string)
+  description = "NIC MAC address"
+  default     = []
+}

@@ -44,7 +44,7 @@ variable "instances_count" {
 }
 
 module "sdk" {
-  source         = "./ova"
+  source = "./modules/modules/ova"
   name_prefix    = "sdk"
   ovf_source     = var.ovf_urls.sdk
   instance_count = 2
@@ -53,7 +53,7 @@ module "sdk" {
 }
 
 module "offline_desktop" {
-  source         = "./ova"
+  source = "./modules/modules/ova"
   name_prefix    = "offline-desktop"
   ovf_source     = var.ovf_urls.offline_desktop
   instance_count = 1
@@ -62,7 +62,7 @@ module "offline_desktop" {
 }
 
 module "workflow" {
-  source         = "./ova"
+  source = "./modules/modules/ova"
   name_prefix    = "workflow"
   ovf_source     = var.ovf_urls.workflow
   instance_count = 1

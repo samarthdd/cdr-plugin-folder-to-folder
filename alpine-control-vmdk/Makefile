@@ -14,6 +14,7 @@ copy:
 .PHONY: build
 build:
 	@chmod 0755 build.sh && \
+	sudo rm -f alpine.vmdk && \
 	sudo alpine-make-vm-image -f vmdk -c alpine.vmdk build.sh
 
 .PHONY: clean

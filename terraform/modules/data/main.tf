@@ -15,12 +15,6 @@ terraform {
 #  ┃┏┛┣━┫┣┳┛┃┣━┫┣┻┓┃  ┣╸ ┗━┓
 #  ┗┛ ╹ ╹╹┗╸╹╹ ╹┗━┛┗━╸┗━╸┗━┛
 
-variable "network" {
-  type        = string
-  description = "Name of the network to attach"
-  default     = "VMs"
-}
-
 variable "datastore" {
   type        = string
   description = "Datastore name to search VMDK in"
@@ -44,14 +38,13 @@ data "vsphere_datastore" "this" {
   datacenter_id = data.vsphere_datacenter.this.id
 }
 
-data "vsphere_network" "this" {
-  name          = var.network
-  datacenter_id = data.vsphere_datacenter.this.id
-}
-
 #  ┏━┓╻ ╻╺┳╸┏━┓╻ ╻╺┳╸
 #  ┃ ┃┃ ┃ ┃ ┣━┛┃ ┃ ┃ 
 #  ┗━┛┗━┛ ╹ ╹  ┗━┛ ╹ 
+
+output "datacenter_id" {
+  value = data.vsphere_datacenter.this.id
+}
 
 output "pool_id" {
   value = data.vsphere_resource_pool.this.id
@@ -67,8 +60,4 @@ output "datastore_name" {
 
 output "host_id" {
   value = data.vsphere_host.this.id
-}
-
-output "network_id" {
-  value = data.vsphere_network.this.id
 }

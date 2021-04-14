@@ -19,13 +19,10 @@ locals {
   id = sha256(join(" ", [var.datastore, var.dest]))
   path = format("/vmfs/volumes/%s/%s",
     var.datastore,
-    can(regex("/$", var.dest)) ? basename(var.src) : trimprefix(var.dest, "/")
+    trimprefix(can(regex("/$", var.dest)) ? "${dirname(var.dest)}/${basename(var.src)}" : var.dest, "/")
   )
-  basename = can(regex("/$", var.dest)) ? basename(var.src) : basename(trimprefix(var.dest, "/"))
-  dirname = format("/vmfs/volumes/%s/%s",
-    var.datastore,
-    trimprefix(dirname(var.dest), "/")
-  )
+  basename = basename(local.path)
+  dirname  = dirname(local.path)
 }
 
 resource "null_resource" "upload" {
@@ -33,8 +30,6 @@ resource "null_resource" "upload" {
     source    = var.src
     datastore = var.datastore
     path      = local.path
-    dirname   = local.dirname
-    basename  = local.basename
     convert   = var.vmdk_convert
   }
 

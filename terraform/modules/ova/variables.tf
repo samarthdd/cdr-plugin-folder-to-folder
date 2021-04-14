@@ -60,3 +60,9 @@ variable "boot_disk_size" {
   description = "HDD size of GiB "
   default     = 0
 }
+
+variable "guestinfo" {
+  type        = any
+  description = "Guestinfo for cloud-init"
+  default     = null
+}

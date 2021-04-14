@@ -5,6 +5,6 @@ output "id" {
 }
 
 output "path" {
-  value       = "${local.dirname}/${local.basename}"
+  value       = local.path
   description = "Path to file on ESXi"
 }

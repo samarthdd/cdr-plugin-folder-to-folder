@@ -26,6 +26,8 @@ resource "esxi_guest" "this" {
     Source OVA/OVF URL: ${var.ovf_source}
   EOF
 
+  guestinfo = var.guestinfo
+
   network_interfaces {
     virtual_network = var.network
   }

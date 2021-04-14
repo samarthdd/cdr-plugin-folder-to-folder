@@ -12,6 +12,10 @@ terraform {
       source  = "hashicorp/null"
       version = "3.1.0"
     }
+    macaddress = {
+      source  = "ivoronin/macaddress"
+      version = "0.2.2"
+    }
   }
 }
 
@@ -38,6 +42,10 @@ locals {
       datastore_path = "${local.workspace[index].datastore_path}/disk0.vmdk"
     }
   ]
+}
+
+resource "macaddress" "this" {
+  count = var.instance_count
 }
 
 resource "null_resource" "disk" {
@@ -100,6 +108,8 @@ resource "vsphere_virtual_machine" "this" {
   }
 
   network_interface {
-    network_id = var.data.network_id
+    network_id     = var.data.network_id
+    use_static_mac = length(var.mac_addresses) > 0 ? true : false
+    mac_address    = length(var.mac_addresses) > 0 ? var.mac_addresses[count.index] : macaddress.this[count.index].address
   }
 }
