@@ -108,10 +108,13 @@ class Loops(object):
 
         for index in range(len(file_list)):
 
-            process_index += 1
             itempath = os.path.join(rootdir,file_list[index]["hash"])
             file_index = file_list[index]["id"]
 
+            if (FileStatus.INITIAL.value != file_list[index]["file_status"]):
+                continue
+
+            process_index += 1
             x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_index, process_index,))
             threads.append(x)
             x.start()

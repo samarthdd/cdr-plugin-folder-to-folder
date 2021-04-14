@@ -65,5 +65,5 @@ class test_Processor(TestCase):
     def test_processing_inprogress(self):
         loops = Loops()
         Loops.processing_started = True
-        assert (False == loops.ProcessSingleFile())
-        assert (False == loops.LoopHashDirectories())
+        assert loops.ProcessSingleFile() is False
+        assert loops.LoopHashDirectories() is False
