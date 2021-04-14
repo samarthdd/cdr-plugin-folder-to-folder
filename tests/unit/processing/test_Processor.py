@@ -55,10 +55,15 @@ class test_Processor(TestCase):
         assert len(os.listdir(self.config.hd3_location)) != 0
 
     @log_duration
+    def test_process_files_sequential(self):
+        loops = Loops()
+        loops.LoopHashDirectoriesSequential()
+
+        assert len(os.listdir(self.config.hd3_location)) != 0
+
+    @log_duration
     def test_processing_inprogress(self):
         loops = Loops()
         Loops.processing_started = True
         assert (False == loops.ProcessSingleFile())
         assert (False == loops.LoopHashDirectories())
-
-
