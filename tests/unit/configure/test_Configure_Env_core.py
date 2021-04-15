@@ -49,14 +49,14 @@ class test_Configure_Env(TestCase):
         assert response is not None
         self.assertEqual(response   , json.loads(expected_return_value))
 
-    @patch("cdr_plugin_folder_to_folder.configure.Configure_Env.Configure_Env.gw_sdk_healhcheck")
-    def test_get_valid_endpoints(self,mock_gw_sdk_healhcheck):
+    @patch("cdr_plugin_folder_to_folder.configure.Configure_Env.Configure_Env.gw_sdk_healthcheck")
+    def test_get_valid_endpoints(self,mock_gw_sdk_healthcheck):
         endpoint_string = '{"Endpoints":[{"IP":"0.0.0.0", "Port":"8080"}]}'
 
         response = self.configure.get_valid_endpoints(endpoint_string=endpoint_string)
         assert response is None
 
-        mock_gw_sdk_healhcheck.return_value.status_code = 200
+        mock_gw_sdk_healthcheck.return_value.status_code = 200
         response = self.configure.get_valid_endpoints(endpoint_string=endpoint_string)
         self.assertEqual(json.loads(response)  , json.loads(endpoint_string))
 

@@ -88,7 +88,7 @@ class Configure_Env:
 
                 response = self.gw_sdk_healthcheck(server_url)
                 if response:
-                    if response.status_code is 200:
+                    if response.status_code == 200:
                         valid_endpoints['Endpoints'].append(endpoint_json['Endpoints'][idx])
 
             valid_endpoints_count = len(valid_endpoints['Endpoints'])
