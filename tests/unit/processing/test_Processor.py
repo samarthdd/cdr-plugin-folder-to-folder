@@ -18,7 +18,22 @@ from cdr_plugin_folder_to_folder.api.routes.Processing import process_hd2_data_t
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
+#todo add a lot more tests, namely the tests that are currently preventing the file from being correctly processed
 class test_Processor(TestCase):
+    pre_processor = None
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.test_data = Test_Data()
+        cls.test_file = cls.test_data.image()
+        cls.pre_processor = Pre_Processor()
+        cls.pre_processor.clear_data_and_status_folders()
+        cls.stage_1 = cls.pre_processor.process(cls.test_file)
+        # todo: add method to also delete hd3 output
+
+    # @classmethod
+    # def tearDownClass(cls) -> None:
+    #     cls.pre_processor.clear_data_and_status_folders()
 
     def setUp(self) -> None:
         self.config         = Config()

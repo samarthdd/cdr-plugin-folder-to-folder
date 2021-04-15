@@ -7,6 +7,8 @@ from osbot_utils.utils.Files import folder_exists, folder_create, file_copy, fil
     temp_folder, folder_delete_all
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
+from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata
+from cdr_plugin_folder_to_folder.metadata.Metadata_Utils import Metadata_Utils
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.Logging import log_debug
@@ -18,11 +20,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 class test_Pre_Processor(TestCase):
     test_file = None
     temp_hd1  = None
+    file_hash = None
 
     @classmethod
     def setUpClass(cls) -> None:
         cls.test_file     = temp_file(contents='Static text so that we have a static hash')
-        cls.file_hash     = '087a783915875b069c89d517491dd42b9e1b3619464a750e72a7ab44c06fa645'
+        cls.file_hash     = '500286533bf75d769e9180a19414d1c3502dd52093e7351a0a9b1385d8f8961c'
         cls.temp_hd1      = temp_folder()
         cls.pre_processor = Pre_Processor()
         Setup_Testing().configure_pre_processor(cls.pre_processor)
@@ -31,15 +34,19 @@ class test_Pre_Processor(TestCase):
     def tearDownClass(cls) -> None:
         file_delete      (cls.test_file)
         folder_delete_all(cls.temp_hd1 )
+        Metadata(file_hash=cls.file_hash).delete()
 
     def setUp(self) -> None:
 
-        self.test_data     = Test_Data()
-        self.test_file     = self.test_data.image()
+        #self.test_data     = Test_Data()
+        #self.test_file     = self.test_data.image()
+            self.pre_processor.clear_data_and_status_folders()
+
         #self.path_h1       = self.pre_processor.config.hd1_location
         #self.path_h2       = self.config.hd2_location
         #self.path_h3       = self.config.hd3_location
         #folder_create(self.path_h1)
+
 
 
 
@@ -48,8 +55,8 @@ class test_Pre_Processor(TestCase):
 
 
     def test__init__(self):
-        assert folder_exists(self.pre_processor.data_target  )
-        assert folder_exists(self.pre_processor.status_target)
+        assert folder_exists(self.pre_processor.storage.hd2_data()  )
+        assert folder_exists(self.pre_processor.storage.hd2_status())
         #assert folder_exists(self.path_h1)
 
     def test_file_hash(self):
@@ -58,9 +65,8 @@ class test_Pre_Processor(TestCase):
     #def test_file_metadata(self):
 
     def test_process_files(self):
-        path_data   = self.pre_processor.data_target
-        path_status = self.pre_processor.status_target
-        self.pre_processor.clear_data_and_status_folders()
+        path_data   = self.pre_processor.storage.hd2_data()
+        path_status = self.pre_processor.storage.hd2_status()
 
         assert len(files_list(path_data   )) == 0
         assert len(files_list(path_status )) == 0
@@ -75,7 +81,10 @@ class test_Pre_Processor(TestCase):
 
 
     def test_process_file(self):
-        source_file = self.test_data.images().pop()
-        self.pre_processor.process(source_file)
-        assert folder_exists(self.pre_processor.dst_folder)
+        metadata = Metadata(file_hash=self.file_hash)
+        assert metadata.exists() is False
+        #source_file = self.test_data.images().pop()
+        self.pre_processor.process(self.test_file)
+        assert metadata.exists() is True
+
 

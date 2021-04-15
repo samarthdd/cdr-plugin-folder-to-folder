@@ -26,14 +26,15 @@ class test_Metadata_Elastic(TestCase):
 
     def test_add_metadata(self):
         file_path           = temp_file(contents='some text')
-        metadata            = self.metadata_service.create_metadata(file_path=file_path, hd1_path=file_path)
-        original_hash       = metadata.get('original_hash')
-        result_add_metadata = self.metadata_elastic.add_metadata(metadata)
+        metadata            = self.metadata_service.create_metadata(file_path=file_path)
+        metadata_data       = metadata.data
+        original_hash       = metadata.original_hash()
+        result_add_metadata = self.metadata_elastic.add_metadata(metadata_data)
 
         assert original_hash == 'b94f6f125c79e3a5ffaa826f584c10d52ada669e6762051b826b55776d05aed2'
         assert result_add_metadata.get('_shards').get('successful') == 1
 
-        assert self.metadata_elastic.get_metadata   (original_hash=original_hash)               == metadata
+        assert self.metadata_elastic.get_metadata   (original_hash=original_hash)               == metadata_data
         assert self.metadata_elastic.delete_metadata(original_hash=original_hash).get('result') == 'deleted'
         assert self.metadata_elastic.get_metadata   (original_hash=original_hash)               == {}
 

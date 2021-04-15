@@ -13,10 +13,10 @@ from enum import Enum
 logger.basicConfig(level=logger.INFO)
 
 class FileStatus(Enum):
-    INITIAL = "Initial"
+    INITIAL     = "Initial"
     IN_PROGRESS = "In Progress"
-    COMPLETED = "Completed Successfully"
-    FAILED = "Completed with errors" 
+    COMPLETED   = "Completed Successfully"
+    FAILED      = "Completed with errors"
 
 class Status:
 
@@ -49,8 +49,8 @@ class Status:
         return self.status_data
 
     def write_to_file(self):
-        print(self.get_status_file_path())
-        print(self.status_data)
+        #print(self.get_status_file_path())
+        #print(self.status_data)
         json_save_file_pretty(self.status_data, self.get_status_file_path())
 
     def add_file(self, hash, file_name):
