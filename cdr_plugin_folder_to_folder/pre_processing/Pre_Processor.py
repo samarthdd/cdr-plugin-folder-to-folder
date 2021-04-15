@@ -6,11 +6,10 @@ from osbot_utils.utils.Files import folder_create, folder_delete_all
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
-from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
-from cdr_plugin_folder_to_folder.utils.Log_Duration import Log_Duration, log_duration
-from cdr_plugin_folder_to_folder.utils.Logging import Logging, log_info, log_debug
-from osbot_utils.utils.Json import json_save_file_pretty
+from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
+
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
+from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
 logger.basicConfig(level=logger.INFO)
 
@@ -21,32 +20,14 @@ class Pre_Processor:
         self.meta_service   = Metadata_Service()
         self.status         = Status()
         self.storage        = Storage()
-        #self.filename       =  None
-        #self.hd1_path       =  None
-        #self.original_hash  =  None
-        #self.temp_folder    =  temp_folder()                                     # todo: this should be deleted after file processing
-        #self.hd1_location   =  self.config.hd1_location
-        #self.data_target    =  path_combine(self.config.hd2_location , "data")
-        #self.status_target  =  path_combine(self.config.hd2_location , "status")
+        self.file_name      = None                              # set in process() method
+        self.current_path   = None
+        self.base_folder    = None
+        self.dst_folder     = None
+        self.dst_file_name  = None
 
-        #self.file_service   =  File_Service()
-
-
-        #self.hash_json      =  []
-
-        #self.file_name      = None                              # set in process() method
-        #self.current_path   = None
-        #self.base_folder    = None
-        #self.dst_folder     = None
-        #self.dst_file_name  = None
-
-
-
-        #folder_create(self.data_target)                             # todo: refactor this from this __init__
-        #folder_create(self.status_target)
-
-        #self.logging = Logging()
-
+        self.hash_json = Hash_Json()
+        self.status = Status()
 
     @log_duration
     def clear_data_and_status_folders(self):
@@ -157,7 +138,9 @@ class Pre_Processor:
     def update_status(self, file_name, original_hash, status):
         try:
             if status == FileStatus.INITIAL.value:
-                self.status.add_file(original_hash, file_name)
+                self.hash_json.add_file(original_hash, file_name)
+                self.hash_json.write_to_file()
+                self.status.add_file()
                 self.status.write_to_file()
         except Exception as error:
             raise error
