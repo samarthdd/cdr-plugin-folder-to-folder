@@ -36,7 +36,7 @@ def process_single_file():
     loops.ProcessSingleFile()
     return "File has been processed"
 
-@router.post("/status")
+@router.get("/status")
 def get_the_processing_status():
     status = Status()
     status.get_from_file()
