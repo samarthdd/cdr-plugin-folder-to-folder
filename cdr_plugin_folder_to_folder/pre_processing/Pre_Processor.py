@@ -59,6 +59,8 @@ class Pre_Processor:
 
     @log_duration
     def process_files(self):
+        self.hash_json = Hash_Json()
+        self.status = Status()        
         try:
             for folderName, subfolders, filenames in os.walk(self.hd1_location):
                 for filename in filenames:
@@ -141,8 +143,6 @@ class Pre_Processor:
     def update_status(self):
         try:
             self.hash_json.add_file(self.original_hash, self.file_name)
-            self.hash_json.write_to_file()
             self.status.add_file()
-            self.status.write_to_file()
         except Exception as error:
             raise error
