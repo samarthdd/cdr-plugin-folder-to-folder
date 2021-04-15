@@ -4,7 +4,7 @@ import asyncio
 
 import logging as logger
 
-from osbot_utils.utils.Files import file_sha256, file_name
+from osbot_utils.utils.Files import file_sha256, file_name, create_folder
 from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 
@@ -32,7 +32,8 @@ class Status:
                         "failed"               : 0     ,
                         "in_progress"          : 0
                     }
-        self.id = 0
+        create_folder(self.folder)
+        self.write_to_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Status.STATUS_FILE_NAME)
@@ -51,17 +52,21 @@ class Status:
         json_save_file_pretty(self.data, self.get_file_path())
 
     def add_file(self):
+        self.get_from_file()
         self.data["files_count"] += 1
+        self.write_to_file()
 
     async def update_counters_async(self, index, updated_status):
         await Status.lock.acquire()
         try:
+            self.get_from_file()
             if updated_status == FileStatus.IN_PROGRESS.value:
                 self.data["in_progress"] += 1
             elif updated_status == FileStatus.COMPLETED.value:
                 self.data["completed"] += 1
             elif updated_status == FileStatus.FAILED.value:
                 self.data["failed"] += 1
+            self.write_to_file()
         finally:
             Status.lock.release()
 

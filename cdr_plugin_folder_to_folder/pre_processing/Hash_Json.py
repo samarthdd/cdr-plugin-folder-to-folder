@@ -3,7 +3,7 @@ import json
 
 import logging as logger
 
-from osbot_utils.utils.Files import file_sha256, file_name
+from osbot_utils.utils.Files import file_sha256, file_name, create_folder
 from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
@@ -21,6 +21,8 @@ class Hash_Json:
         self.folder = os.path.join(self.config.hd2_location, "status")
         self.data = { "file_list" : []  }
         self.id = 0
+        create_folder(self.folder)
+        self.write_to_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Hash_Json.HASH_FILE_NAME)
@@ -50,8 +52,9 @@ class Hash_Json:
         json_data["hash"] = hash
         json_data["file_name"] = file_name
         json_data["file_status"] = FileStatus.INITIAL.value
-
         self.data["file_list"].append(json_data)
+
+        self.write_to_file()
 
     def get_file_list(self):
         return self.data["file_list"]
