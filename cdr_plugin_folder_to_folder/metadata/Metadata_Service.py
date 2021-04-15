@@ -32,8 +32,8 @@ class Metadata_Service:
         metadata.add_file(file_path)
         return metadata
 
-    def set_metadata(self, metadata):
-        self.metadata = metadata
+    # def set_metadata(self, metadata):
+    #     self.metadata = metadata
 
     def get_metadata_file_path(self):
         return os.path.join(self.metadata_folder, Metadata_Service.METADATA_FILE_NAME)

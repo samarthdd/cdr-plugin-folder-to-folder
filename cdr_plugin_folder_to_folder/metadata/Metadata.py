@@ -25,7 +25,6 @@ class Metadata:
             self.set_file_hash(self.metadata_utils.file_hash(file_path))
             if self.exists() is False:
                 self.create(file_path)
-                self.set_file_name(file_name(file_path))
             self.add_file_path(file_path)
             self.save()
             return self.file_hash
@@ -44,6 +43,7 @@ class Metadata:
         if self.file_hash:
             folder_create(self.metadata_folder_path())
             file_copy    (file_path, self.source_file_path())
+            self.set_file_name(file_name(file_path))
 
     def default_data(self):
         return {   "file_name"          : None                      ,
@@ -65,9 +65,9 @@ class Metadata:
     def exists(self):
         return folder_exists(self.metadata_folder_path())
 
-    def load(self):
-        #self.file_hash = file_hash
-        pass
+    # def load(self):
+    #     #self.file_hash = file_hash
+    #     pass
 
     def metadata_file_path(self):
         if self.file_hash:

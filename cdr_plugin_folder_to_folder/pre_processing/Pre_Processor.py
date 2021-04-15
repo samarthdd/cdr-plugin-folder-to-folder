@@ -46,101 +46,25 @@ class Pre_Processor:
     #     pass
 
     def process_files(self):
-        try:
-            hd1_location = self.storage.hd1()
-            for folderName, subfolders, filenames in os.walk(hd1_location):     # refactor this to be provided from the storage class
-                for filename in filenames:
-                    self.hd1_path =  os.path.join(folderName, filename)
-                    if os.path.isfile(self.hd1_path):
-                        self.process(self.hd1_path)
-        except Exception as error:
-            logger.error(f"PreProcessor: process_files : {error}")
-            raise error
+        hd1_location = self.storage.hd1()
+        for folderName, subfolders, filenames in os.walk(hd1_location):     # refactor this to be provided from the storage class
+            for filename in filenames:
+                self.hd1_path =  os.path.join(folderName, filename)
+                if os.path.isfile(self.hd1_path):
+                    self.process(self.hd1_path)
 
     def process(self, file_path):
-        try:
+        metadata = self.meta_service.create_metadata(file_path=file_path)
 
-            metadata = self.meta_service.create_metadata(file_path=file_path)
+        file_name      = metadata.file_name()
+        original_hash  = metadata.original_hash()
+        status         = metadata.status()
+        self.update_status(file_name, original_hash, status)
 
-            #self.hd1_path       = file_path
-            file_name      = metadata.file_name()
-            original_hash  = metadata.original_hash()
-            status         = metadata.status()
-            self.update_status(file_name, original_hash, status)
-            # self.file_name = ntpath.basename(file_path)
-            # self.hd1_path  = file_path
-            #
-            # # Copy File to temp path
-            # self.current_path = os.path.join(self.temp_folder, self.file_name)
-            # self.file_service.copy_file(self.hd1_path,self.current_path)
-            #
-            # # Get metadata
-            # metadata = self.meta_service.create_metadata(file_path=self.current_path)
-            # metadata_content = metadata.data
-            #
-            #
-            # # Get SHA 256 hash
-            # self.original_hash = metadata_content["original_hash"]
-            #
-            # # Create basefolder
-            # self.base_folder = os.path.join(self.temp_folder, self.original_hash)
-            # self.file_service.create_folder(folder_name=self.base_folder)
-            #
-            # # target folder
-            # self.dst_folder = os.path.join(self.data_target, self.original_hash)
-            #
-            # # Check hash folder exists in HD2
-            # if not os.path.exists(self.dst_folder):
-            #
-            #     self.dst_file_name = "source"
-            #
-            #     # Store metadata
-            #     metadata_content["hd2_path"] = os.path.join(self.dst_folder, self.dst_file_name)
-            #     self.meta_service.write_metadata_to_file(metadata_content, self.base_folder)
-            #
-            #     # Rename and Move original file to hash folder
-            #     self.file_service.move_file(self.current_path,
-            #                                 os.path.join(self.base_folder, self.dst_file_name))
-            #
-            #     # Store hash folder to HD2
-            #     self.file_service.copy_folder(self.base_folder, self.dst_folder)
-            #     self.update_status()
-            # else:
-            #     # Update HD2 metadata with source paths
-            #     metadata.add_file(file_path)
-            #
-            #     # Remove temp file
-            #     os.remove(self.current_path)
-            #
-            # # Delete temp hash folder
-            # self.file_service.delete_folder(self.base_folder)
-
-        except Exception as error:
-            logger.error(f"PreProcessor: process : {error}")
-            raise error
-
-    # def update_hd2_metadata(self):
-    #     try:
-    #         # Update HD2 metadata with source paths
-    #         src  = os.path.join(self.dst_folder, Metadata_Service.METADATA_FILE_NAME)
-    #         dst  = os.path.join(self.base_folder, Metadata_Service.METADATA_FILE_NAME)
-    #
-    #         self.file_service.copy_file( src, dst)
-    #
-    #         metadata_content   = self.meta_service.get_from_file(self.base_folder)
-    #         if metadata_content["ofile_paths"] != self.hd1_path:
-    #             metadata_content["file_paths"] = metadata_content["file_paths"]+ "," + self.hd1_path
-    #             self.meta_service.write_metadata_to_file(metadata_content,self.dst_folder)
-    #             self.file_service.copy_file(dst,src)
-    #     except Exception as error:
-    #         raise error
 
     def update_status(self, file_name, original_hash, status):
-        try:
-            if status == FileStatus.INITIAL.value:
-                self.hash_json.add_file(original_hash, file_name)
-                self.hash_json.write_to_file()
-                self.status.add_file()
-                self.status.write_to_file()
-        except Exception as error:
-            raise error
+        if status == FileStatus.INITIAL.value:
+            self.hash_json.add_file(original_hash, file_name)
+            self.hash_json.write_to_file()
+            self.status.add_file()
+            self.status.write_to_file()
