@@ -68,7 +68,7 @@ class test_Configure_Env(TestCase):
         response = self.configure.gw_sdk_healthcheck(server_url)
 
         assert response is not None
-        assert response.status_code is 404
+        assert response.status_code == 404
 
 
 
