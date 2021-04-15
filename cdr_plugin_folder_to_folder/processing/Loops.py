@@ -31,7 +31,7 @@ class Loops(object):
         self.config = Config().load_values()
         self.status = Status()
         self.status.get_from_file()
-        self.events = Events_Log(os.path.join(self.config.hd1_location, "status"))
+        self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
 
     def IsProcessing(self):
         return Loops.processing_started

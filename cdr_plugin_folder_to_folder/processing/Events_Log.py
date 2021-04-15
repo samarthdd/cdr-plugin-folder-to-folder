@@ -46,4 +46,4 @@ class Events_Log:
         json_data["log"] = log
 
         self.data["events"].append(json_data)
-        #self.write_to_file()
+        self.write_to_file()
