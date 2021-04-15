@@ -61,4 +61,5 @@ class Hash_Json:
 
     def update_status(self, index, updated_status):
         self.data["file_list"][index]["file_status"] = updated_status
+        self.write_to_file()
 
