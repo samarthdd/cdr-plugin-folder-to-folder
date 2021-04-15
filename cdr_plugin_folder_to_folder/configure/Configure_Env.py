@@ -8,6 +8,8 @@ import dotenv
 import logging as logger
 
 from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
+from urllib.parse import urljoin
+import requests
 
 logger.basicConfig(level=logger.INFO)
 
@@ -59,16 +61,57 @@ class Configure_Env:
     def configure_endpoints(self, endpoint_string):
         try:
             dotenv_file = dotenv.find_dotenv()
-            environ['ENDPOINTS'] = endpoint_string
-            logger.info(f"ENDPOINTS : {environ['ENDPOINTS']}")
-            dotenv.set_key(dotenv_file, "ENDPOINTS", environ["ENDPOINTS"])
+            valid_endpoint_string=self.get_valid_endpoints(endpoint_string)
 
-            return json.loads(environ['ENDPOINTS'])
+            if valid_endpoint_string :
+                environ['ENDPOINTS'] = valid_endpoint_string
+                logger.info(f"ENDPOINTS : {environ['ENDPOINTS']}")
+                dotenv.set_key(dotenv_file, "ENDPOINTS", environ["ENDPOINTS"])
+                return json.loads(environ['ENDPOINTS'])
+
+            else:
+                return "Endpoints are not valid"
+
 
         except Exception as error:
             raise error
 
+    def get_valid_endpoints(self, endpoint_string):
+        try:
+            valid_endpoints   =  {'Endpoints' : [] }
+            endpoint_json     =  json.loads(endpoint_string)
+            endpoint_count    =  len(endpoint_json['Endpoints'])
+            for idx in range(endpoint_count):
 
+                server_url = "http://" + endpoint_json['Endpoints'][idx]['IP'] + ":" + \
+                              endpoint_json['Endpoints'][idx]['Port']
+
+                response = self.gw_sdk_healthcheck(server_url)
+                if response:
+                    if response.status_code is 200:
+                        valid_endpoints['Endpoints'].append(endpoint_json['Endpoints'][idx])
+
+            valid_endpoints_count = len(valid_endpoints['Endpoints'])
+
+            if valid_endpoints_count == 0:
+                return None
+
+            return json.dumps(valid_endpoints)
+
+        except Exception as e:
+            raise ValueError(str(e))
+
+    def gw_sdk_healthcheck(self, server_url):
+        try:
+            api_route = "api/health/"
+            url=urljoin(server_url,api_route)
+
+            response = requests.request("GET", url , verify=False, timeout=10)
+            return response
+
+        except Exception as e:
+            logger.error(f'Configure_Env : gw_sdk_healthcheck : {e}')
+            return None
 
 
 
