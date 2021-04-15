@@ -20,8 +20,7 @@ class Events_Log:
         self.config = Config().load_values()
         self.folder = folder
         self.data = { "events" : [] }
-        create_folder(self.folder)
-        self.write_to_file()
+        self.get_from_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Events_Log.EVENTS_LOG_FILE_NAME)
@@ -38,6 +37,7 @@ class Events_Log:
             raise error
 
     def write_to_file(self):
+        create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())
 
     def add_log(self, log):

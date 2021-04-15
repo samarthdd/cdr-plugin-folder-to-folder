@@ -21,13 +21,14 @@ class Hash_Json:
         self.folder = os.path.join(self.config.hd2_location, "status")
         self.data = { "file_list" : []  }
         self.id = 0
-        create_folder(self.folder)
-        self.write_to_file()
+        self.get_from_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Hash_Json.HASH_FILE_NAME)
 
     def get_from_file(self):
+        if not os.path.isfile(self.get_file_path()):
+            return
         try:
             with open(self.get_file_path()) as json_file:
                 self.data = json.load(json_file)
@@ -38,8 +39,7 @@ class Hash_Json:
         return self.data
 
     def write_to_file(self):
-        print(self.get_file_path())
-        print(self.data)
+        create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())
 
     def add_file(self, hash, file_name):

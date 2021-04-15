@@ -32,13 +32,14 @@ class Status:
                         "failed"               : 0     ,
                         "in_progress"          : 0
                     }
-        create_folder(self.folder)
-        self.write_to_file()
+        self.get_from_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Status.STATUS_FILE_NAME)
 
     def get_from_file(self):
+        if not os.path.isfile(self.get_file_path()):
+            return
         try:
             with open(self.get_file_path()) as json_file:
                 self.data = json.load(json_file)
@@ -49,6 +50,7 @@ class Status:
         return self.data
 
     def write_to_file(self):
+        create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())
 
     def add_file(self):
