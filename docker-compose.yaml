@@ -28,6 +28,9 @@ services:
         - ${PWD}/.env.sample:/app/cdr_plugin_folder_to_folder/.env
       ports:
         - 8880:8880
+      depends_on:
+        es01:
+          condition: service_healthy
       restart: always
 
   # Elastic and Kibana
@@ -48,6 +51,12 @@ services:
         hard: -1
     ports:
       - 9200:9200
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+
     restart: always
 
   kib01:
