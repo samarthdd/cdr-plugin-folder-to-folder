@@ -115,5 +115,4 @@ class File_Processing:
             raise ValueError("Failed to encode the file")
 
         self.do_rebuild(endpoint, hash, encodedFile, dir)
-
-
+        return True

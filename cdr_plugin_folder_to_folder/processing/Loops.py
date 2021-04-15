@@ -48,13 +48,15 @@ class Loops(object):
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
         file_processing = File_Processing()
+        events = Events_Log(itempath)
 
         endpoint = "http://" + self.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + self.config.endpoints['Endpoints'][endpoint_index]['Port']
+        events.add_log("Processing with: " + endpoint)
 
         if os.path.isdir(itempath):
             try:
                 if not file_processing.processDirectory(endpoint, itempath):
-                    # File cannot be processed
+                    events.add_log("CANNOT be processed")
                     return False
 
                 log_data = {
@@ -67,6 +69,7 @@ class Loops(object):
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
                 self.status.update_status(file_index,FileStatus.COMPLETED.value)
+                events.add_log("Has been processed")
                 return True
             except Exception as error:
                 log_data = {
@@ -78,6 +81,7 @@ class Loops(object):
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED.value)
                 self.status.update_status(file_index,FileStatus.FAILED.value)
+                events.add_log("ERROR:" + str(error))
                 return False
 
     @log_duration
