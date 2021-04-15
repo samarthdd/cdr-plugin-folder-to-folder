@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from cdr_plugin_folder_to_folder.processing.Loops import Loops
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 from osbot_utils.utils.Json import json_format
@@ -40,4 +41,4 @@ def process_single_file():
 def get_the_processing_status():
     status = Status()
     status.get_from_file()
-    return json_format(status.data)
+    return JSONResponse(status.data)
