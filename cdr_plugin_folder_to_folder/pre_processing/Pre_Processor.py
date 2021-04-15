@@ -15,6 +15,7 @@ from cdr_plugin_folder_to_folder.utils.Log_Duration import Log_Duration, log_dur
 from cdr_plugin_folder_to_folder.utils.Logging import Logging, log_info, log_debug
 from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status
+from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
 logger.basicConfig(level=logger.INFO)
 
@@ -34,14 +35,13 @@ class Pre_Processor:
         self.file_service   =  File_Service()
         self.meta_service   =  Metadata_Service()
 
-        self.hash_json      =  []
-
         self.file_name      = None                              # set in process() method
         self.current_path   = None
         self.base_folder    = None
         self.dst_folder     = None
         self.dst_file_name  = None
 
+        self.hash_json = Hash_Json()
         self.status = Status()
 
         folder_create(self.data_target)                             # todo: refactor this from this __init__
@@ -140,7 +140,9 @@ class Pre_Processor:
 
     def update_status(self):
         try:
-            self.status.add_file(self.original_hash, self.file_name)
+            self.hash_json.add_file(self.original_hash, self.file_name)
+            self.hash_json.write_to_file()
+            self.status.add_file()
             self.status.write_to_file()
         except Exception as error:
             raise error
