@@ -31,7 +31,9 @@ class Loops(object):
         self.use_es = False
         self.config = Config().load_values()
         self.status = Status()
+        self.hash_json = Hash_Json()
         self.status.get_from_file()
+        self.hash_json.get_from_file()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
 
     def IsProcessing(self):
@@ -69,7 +71,8 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
-                self.status.update_status(file_index,FileStatus.COMPLETED.value)
+                self.status.update_counters(file_index,FileStatus.COMPLETED.value)
+                self.hash_json.update_status(file_index,FileStatus.COMPLETED.value)
                 events.add_log("Has been processed")
                 return True
             except Exception as error:
@@ -81,7 +84,8 @@ class Loops(object):
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED.value)
-                self.status.update_status(file_index,FileStatus.FAILED.value)
+                self.status.update_counters(file_index,FileStatus.FAILED.value)
+                self.hash_json.update_status(file_index,FileStatus.FAILED.value)
                 events.add_log("ERROR:" + str(error))
                 return False
 
@@ -103,6 +107,7 @@ class Loops(object):
         self.events.add_log("LoopHashDirectoriesAsync started")
 
         self.status.get_from_file()
+        self.hash_json.get_from_file()
 
         rootdir = os.path.join(self.config.hd2_location, "data")
 
@@ -113,7 +118,7 @@ class Loops(object):
         file_index = 0
         threads = list()
 
-        file_list = self.status.get_file_list()
+        file_list = self.hash_json.get_file_list()
         process_index = 0
 
         for index in range(len(file_list)):
@@ -145,6 +150,8 @@ class Loops(object):
             thread.join()
 
         self.status.write_to_file()
+        self.hash_json.write_to_file()
+
         self.events.add_log("LoopHashDirectoriesAsync finished")
 
     @log_duration
