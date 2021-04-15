@@ -57,7 +57,7 @@ class Logging:
                  self.time_field: datetime.utcnow()}
         if self.enabled:
             return self.elastic().add(data=data, refresh=self.refresh_index)
-        # if elastic server is not avaiable, log messages to console
+        # if elastic server is not available, log messages to console
         pprint(data)
 
     def critical(self, message, data=None, duration=''):  return self.log_message("CRITICAL", message ,data=data, duration=duration)

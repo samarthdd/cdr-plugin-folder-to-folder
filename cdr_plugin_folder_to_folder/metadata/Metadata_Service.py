@@ -35,30 +35,22 @@ class Metadata_Service:
     # def set_metadata(self, metadata):
     #     self.metadata = metadata
 
+    def get_from_file(self, metadata_folder):
+        self.metadata_folder=metadata_folder
+
+        with open(self.get_metadata_file_path()) as json_file:
+            self.metadata = json.load(json_file)
+        #except Exception as error:
+        #    logger.error("Failed to init metadata from file: {medadata_folder}")
+        #    logger.error("Failure details: {error}")
+        #    raise error
+        return self.metadata
+
     def get_metadata_file_path(self):
         return os.path.join(self.metadata_folder, Metadata_Service.METADATA_FILE_NAME)
 
-    def get_from_file(self, metadata_folder):
-        self.metadata_folder=metadata_folder
-        try:
-            with open(self.get_metadata_file_path()) as json_file:
-                self.metadata = json.load(json_file)
-        except Exception as error:
-            logger.error("Failed to init metadata from file: {medadata_folder}")
-            logger.error("Failure details: {error}")
-            raise error
-        return self.metadata
-
-    def write_metadata_to_file(self, metadata, metadata_folder):
-        self.metadata = metadata
-        self.metadata_folder = metadata_folder
-        json_save_file_pretty(self.metadata, self.get_metadata_file_path())     # save metadata to file storage
-        self.metadata_elastic.add_metadata(metadata)                            # save metadata to elastic
-
     def file_hash(self, file_path):
         return file_sha256(file_path)
-
-    #def file_hash_metadata(self, file_hash):
 
     def get_original_file_path(self, metadata_folder):
         self.get_from_file(metadata_folder)
@@ -90,3 +82,9 @@ class Metadata_Service:
         self.get_from_file(metadata_folder)
         self.metadata["error"] = error_details
         self.write_metadata_to_file(self.metadata, metadata_folder)
+
+    def write_metadata_to_file(self, metadata, metadata_folder):
+        self.metadata = metadata
+        self.metadata_folder = metadata_folder
+        json_save_file_pretty(self.metadata, self.get_metadata_file_path())     # save metadata to file storage
+        self.metadata_elastic.add_metadata(metadata)                            # save metadata to elastic

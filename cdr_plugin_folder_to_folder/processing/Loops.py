@@ -45,7 +45,6 @@ class Loops(object):
     def HasBeenStopped(self):
         return not Loops.continue_processing
 
-    @log_duration
     def ProcessDirectoryWithEndpoint(self, itempath, file_index, endpoint_index):
         self.config = Config()
         meta_service = Metadata_Service()
