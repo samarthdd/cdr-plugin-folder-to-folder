@@ -29,7 +29,7 @@ class Loops(object):
 
     def __init__(self):
         self.use_es = False
-        self.config = Config().load_values()
+        self.config = Config()
         self.status = Status()
         self.hash_json = Hash_Json()
         self.status.get_from_file()
