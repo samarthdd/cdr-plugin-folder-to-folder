@@ -26,11 +26,12 @@ class Status:
     def __init__(self):
         self.config = Config()
         self.folder = os.path.join(self.config.hd2_location, "status")
-        self.data   = { "files_count"          : 0     ,
+        self.data = {   "files_count"          : 0     ,
                         "files_to_process"     : 0     ,
                         "completed"            : 0     ,
                         "failed"               : 0     ,
-                        "in_progress"          : 0     }
+                        "in_progress"          : 0
+                    }
         self.get_from_file()
 
     def get_file_path(self):
@@ -57,7 +58,7 @@ class Status:
         self.data["files_count"] += 1
         self.write_to_file()
 
-    async def update_counters_async(self, index, updated_status):
+    async def update_counters_async(self, updated_status):
         await Status.lock.acquire()
         try:
             self.get_from_file()
@@ -71,7 +72,7 @@ class Status:
         finally:
             Status.lock.release()
 
-    def update_counters(self, index, updated_status):
+    def update_counters(self, updated_status):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.update_counters_async(index, updated_status))
+        loop.run_until_complete(self.update_counters_async(updated_status))

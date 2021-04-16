@@ -9,7 +9,7 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 
 from enum import Enum
 from datetime import datetime 
-
+import uuid
 logger.basicConfig(level=logger.INFO)
 
 class Events_Log:
@@ -21,6 +21,7 @@ class Events_Log:
         self.folder = folder
         self.data = { "events" : [] }
         self.get_from_file()
+        self.unique_id = str(uuid.uuid4())
 
     def get_file_path(self):
         return os.path.join(self.folder, Events_Log.EVENTS_LOG_FILE_NAME)
@@ -44,8 +45,9 @@ class Events_Log:
         self.get_from_file()
 
         json_data={}
-        json_data["timestamp"] = str(datetime.now())
-        json_data["log"] = log
+        json_data["timestamp"]   = str(datetime.now())
+        json_data["log"]         = log
+        json_data["uuid"]        = self.unique_id
 
         self.data["events"].append(json_data)
         self.write_to_file()

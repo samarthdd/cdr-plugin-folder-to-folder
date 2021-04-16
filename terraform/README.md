@@ -1,3 +1,16 @@
+![OvaToEsxiDeploy](https://user-images.githubusercontent.com/78961055/114981290-61a91800-9eab-11eb-82a2-c628805a8f4c.png)
+
+```shell
+Download SDK, Workflow and Installer/Monitor(Glasswall Desktop) OVAs from AWS S3 bucket to the User computer.
+Connect to ESXi-01 from User Computer and manually import the Installer ova and start the Installer VM instance.
+Copy the SDK, Workflow OVAs and Terraform code from User Computer to the datastore of ESXi-01 and mount the datastore to Installer VM Instance.
+Run the Terraform from Installer VM Instance.
+Validate the SDK and Workflow VM Instances created in respective ESXi.
+```
+
+
+
+
 Terraform for OVA/OVF ESXi deployment
 ===
 
