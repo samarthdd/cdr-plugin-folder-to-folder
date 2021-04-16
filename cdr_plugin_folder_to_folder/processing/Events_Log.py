@@ -21,6 +21,7 @@ class Events_Log:
         self.folder = folder
         self.data = { "events" : [] }
         self.get_from_file()
+        self.unique_id = str(uuid.uuid4())
 
     def get_file_path(self):
         return os.path.join(self.folder, Events_Log.EVENTS_LOG_FILE_NAME)
@@ -46,7 +47,7 @@ class Events_Log:
         json_data={}
         json_data["timestamp"]   = str(datetime.now())
         json_data["log"]         = log
-        json_data["uuid"]        = str(uuid.uuid4())
+        json_data["uuid"]        = self.unique_id
 
         self.data["events"].append(json_data)
         self.write_to_file()

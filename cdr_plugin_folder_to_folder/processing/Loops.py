@@ -59,7 +59,7 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                if not file_processing.processDirectory(endpoint, itempath):
+                if not file_processing.processDirectory(endpoint, itempath, events):
                     events.add_log("CANNOT be processed")
                     return False
 
@@ -73,7 +73,6 @@ class Loops(object):
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
                 self.status.update_counters(FileStatus.COMPLETED.value)
-                #self.hash_json.update_status(file_index,FileStatus.COMPLETED.value)
                 self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
                 events.add_log("Has been processed")
                 return True

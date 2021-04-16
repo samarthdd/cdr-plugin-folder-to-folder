@@ -12,6 +12,7 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
+from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 
 class File_Processing:
 
@@ -92,27 +93,33 @@ class File_Processing:
             raise ValueError("No X-Adaptation-File-Id header found in the response")
 
     @log_duration
-    def processDirectory (self, endpoint, dir):
+    def processDirectory (self, endpoint, dir, events):
         hash = ntpath.basename(dir)
         if len(hash) != 64:
+            events.add_log("Unexpected hash length")
             raise ValueError("Unexpected hash length")
 
+        metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
+        if not (FileService.file_exist(metadata_file_path)):
+            events.add_log("The metadate.json file does not exist")
+            raise ValueError("The metadate.json file does not exist")
+
         if not self.meta_service.is_initial_status(dir):
+            events.add_log("Metadata not in the INITIAL state")
             return False
 
         self.meta_service.set_status_inprogress(dir)
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
+            events.add_log("File does not exist")
             raise ValueError("File does not exist")
-
-        metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
-        if not (FileService.file_exist(metadata_file_path)):
-            raise ValueError("The metadate.json file does not exist")
 
         encodedFile = FileService.base64encode(source_path)
         if not encodedFile:
+            events.add_log("Failed to encode the file")
             raise ValueError("Failed to encode the file")
 
+        events.add_log("Sending to rebuild")
         self.do_rebuild(endpoint, hash, encodedFile, dir)
         return True
