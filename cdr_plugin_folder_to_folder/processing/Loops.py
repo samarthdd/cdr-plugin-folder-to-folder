@@ -29,12 +29,13 @@ class Loops(object):
 
     def __init__(self):
         self.use_es = False
-        self.config = Config()
+        self.config = Config().load_values()
         self.status = Status()
         self.hash_json = Hash_Json()
         self.status.get_from_file()
         self.hash_json.get_from_file()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
+        self.hash=None
 
     def IsProcessing(self):
         return Loops.processing_started
@@ -45,8 +46,9 @@ class Loops(object):
     def HasBeenStopped(self):
         return not Loops.continue_processing
 
-    def ProcessDirectoryWithEndpoint(self, itempath, file_index, endpoint_index):
-        self.config = Config()
+    @log_duration
+    def ProcessDirectoryWithEndpoint(self, itempath, file_hash, endpoint_index):
+        self.config = Config().load_values()
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
         file_processing = File_Processing()
@@ -70,8 +72,9 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
-                self.status.update_counters(file_index,FileStatus.COMPLETED.value)
-                self.hash_json.update_status(file_index,FileStatus.COMPLETED.value)
+                self.status.update_counters(FileStatus.COMPLETED.value)
+                #self.hash_json.update_status(file_index,FileStatus.COMPLETED.value)
+                self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
                 events.add_log("Has been processed")
                 return True
             except Exception as error:
@@ -83,17 +86,17 @@ class Loops(object):
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED.value)
-                self.status.update_counters(file_index,FileStatus.FAILED.value)
-                self.hash_json.update_status(file_index,FileStatus.FAILED.value)
+                self.status.update_counters(FileStatus.FAILED.value)
+                self.hash_json.update_status(file_hash, FileStatus.FAILED.value)
                 events.add_log("ERROR:" + str(error))
                 return False
 
     @log_duration
-    def ProcessDirectory(self, itempath, file_index, process_index):
-        self.config = Config()
+    def ProcessDirectory(self, itempath, file_hash, process_index):
+        self.config = Config().load_values()
         endpoint_index = process_index % self.config.endpoints_count
         for idx in range(self.config.endpoints_count):
-            if self.ProcessDirectoryWithEndpoint(itempath, file_index, endpoint_index):
+            if self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index):
                 return
             # The Endpoint failed to process the file
             # Retry it with the next one
@@ -113,33 +116,31 @@ class Loops(object):
             log_error("ERROR: rootdir does not exist: " + rootdir)
             return
 
-        file_index = 0
         threads = list()
 
-        file_list = self.hash_json.get_file_list()
-        process_index = 0
+        json_list       = self.hash_json.get_json_list()
+        process_index   = 0
 
-        for index in range(len(file_list)):
+        for key in json_list:
+            file_hash   =  key
 
-            itempath = os.path.join(rootdir,file_list[index]["hash"])
-            file_index = file_list[index]["id"]
-
-            if (FileStatus.INITIAL.value != file_list[index]["file_status"]):
+            itempath = os.path.join(rootdir, key)
+            if (FileStatus.INITIAL.value != json_list[key]["file_status"]):
                 continue
 
+            # limit the number of parallel threads
+            if process_index % int(thread_count) == 0:
+                # Clean up the threads
+                for index, thread in enumerate(threads):
+                    thread.join()
+
             process_index += 1
-            x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_index, process_index,))
+            x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_hash, process_index,))
             threads.append(x)
             x.start()
 
             if do_single:
                 break
-
-            # limit the number of parallel threads
-            if file_index % int(thread_count) == 0:
-                # Clean up the threads
-                for index, thread in enumerate(threads):
-                    thread.join()
 
             if not Loops.continue_processing:
                 break

@@ -19,32 +19,45 @@ from cdr_plugin_folder_to_folder.api.routes.Processing import get_the_processing
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
+#todo add a lot more tests, namely the tests that are currently preventing the file from being correctly processed
 class test_Processor(TestCase):
+    pre_processor = None
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.test_data = Test_Data()
+        cls.test_file = cls.test_data.image()
+        cls.pre_processor = Pre_Processor()
+        cls.pre_processor.clear_data_and_status_folders()
+        cls.stage_1 = cls.pre_processor.process(cls.test_file)
+        # todo: add method to also delete hd3 output
+
+    # @classmethod
+    # def tearDownClass(cls) -> None:
+    #     cls.pre_processor.clear_data_and_status_folders()
 
     def setUp(self) -> None:
-        self.config         = Config().load_values()
+        self.config         = Config()
         self.repotrs_path   = os.path.join(self.config.hd2_location,"reports")
         self.processed_path = os.path.join(self.config.hd2_location,"processed")
-
+        self.pre_processor = Pre_Processor()
+        self.loops         = Loops()
 
     def tearDown(self) -> None:
         pass
 
     def test__init__(self):
-        pre_processor = Pre_Processor()
-        pre_processor.clear_data_and_status_folders()       # clear output folders
-        pre_processor.process_files()                       # copy files across
+        self.pre_processor.clear_data_and_status_folders()       # clear output folders
+        self.pre_processor.process_files()                       # copy files across
 
         assert folder_exists(self.config.hd1_location)
         assert folder_exists(self.config.hd2_location)
         assert folder_exists(self.config.hd3_location)
 
     def test_flags(self):
-        loops = Loops()
-
-        assert loops.IsProcessing() == False
-        loops.StopProcessing()
-        assert loops.HasBeenStopped() == True
+        assert self.loops.IsProcessing() == False
+        self.loops.StopProcessing()
+        assert self.loops.HasBeenStopped() == True
 
     @log_duration
     def test_process_file(self):
@@ -63,10 +76,11 @@ class test_Processor(TestCase):
 
     @log_duration
     def test_processing_inprogress(self):
-        loops = Loops()
         Loops.processing_started = True
-        assert loops.ProcessSingleFile() is False
-        assert loops.LoopHashDirectories() is False
+        assert (False == self.loops.ProcessSingleFile())
+        assert (False == self.loops.LoopHashDirectories())
+        assert self.loops.ProcessSingleFile() is False
+        assert self.loops.LoopHashDirectories() is False
 
     @log_duration
     def test_get_the_processing_status(self):
