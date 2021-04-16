@@ -19,7 +19,7 @@ class Hash_Json:
     def __init__(self):
         self.config = Config().load_values()
         self.folder = os.path.join(self.config.hd2_location, "status")
-        self.data = { "file_list" : []  }
+        self.data = {}
         self.id = 0
         self.get_from_file()
 
@@ -43,23 +43,20 @@ class Hash_Json:
         json_save_file_pretty(self.data, self.get_file_path())
 
     def add_file(self, hash, file_name):
+        json_value                = {}
+        json_value["file_name"]   = file_name
+        json_value["file_status"] = FileStatus.INITIAL.value
 
-        json_data={}
+        json_data                 = {}
+        json_data[hash]           = json_value
 
-        json_data["id"] = self.id
-        self.id=self.id+1
-
-        json_data["hash"] = hash
-        json_data["file_name"] = file_name
-        json_data["file_status"] = FileStatus.INITIAL.value
-        self.data["file_list"].append(json_data)
-
+        self.data.update(json_data)
         self.write_to_file()
 
-    def get_file_list(self):
-        return self.data["file_list"]
+    def get_json_list(self):
+        return self.data
 
     def update_status(self, index, updated_status):
-        self.data["file_list"][index]["file_status"] = updated_status
+        self.data[index]["file_status"] = updated_status
         self.write_to_file()
 
