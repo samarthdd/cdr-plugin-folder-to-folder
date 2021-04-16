@@ -128,6 +128,10 @@ class Loops(object):
             if (FileStatus.INITIAL.value != json_list[key]["file_status"]):
                 continue
 
+            if not os.path.exists(itempath):
+                json_list[key]["file_status"] = FileStatus.FAILED.value
+                continue
+
             # limit the number of parallel threads
             if process_index % int(thread_count) == 0:
                 # Clean up the threads
