@@ -102,7 +102,6 @@ class Loops(object):
     @log_duration
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
-        self.events.get_from_file()
         self.events.add_log("LoopHashDirectoriesAsync started")
 
         self.status.get_from_file()
@@ -147,9 +146,6 @@ class Loops(object):
 
         for index, thread in enumerate(threads):
             thread.join()
-
-        self.status.write_to_file()
-        self.hash_json.write_to_file()
 
         self.events.add_log("LoopHashDirectoriesAsync finished")
 
