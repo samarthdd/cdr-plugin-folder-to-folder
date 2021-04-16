@@ -60,13 +60,11 @@ class test_Processor(TestCase):
 
     @log_duration
     def test_process_file(self):
-        self.loops.ProcessSingleFile()
         assert ("File has been processed" == process_single_file())
         assert len(os.listdir(self.config.hd3_location)) != 0
 
     @log_duration
     def test_process_files(self):
-        self.loops.LoopHashDirectories()
         assert ("Loop completed" == process_hd2_data_to_hd3())
         assert len(os.listdir(self.config.hd3_location)) != 0
 
