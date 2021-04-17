@@ -1,0 +1,37 @@
+import asyncio
+from unittest import TestCase
+
+from osbot_utils.utils.Dev import pprint
+
+from cdr_plugin_folder_to_folder.processing.Loops import Loops
+from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
+
+
+class test_Loops(TestCase):
+
+    def setUp(self) -> None:
+        Setup_Testing()
+        self.loops = Loops()
+
+    def test_LoopHashDirectories(self):
+        with self.assertRaises(TypeError) as error:
+            self.loops.LoopHashDirectories()
+        assert error.exception.args[0] == 'list indices must be integers or slices, not str'
+
+    def test_LoopHashDirectoriesAsync(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        with self.assertRaises(TypeError):
+            loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=None))
+
+    def test_LoopHashDirectoriesInternal(self):
+        with self.assertRaises(TypeError):
+            self.loops.LoopHashDirectoriesInternal(thread_count=None, do_single=None)
+
+    def test_LoopHashDirectoriesInternal__bug(self):
+        json_list = self.loops.hash_json.get_json_list()
+        with self.assertRaises(TypeError) as error:
+            for key in json_list:
+                json_list[key]["file_status"]
+        assert error.exception.args[0] == 'list indices must be integers or slices, not str'
+
