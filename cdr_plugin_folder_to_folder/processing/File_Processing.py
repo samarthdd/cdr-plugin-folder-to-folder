@@ -13,11 +13,14 @@ from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
+from cdr_plugin_folder_to_folder.storage.Storage import Storage
 
 class File_Processing:
 
-    def __init__(self):
-       self.meta_service = Metadata_Service()
+    def __init__(self, events_log):
+        self.meta_service   = Metadata_Service()
+        self.events_log     = events_log
+        self.storage        = Storage()
 
     def base64request(self, endpoint, api_route, base64enc_file):
         try:
@@ -67,9 +70,11 @@ class File_Processing:
         response = self.rebuild(endpoint, encodedFile)
         result = response.text
         if not result:
+            self.events_log.add_log('Failed to rebuild the file')
             raise ValueError('Failed to rebuild the file')
 
         processed_path = self.meta_service.get_processed_file_path(dir)
+        self.events_log.add_log('Process path set to: ' + processed_path)
 
         dirname = ntpath.dirname(processed_path)
         basename = ntpath.basename(processed_path)
@@ -80,8 +85,10 @@ class File_Processing:
         # Save to HD3
         if decoded:
             FileService.wrtie_binary_file(dirname, basename, decoded)
+            self.events_log.add_log('The decoded file has been saved')
         else:
             FileService.wrtie_file(dirname, basename + ".html", result)
+            self.events_log.add_log('Decoding FAILED. The HTML file has been saved')
 
         headers = response.headers
         fileIdKey = "X-Adaptation-File-Id"
@@ -89,37 +96,41 @@ class File_Processing:
         # get XML report
         if fileIdKey in headers:
             self.get_xmlreport(endpoint, headers[fileIdKey], dir)
+            self.events_log.add_log('The XML report has been saved')
         else:
+            self.events_log.add_log('No X-Adaptation-File-Id header found in the response')
             raise ValueError("No X-Adaptation-File-Id header found in the response")
 
     @log_duration
-    def processDirectory (self, endpoint, dir, events):
+    def processDirectory (self, endpoint, dir):
+        self.events_log.add_log("Processing Directory: " + dir)
         hash = ntpath.basename(dir)
         if len(hash) != 64:
-            events.add_log("Unexpected hash length")
+            self.events_log.add_log("Unexpected hash length")
             raise ValueError("Unexpected hash length")
 
         metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
         if not (FileService.file_exist(metadata_file_path)):
-            events.add_log("The metadate.json file does not exist")
+            self.events_log.add_log("The metadate.json file does not exist")
             raise ValueError("The metadate.json file does not exist")
 
         if not self.meta_service.is_initial_status(dir):
-            events.add_log("Metadata not in the INITIAL state")
+            self.events_log.add_log("Metadata not in the INITIAL state")
             return False
 
         self.meta_service.set_status_inprogress(dir)
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
-            events.add_log("File does not exist")
+            self.events_log.add_log("File does not exist")
             raise ValueError("File does not exist")
 
         encodedFile = FileService.base64encode(source_path)
         if not encodedFile:
-            events.add_log("Failed to encode the file")
+            self.events_log.add_log("Failed to encode the file")
             raise ValueError("Failed to encode the file")
 
-        events.add_log("Sending to rebuild")
+        self.events_log.add_log("Sending to rebuild")
         self.do_rebuild(endpoint, hash, encodedFile, dir)
+
         return True

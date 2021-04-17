@@ -51,7 +51,6 @@ class Loops(object):
         self.config = Config().load_values()
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
-        file_processing = File_Processing()
         events = Events_Log(itempath)
 
         endpoint = "http://" + self.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + self.config.endpoints['Endpoints'][endpoint_index]['Port']
@@ -59,7 +58,8 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                if not file_processing.processDirectory(endpoint, itempath, events):
+                file_processing = File_Processing(events)
+                if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
                     return False
 
