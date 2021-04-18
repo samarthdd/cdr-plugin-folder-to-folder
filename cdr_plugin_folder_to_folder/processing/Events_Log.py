@@ -17,7 +17,7 @@ class Events_Log:
     EVENTS_LOG_FILE_NAME = "events.json"
 
     def __init__(self, folder):
-        self.config = Config().load_values()
+        self.config = Config()
         self.folder = folder
         self.data = { "events" : [] }
         self.get_from_file()
@@ -44,10 +44,9 @@ class Events_Log:
     def add_log(self, log):
         self.get_from_file()
 
-        json_data={}
-        json_data["timestamp"]   = str(datetime.now())
-        json_data["log"]         = log
-        json_data["uuid"]        = self.unique_id
+        json_data= {    "timestamp" : str(datetime.now()),
+                        "log"       : log                ,
+                        "uuid"      : self.unique_id     }
 
         self.data["events"].append(json_data)
         self.write_to_file()

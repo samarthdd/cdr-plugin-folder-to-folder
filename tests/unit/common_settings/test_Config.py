@@ -16,7 +16,7 @@ class test_Config(TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        cls.config.load_values()
+        cls.config.load_values()                                # restore values after all tests are executed
 
     def test_load_values(self):
         config = self.config

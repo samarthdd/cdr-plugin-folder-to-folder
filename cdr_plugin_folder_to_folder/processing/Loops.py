@@ -48,7 +48,6 @@ class Loops(object):
 
     @log_duration
     def ProcessDirectoryWithEndpoint(self, itempath, file_hash, endpoint_index):
-        self.config = Config().load_values()
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_path(itempath)
         file_processing = File_Processing()
@@ -92,7 +91,6 @@ class Loops(object):
 
     @log_duration
     def ProcessDirectory(self, itempath, file_hash, process_index):
-        self.config = Config().load_values()
         endpoint_index = process_index % self.config.endpoints_count
         for idx in range(self.config.endpoints_count):
             if self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index):
