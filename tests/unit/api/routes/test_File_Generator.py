@@ -23,7 +23,7 @@ class test_File_Distributor(TestCase):
 
         assert response ==  "2 files of type 'pdf' are generated"
 
-    def test_generate_failure(self):
+    def test_generate_failure_1(self):
         path = f"{self.prefix}/generate"
 
         # invalid type of file
@@ -34,3 +34,18 @@ class test_File_Distributor(TestCase):
         response = self.client.POST( path, json=json_obj, )
 
         assert response == "File Type is not supported or Invalid File Type"
+
+    def test_generate_failure_2(self):
+        path = f"{self.prefix}/generate"
+
+        # invalid type of file
+        json_obj = {
+            "file_type": "pdf",
+            "num_of_files": 0,
+        }
+        response = self.client.POST( path, json=json_obj, )
+
+        assert response == "Number of files must be greater than 0"
+
+
+

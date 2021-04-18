@@ -22,10 +22,15 @@ class test_File_Generator(TestCase):
         response= self.file_generator.populate()
         assert response is 1
 
-    def test_populate_failure(self):
+    def test_populate_failure_1(self):
         self.file_generator = File_Generator(self.num_of_files, "abc")
         response = self.file_generator.populate()
         assert response is 0
+
+    def test_populate_failure_2(self):
+        self.file_generator = File_Generator(0, "pdf")
+        response = self.file_generator.populate()
+        assert response is -1
 
 
 

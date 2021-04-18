@@ -23,6 +23,9 @@ class File_Generator:
         if self.file_type not in self.supported_types:
             return 0
 
+        if self.num_of_files is 0:
+            return -1
+
         for i in range(self.num_of_files):
             unique_value=uuid.uuid4()
             self.target_path = path.join(self.target_folder, unique_value.hex + "." + self.file_type)

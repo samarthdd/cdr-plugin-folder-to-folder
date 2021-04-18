@@ -19,4 +19,7 @@ def file_generator(item: File_Details):
     if response == 0:
         return "File Type is not supported or Invalid File Type"
 
+    elif response == -1:
+        return "Number of files must be greater than 0"
+
     return f"{item.num_of_files} files of type \'{item.file_type}\' are generated"
