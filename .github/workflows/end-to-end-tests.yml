@@ -1,6 +1,6 @@
 # This is a workflow to test the cdr-plugin-folder-to-folder on a test dataset
 
-name: cdr-plugin-ci
+name: cdr-plugin-test
 env:
   AWS_DEFAULT_REGION: eu-west-1
 # Controls when the action will run. Triggers the workflow on push or pull request
@@ -9,6 +9,7 @@ on:
   push:
     branches: 
      - main
+     - configure_mounts
 
 jobs:
   test-cdr-plugin:
