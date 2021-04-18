@@ -39,7 +39,7 @@ jobs:
       - name: Test CDR pluging folder to folder
         run: |
           set -e
-          cd cdr-plugin-folder-to-folder/
+          # cd cdr-plugin-folder-to-folder/
           chmod +x tests/end_to_end/test_data_sets.sh
           ./tests/end_to_end/test_data_sets.sh
           
