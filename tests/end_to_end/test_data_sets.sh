@@ -5,14 +5,15 @@ set -e
 sudo rm -rf test/scenario-data-sets/
 mkdir -p test/scenario-data-sets/{hd2,hd3}
 pushd test/scenario-data-sets/ && git clone https://github.com/k8-proxy/data-sets.git && popd
-hd1=test/scenario-data-sets/data-sets
-hd2=test/scenario-data-sets/hd2
-hd3=test/scenario-data-sets/hd3
+hd1=./test/scenario-data-sets/data-sets
+hd2=./test/scenario-data-sets/hd2
+hd3=./test/scenario-data-sets/hd3
 
 # 2. update .env file with host folders
 sed -i "s|HOST_HD1_LOCATION=.*|HOST_HD1_LOCATION=${hd1}|" .env.sample
 sed -i "s|HOST_HD2_LOCATION=.*|HOST_HD2_LOCATION=$hd2|g" .env.sample
 sed -i "s|HOST_HD3_LOCATION=.*|HOST_HD3_LOCATION=$hd3|g" .env.sample
+sed -i "s|PWD=.*|PWD=$(pwd)|g" .env.sample
 
 # 3. start docker compose
 cp .env.sample .env
