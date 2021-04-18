@@ -20,7 +20,7 @@ DEFAULT_KIBANA_HOST      = "127.0.0.1"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
 DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"91.109.25.70", "Port":"8080"}]}'
-
+FILE_GENERATOR_LOCATION   = path_combine(__file__                , '../../../test_data/generated_files/' )
 API_VERSION              = "v0.5.3"
 
 # todo add caching support to this class since at the moment this is being loaded from quite a lot of places
@@ -44,6 +44,7 @@ class Config(object):
         self.thread_count   = None
         self.endpoints      = None
         self.endpoints_count = None
+        self.test_file_location=None
 
     def load_values(self):
         self.gw_sdk_address  = os.getenv("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
@@ -64,8 +65,11 @@ class Config(object):
 
         self.endpoints_count = len(self.endpoints['Endpoints'])
 
+        self.file_generator_location = os.getenv("FILE_GENERATOR_LOCATION" , FILE_GENERATOR_LOCATION )
+
         create_folder(self.hd2_location)            # todo: remove this from here
         create_folder(self.hd3_location)            #       since the creation of these folders should not be controlled here
+        create_folder(self.file_generator_location)
 
         self.check_config()
         return self

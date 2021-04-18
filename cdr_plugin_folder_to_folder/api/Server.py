@@ -11,6 +11,7 @@ from cdr_plugin_folder_to_folder.api.routes.Pre_Processor import router as route
 from cdr_plugin_folder_to_folder.api.routes.File_Distributor import router as router_file_distribution
 from cdr_plugin_folder_to_folder.api.routes.Health import router as router_health
 from cdr_plugin_folder_to_folder.api.routes.Configure import router as router_configure
+from cdr_plugin_folder_to_folder.api.routes.File_Generator import router as router_file_generator
 
 class Server:
 
@@ -33,6 +34,7 @@ class Server:
         self.app.include_router(router_file_distribution)
         self.app.include_router(router_health           )
         self.app.include_router(router_configure        )
+        self.app.include_router(router_file_generator   )
         self.fix_logging_bug()
         return self
 
