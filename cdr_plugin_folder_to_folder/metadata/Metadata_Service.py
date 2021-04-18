@@ -59,8 +59,10 @@ class Metadata_Service:
     def get_processed_file_path(self, metadata_folder):
         self.get_from_file(metadata_folder)
         path = self.metadata["original_file_paths"][0]
-        path = path.replace(self.config.hd1_location, self.config.hd3_location)
-        #print(path)
+        if path.startswith(self.config.hd1_location):
+            path = path.replace(self.config.hd1_location, self.config.hd3_location)
+        else:
+            path = os.path.join(self.config.hd3_location, path)
         return path
 
     def get_status(self, metadata_folder):
