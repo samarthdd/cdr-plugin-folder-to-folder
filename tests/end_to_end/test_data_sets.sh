@@ -15,8 +15,9 @@ sed -i "s|HOST_HD2_LOCATION=.*|HOST_HD2_LOCATION=$hd2|g" .env.sample
 sed -i "s|HOST_HD3_LOCATION=.*|HOST_HD3_LOCATION=$hd3|g" .env.sample
 
 # 3. start docker compose
-docker-compose build
+cp .env.sample .env
 source .env.sample
+docker-compose build
 docker-compose up -d --force
 sleep 5s
 
