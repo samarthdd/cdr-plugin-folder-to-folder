@@ -145,3 +145,5 @@ esxcli.log
 !**/default.auto.tfvars
 alpine-control-vmdk/bin/*.executable
 alpine-control-vmdk/bin/*.sha256sum
+
+test
