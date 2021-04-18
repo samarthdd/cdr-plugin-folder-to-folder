@@ -15,7 +15,6 @@ class File_Generator:
         self.size            = size
 
         self.target_folder   = path.join(self.config.file_generator_location, file_type)
-        create_folder(self.target_folder)
 
         self.supported_types = [ "txt", "pdf", "docx", "xlsx", "jpg", "jpeg", "png", "gif" ]
 
@@ -26,15 +25,12 @@ class File_Generator:
         if self.num_of_files is 0:
             return -1
 
+        create_folder(self.target_folder)
         for i in range(self.num_of_files):
             unique_value=uuid.uuid4()
             self.target_path = path.join(self.target_folder, unique_value.hex + "." + self.file_type)
 
-            if self.size:
-                num_chars = 1024 * self.size
-                content = str(unique_value) * num_chars
-            else:
-                content = (str(unique_value)+"\n") * random.randint(1,10000)
+            content = (str(unique_value) + "\n") * random.randint(1, 100000)
 
             file_creator = Create()
             file_creator.create(self.target_path, self.file_type, content)
