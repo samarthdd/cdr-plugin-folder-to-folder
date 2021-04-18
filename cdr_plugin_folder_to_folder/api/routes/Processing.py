@@ -1,5 +1,8 @@
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from cdr_plugin_folder_to_folder.processing.Loops import Loops
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status
+from osbot_utils.utils.Json import json_format
 
 router_params = { "prefix": "/processing"  ,
                   "tags"  : ['Processing'] }
@@ -33,3 +36,9 @@ def process_single_file():
     loops = Loops()
     loops.ProcessSingleFile()
     return "File has been processed"
+
+@router.get("/status")
+def get_the_processing_status():
+    status = Status()
+    status.get_from_file()
+    return JSONResponse(status.data)

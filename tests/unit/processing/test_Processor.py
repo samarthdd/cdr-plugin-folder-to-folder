@@ -14,6 +14,7 @@ from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 from cdr_plugin_folder_to_folder.api.routes.Processing import process_single_file
 from cdr_plugin_folder_to_folder.api.routes.Processing import process_hd2_data_to_hd3
 from cdr_plugin_folder_to_folder.api.routes.Processing import process_hd2_data_to_hd3_sequential
+from cdr_plugin_folder_to_folder.api.routes.Processing import get_the_processing_status
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
@@ -66,3 +67,8 @@ class test_Processor(TestCase):
         Loops.processing_started = True
         assert loops.ProcessSingleFile() is False
         assert loops.LoopHashDirectories() is False
+
+    @log_duration
+    def test_get_the_processing_status(self):
+        response = get_the_processing_status()
+        assert (response.headers['content-type'] == 'application/json')

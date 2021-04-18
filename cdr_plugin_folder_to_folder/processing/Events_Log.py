@@ -3,13 +3,13 @@ import json
 
 import logging as logger
 
-from osbot_utils.utils.Files import file_sha256, file_name
+from osbot_utils.utils.Files import file_sha256, file_name, create_folder
 from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 
 from enum import Enum
 from datetime import datetime 
-
+import uuid
 logger.basicConfig(level=logger.INFO)
 
 class Events_Log:
@@ -20,6 +20,7 @@ class Events_Log:
         self.config = Config().load_values()
         self.folder = folder
         self.data = { "events" : [] }
+        self.get_from_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Events_Log.EVENTS_LOG_FILE_NAME)
@@ -36,14 +37,16 @@ class Events_Log:
             raise error
 
     def write_to_file(self):
+        create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())
 
     def add_log(self, log):
+        self.get_from_file()
 
         json_data={}
-
-        json_data["timestamp"] = str(datetime.now())
-        json_data["log"] = log
+        json_data["timestamp"]   = str(datetime.now())
+        json_data["log"]         = log
+        json_data["uuid"]        = str(uuid.uuid4())
 
         self.data["events"].append(json_data)
         self.write_to_file()
