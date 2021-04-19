@@ -24,8 +24,3 @@ class test_Loops(TestCase):
     def test_LoopHashDirectoriesInternal(self):
         self.loops.LoopHashDirectoriesInternal(thread_count=1, do_single=False)
 
-    def test_LoopHashDirectoriesInternal__bug(self):
-        json_list = self.loops.hash_json.get_json_list()
-        for key in json_list:
-            json_list[key]["file_status"]
-
