@@ -68,6 +68,23 @@ class File_Processing:
         json_obj = xmltodict.parse(xmlreport)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
+    # Save to HD3
+    def save_file(self, result, processed_path):
+        self.events_log.add_log('Saving to: ' + processed_path)
+
+        dirname = ntpath.dirname(processed_path)
+        basename = ntpath.basename(processed_path)
+        folder_create(dirname)
+
+        decoded = FileService.base64decode(result)
+
+        if decoded:
+            FileService.wrtie_binary_file(dirname, basename, decoded)
+            self.events_log.add_log('The decoded file has been saved')
+        else:
+            FileService.wrtie_file(dirname, basename + ".html", result)
+            self.events_log.add_log('Decoding FAILED. The HTML file has been saved')
+
     @log_duration
     def do_rebuild(self, endpoint, hash, encodedFile, dir):
         response = self.rebuild(endpoint, encodedFile)
@@ -77,21 +94,7 @@ class File_Processing:
             raise ValueError('Failed to rebuild the file')
 
         processed_path = self.meta_service.get_processed_file_path(dir)
-        self.events_log.add_log('Process path set to: ' + processed_path)
-
-        dirname = ntpath.dirname(processed_path)
-        basename = ntpath.basename(processed_path)
-        folder_create(dirname)
-
-        decoded = FileService.base64decode(result)
-
-        # Save to HD3
-        if decoded:
-            FileService.wrtie_binary_file(dirname, basename, decoded)
-            self.events_log.add_log('The decoded file has been saved')
-        else:
-            FileService.wrtie_file(dirname, basename + ".html", result)
-            self.events_log.add_log('Decoding FAILED. The HTML file has been saved')
+        self.save_file(result, processed_path)
 
         headers = response.headers
         fileIdKey = "X-Adaptation-File-Id"
