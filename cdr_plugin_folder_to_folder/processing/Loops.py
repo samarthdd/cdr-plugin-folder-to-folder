@@ -29,7 +29,7 @@ class Loops(object):
 
     def __init__(self):
         self.use_es = False
-        self.config = Config().load_values()
+        self.config = Config()
         self.status = Status()
         self.hash_json = Hash_Json()
         self.status.get_from_file()
@@ -48,10 +48,8 @@ class Loops(object):
 
     @log_duration
     def ProcessDirectoryWithEndpoint(self, itempath, file_hash, endpoint_index):
-        self.config = Config().load_values()
         meta_service = Metadata_Service()
-        original_file_path = meta_service.get_original_file_path(itempath)
-        file_processing = File_Processing()
+        original_file_path = meta_service.get_original_file_paths(itempath)
         events = Events_Log(itempath)
 
         endpoint = "http://" + self.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + self.config.endpoints['Endpoints'][endpoint_index]['Port']
@@ -59,6 +57,7 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
+                file_processing = File_Processing(events)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
                     return False
@@ -73,7 +72,6 @@ class Loops(object):
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
                 self.status.update_counters(FileStatus.COMPLETED.value)
-                #self.hash_json.update_status(file_index,FileStatus.COMPLETED.value)
                 self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
                 events.add_log("Has been processed")
                 return True
@@ -93,7 +91,6 @@ class Loops(object):
 
     @log_duration
     def ProcessDirectory(self, itempath, file_hash, process_index):
-        self.config = Config().load_values()
         endpoint_index = process_index % self.config.endpoints_count
         for idx in range(self.config.endpoints_count):
             if self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index):
@@ -104,6 +101,12 @@ class Loops(object):
 
     @log_duration
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
+
+        if not isinstance(thread_count,int):
+            raise TypeError("thread_count must be a integer")
+
+        if not isinstance(do_single,bool):
+            raise TypeError("thread_count must be a integer")
 
         self.events.add_log("LoopHashDirectoriesAsync started")
 
@@ -126,6 +129,10 @@ class Loops(object):
 
             itempath = os.path.join(rootdir, key)
             if (FileStatus.INITIAL.value != json_list[key]["file_status"]):
+                continue
+
+            if not os.path.exists(itempath):
+                json_list[key]["file_status"] = FileStatus.FAILED.value
                 continue
 
             # limit the number of parallel threads

@@ -13,10 +13,10 @@ from enum import Enum
 logger.basicConfig(level=logger.INFO)
 
 class FileStatus(Enum):
-    INITIAL = "Initial"
+    INITIAL     = "Initial"
     IN_PROGRESS = "In Progress"
-    COMPLETED = "Completed Successfully"
-    FAILED = "Completed with errors" 
+    COMPLETED   = "Completed Successfully"
+    FAILED      = "Completed with errors"
 
 class Status:
 
@@ -24,15 +24,18 @@ class Status:
     lock = asyncio.Lock()
 
     def __init__(self):
-        self.config = Config().load_values()
+        self.config = Config()
         self.folder = os.path.join(self.config.hd2_location, "status")
+        self.reset()
+        self.get_from_file()
+
+    def reset(self):
         self.data = {   "files_count"          : 0     ,
                         "files_to_process"     : 0     ,
                         "completed"            : 0     ,
                         "failed"               : 0     ,
                         "in_progress"          : 0
                     }
-        self.get_from_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Status.STATUS_FILE_NAME)

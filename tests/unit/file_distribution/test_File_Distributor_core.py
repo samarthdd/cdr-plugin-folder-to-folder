@@ -8,6 +8,11 @@ from osbot_utils.utils.Files import folder_exists, folder_create, file_copy,fold
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.file_distribution.File_Distributor import File_Distributor
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
+from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
+from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
+from cdr_plugin_folder_to_folder.processing.Loops import Loops
+from cdr_plugin_folder_to_folder.utils.testing.Direct_API_Server import Direct_API_Server
+from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
@@ -16,10 +21,22 @@ class test_File_Distributor(TestCase):
     def setUp(self) -> None:
         self.file_distributor = File_Distributor()
 
+    pre_processor = None
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.client = Direct_API_Server().setup()
+
+        cls.test_data      = Test_Data()
+        cls.test_file      = cls.test_data.image()
+        cls.pre_processor = Pre_Processor()
+        cls.pre_processor.clear_data_and_status_folders()
+        cls.stage_1       = cls.pre_processor.process(cls.test_file)
+        cls.stage_2       = Loops().LoopHashDirectories()
+
     @classmethod
     def tearDownClass(cls) -> None:
-        folder_delete_all(os.path.join(os.getcwd(),"zip_folder"))
-
+        cls.pre_processor.clear_data_and_status_folders()
+        folder_delete_all(os.path.join(os.getcwd(), "zip_folder"))
 
     def test__init__(self):
         assert self.file_distributor.config             is   not None

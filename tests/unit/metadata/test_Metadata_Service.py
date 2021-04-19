@@ -11,21 +11,27 @@ class test_Metadata_Service(TestCase):
         self.test_file        = Test_Data().images().pop()
         assert file_exists(self.test_file)
 
-    def test_get_metadata(self):
-        hd1_path= "./test_path"
-        metadata  =self.metadata_service.get_metadata(self.test_file,hd1_path)
+    def test_create_metadata(self):
 
-        assert metadata == {  'evidence_file_paths' : None                       ,
-                              'file_name'           : file_name(self.test_file)  ,
-                              'original_file_paths' : hd1_path                   ,
-                              'original_hash'       : file_sha256(self.test_file),
-                              'rebuild_status'      : FileStatus.INITIAL.value   ,
-                              'target_path'         : None                       ,
-                              'xml_report_status'   : None                       ,
-                              'error'               : None                       ,
-                              }
+        metadata  = self.metadata_service.create_metadata(self.test_file)
+        metadata.delete()
+        metadata.add_file(self.test_file)
 
-    def test_get_hash(self):
-        hash=self.metadata_service.get_hash(self.test_file)
+        assert metadata.data == {  'file_name'           : file_name(self.test_file)  ,
+                                   'original_file_paths' : [self.test_file]           ,
+                                   'original_hash'       : file_sha256(self.test_file),
+                                   'rebuild_hash'        : None                       ,
+                                   'rebuild_status'      : FileStatus.INITIAL.value   ,
+                                   'target_path'         : None                       ,
+                                   'xml_report_status'   : None                       ,
+                                   'error'               : None                       ,
+                                 }
+        assert metadata.delete() is True
+
+    def test_file_hash(self):
+        hash=self.metadata_service.file_hash(self.test_file)
         assert hash == file_sha256(self.test_file)
+
+    def test_file_hash_metadata(self):
+        pass
 

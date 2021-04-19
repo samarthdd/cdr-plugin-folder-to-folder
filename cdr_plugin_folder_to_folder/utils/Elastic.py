@@ -17,7 +17,7 @@ from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Elastic.Kibana imp
 class Elastic:
 
     def __init__(self, index_name='temp_index', time_field=None, id_key=None):
-        self.config             = Config().load_values()
+        self.config             = Config()
         self.id_key             = id_key
         self.index_name         = index_name
         self.index_pattern_name = index_name

@@ -6,7 +6,7 @@ class Metadata_Elastic:
     def __init__(self):
         self.index_name = 'files_metadata'
         self.id_key     = 'original_hash'
-        self.enabled    = True
+        self.enabled    = False
 
     @cache_on_self
     def elastic(self):
@@ -30,5 +30,12 @@ class Metadata_Elastic:
     def delete_metadata(self,original_hash):
         return self.elastic().delete(record_id=original_hash)
 
+    def delete_all_metadata(self):
+        return self.setup(delete_existing=True)
+
+    def get_all_metadata(self):
+        return self.elastic().search_using_lucene('*')
+
     def get_metadata(self, original_hash):
         return self.elastic().get_data(record_id=original_hash)
+
