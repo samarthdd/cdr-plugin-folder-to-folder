@@ -93,7 +93,7 @@ class File_Processing:
             self.events_log.add_log('Failed to rebuild the file')
             raise ValueError('Failed to rebuild the file')
 
-        for path in self.meta_service.get_processed_file_paths(dir):
+        for path in self.meta_service.get_original_file_paths(dir):
             processed_path = path
             if path.startswith(self.config.hd1_location):
                 processed_path = path.replace(self.config.hd1_location, self.config.hd3_location)

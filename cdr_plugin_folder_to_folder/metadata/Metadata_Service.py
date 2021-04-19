@@ -52,11 +52,7 @@ class Metadata_Service:
     def file_hash(self, file_path):
         return file_sha256(file_path)
 
-    def get_original_file_path(self, metadata_folder):
-        self.get_from_file(metadata_folder)
-        return self.metadata["original_file_paths"]
-
-    def get_processed_file_paths(self, metadata_folder):
+    def get_original_file_paths(self, metadata_folder):
         self.get_from_file(metadata_folder)
         return self.metadata["original_file_paths"]
 

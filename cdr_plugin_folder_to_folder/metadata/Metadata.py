@@ -1,4 +1,5 @@
 import os
+import json
 
 from osbot_utils.utils.Files import file_name, folder_exists, file_sha256, file_exists, folder_create, path_combine, \
     folder_delete_all, file_copy
@@ -20,10 +21,16 @@ class Metadata:
         self.data           = self.default_data()
         self.file_hash      = file_hash
 
+    def get_from_file(self):
+        with open(self.metadata_file_path()) as json_file:
+            self.data = json.load(json_file)
+
     def add_file(self, file_path):
         if file_exists(file_path):
             self.set_file_hash(self.metadata_utils.file_hash(file_path))
-            if self.exists() is False:
+            if self.exists():
+                self.get_from_file()
+            else:
                 self.create(file_path)
             self.add_file_path(file_path)
             self.save()
@@ -37,7 +44,6 @@ class Metadata:
             if file_path not in file_paths:
                 file_paths.append(file_path)
             return file_paths
-
 
     def create(self, file_path):
         if self.file_hash:

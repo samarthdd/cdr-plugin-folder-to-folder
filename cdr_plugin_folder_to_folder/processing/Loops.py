@@ -49,7 +49,7 @@ class Loops(object):
     @log_duration
     def ProcessDirectoryWithEndpoint(self, itempath, file_hash, endpoint_index):
         meta_service = Metadata_Service()
-        original_file_path = meta_service.get_original_file_path(itempath)
+        original_file_path = meta_service.get_original_file_paths(itempath)
         events = Events_Log(itempath)
 
         endpoint = "http://" + self.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + self.config.endpoints['Endpoints'][endpoint_index]['Port']
