@@ -98,7 +98,7 @@ class File_Processing:
             if path.startswith(self.config.hd1_location):
                 processed_path = path.replace(self.config.hd1_location, self.config.hd3_location)
             else:
-                processed_path = os.path.join(self.config.hd3_location, ntpath.basename(path))
+                processed_path = os.path.join(self.config.hd3_location, path)
 
             self.save_file(result, processed_path)
 
