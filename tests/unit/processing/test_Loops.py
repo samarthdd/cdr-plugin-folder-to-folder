@@ -19,10 +19,12 @@ class test_Loops(TestCase):
     def test_LoopHashDirectoriesAsync(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=None))
+        with self.assertRaises(TypeError):
+            loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=None))
 
     def test_LoopHashDirectoriesInternal(self):
-        self.loops.LoopHashDirectoriesInternal(thread_count=None, do_single=None)
+        with self.assertRaises(TypeError):
+            self.loops.LoopHashDirectoriesInternal(thread_count=None, do_single=None)
 
     def test_LoopHashDirectoriesInternal__bug(self):
         json_list = self.loops.hash_json.get_json_list()
