@@ -19,15 +19,8 @@ class test_Loops(TestCase):
     def test_LoopHashDirectoriesAsync(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        with self.assertRaises(TypeError):
-            loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=None))
+        loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=1))
 
     def test_LoopHashDirectoriesInternal(self):
-        with self.assertRaises(TypeError):
-            self.loops.LoopHashDirectoriesInternal(thread_count=None, do_single=None)
-
-    def test_LoopHashDirectoriesInternal__bug(self):
-        json_list = self.loops.hash_json.get_json_list()
-        for key in json_list:
-            json_list[key]["file_status"]
+        self.loops.LoopHashDirectoriesInternal(thread_count=1, do_single=False)
 

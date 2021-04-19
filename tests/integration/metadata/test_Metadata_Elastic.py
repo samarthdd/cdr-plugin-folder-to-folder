@@ -9,6 +9,7 @@ from osbot_utils.utils.Json import json_load_file
 from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata
 from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
+from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
 
 
@@ -37,14 +38,15 @@ class test_Metadata_Elastic(TestCase):
 
         self.test_metadata_folder = self.test_metadata.metadata_folder_path()
 
+        Pre_Processor().clear_data_and_status_folders()
+
     def test_add_metadata(self):
-        file_path           = temp_file(contents='some text')
-        metadata            = self.metadata_service.create_metadata(file_path=file_path)
+        metadata            = self.metadata_service.create_metadata(file_path=self.test_file)
         metadata_data       = metadata.data
         original_hash       = metadata.original_hash()
         result_add_metadata = self.metadata_elastic.add_metadata(metadata_data)
 
-        assert original_hash == 'b94f6f125c79e3a5ffaa826f584c10d52ada669e6762051b826b55776d05aed2'
+        assert original_hash == self.file_hash
         assert result_add_metadata.get('_shards').get('successful') == 1
 
         assert self.metadata_elastic.get_metadata   (original_hash=original_hash)               == metadata_data
@@ -56,17 +58,20 @@ class test_Metadata_Elastic(TestCase):
         assert len(self.metadata_elastic.get_all_metadata()) == 0
 
     def test_get_from_file(self):
-        metadata_data = self.metadata_service.get_from_file(self.test_metadata_folder)
+        metadata = self.metadata_service.create_metadata(file_path=self.test_file)
+        metadata_data = self.metadata_service.get_from_file(metadata.metadata_folder_path())
 
         assert self.metadata_service.metadata_folder == self.test_metadata_folder
         assert metadata_data == { 'error'               : None                      ,
-                                  'file_name'           : None ,
+                                  'file_name'           : file_name(self.test_file) ,
                                   'original_file_paths' : [ self.test_file]         ,
                                   'original_hash'       : self.file_hash            ,
                                   'rebuild_hash'        : None                      ,
                                   'rebuild_status'      : 'Initial'                 ,
                                   'target_path'         : None                      ,
                                   'xml_report_status'   : None                      }
+
+        metadata.delete()
 
     def test_get_metadata_file_path(self):
         self.metadata_service.metadata_folder = self.test_metadata.metadata_folder_path()
@@ -78,14 +83,14 @@ class test_Metadata_Elastic(TestCase):
 
     @patch('cdr_plugin_folder_to_folder.metadata.Metadata_Elastic.Metadata_Elastic.add_metadata')
     def test_write_metadata_to_file(self, mock_add_metadata):
-        expected_metadata = { 'file_name'           : None              ,
-                              'original_file_paths' : [self.test_file]  ,
-                              'original_hash'       : self.file_hash    ,
-                              'rebuild_hash'        : None              ,
-                              'rebuild_status'      : 'Initial'         ,
-                              'xml_report_status'   : None              ,
-                              'target_path'         : None              ,
-                              'error'               : None              }
+        expected_metadata = { 'file_name'           : file_name(self.test_file) ,
+                              'original_file_paths' : [self.test_file]          ,
+                              'original_hash'       : self.file_hash            ,
+                              'rebuild_hash'        : None                      ,
+                              'rebuild_status'      : 'Initial'                 ,
+                              'xml_report_status'   : None                      ,
+                              'target_path'         : None                      ,
+                              'error'               : None                      }
         metadata_folder = temp_folder()
         metadata        = self.test_metadata.data
         self.metadata_service.write_metadata_to_file(metadata, metadata_folder)

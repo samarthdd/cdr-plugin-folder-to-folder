@@ -35,7 +35,7 @@ class test_File_Processing(TestCase):
         cls.config.load_values()                    # reset config values
 
     def setUp(self) -> None:
-        self.sdk_server      = '34.240.183.4'
+        self.sdk_server      = '34.240.183.4'  # todo: use value from env variables
         self.sdk_port        = '8080'
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)

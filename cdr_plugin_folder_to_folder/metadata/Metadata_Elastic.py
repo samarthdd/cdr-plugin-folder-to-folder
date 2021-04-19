@@ -6,7 +6,7 @@ class Metadata_Elastic:
     def __init__(self):
         self.index_name = 'files_metadata'
         self.id_key     = 'original_hash'
-        self.enabled    = True
+        self.enabled    = False
 
     @cache_on_self
     def elastic(self):
