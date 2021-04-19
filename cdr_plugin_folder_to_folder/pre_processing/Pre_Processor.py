@@ -28,6 +28,7 @@ class Pre_Processor:
 
         self.hash_json = Hash_Json()
         self.status = Status()
+        self.status.reset()
 
     @log_duration
     def clear_data_and_status_folders(self):

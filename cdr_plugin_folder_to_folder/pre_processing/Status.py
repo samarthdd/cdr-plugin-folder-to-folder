@@ -26,13 +26,16 @@ class Status:
     def __init__(self):
         self.config = Config()
         self.folder = os.path.join(self.config.hd2_location, "status")
+        self.reset()
+        self.get_from_file()
+
+    def reset(self):
         self.data = {   "files_count"          : 0     ,
                         "files_to_process"     : 0     ,
                         "completed"            : 0     ,
                         "failed"               : 0     ,
                         "in_progress"          : 0
                     }
-        self.get_from_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Status.STATUS_FILE_NAME)
