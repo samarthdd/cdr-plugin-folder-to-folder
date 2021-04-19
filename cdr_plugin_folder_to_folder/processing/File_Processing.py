@@ -21,6 +21,7 @@ class File_Processing:
         self.meta_service   = Metadata_Service()
         self.events_log     = events_log
         self.storage        = Storage()
+        self.config         = Config()
 
     def base64request(self, endpoint, api_route, base64enc_file):
         try:
@@ -34,7 +35,7 @@ class File_Processing:
               'Content-Type': 'application/json'
             }
 
-            return requests.request("POST", url, headers=headers, data=payload)
+            return requests.request("POST", url, headers=headers, data=payload, timeout=self.config.request_timeout)
      
         except Exception as e:
             raise ValueError(str(e))
@@ -48,7 +49,7 @@ class File_Processing:
                 'Content-Type': 'application/octet-stream'
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("GET", url, headers=headers, data=payload, timeout=self.config.request_timeout)
             return response.text
 
         except Exception as e:
