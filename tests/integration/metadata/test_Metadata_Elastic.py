@@ -3,7 +3,7 @@ from unittest.mock import patch, call
 
 import pytest
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import temp_file, file_delete, temp_folder, folder_delete_all
+from osbot_utils.utils.Files import temp_file, file_delete, temp_folder, folder_delete_all, file_name
 from osbot_utils.utils.Json import json_load_file
 
 from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata
@@ -20,7 +20,6 @@ class test_Metadata_Elastic(TestCase):
         cls.file_hash            = '500286533bf75d769e9180a19414d1c3502dd52093e7351a0a9b1385d8f8961c'
         cls.test_metadata        = Metadata()
         cls.test_metadata.add_file(cls.test_file)
-        cls.test_metadata_folder = cls.test_metadata.metadata_folder_path()
         assert cls.test_metadata.exists()
 
     @classmethod
@@ -35,6 +34,8 @@ class test_Metadata_Elastic(TestCase):
 
         if self.metadata_elastic.enabled is False:
             pytest.skip('Elastic server not available')
+
+        self.test_metadata_folder = self.test_metadata.metadata_folder_path()
 
     def test_add_metadata(self):
         file_path           = temp_file(contents='some text')
@@ -58,14 +59,14 @@ class test_Metadata_Elastic(TestCase):
         metadata_data = self.metadata_service.get_from_file(self.test_metadata_folder)
 
         assert self.metadata_service.metadata_folder == self.test_metadata_folder
-        assert metadata_data == { 'error'               : None              ,
-                                  'file_name'           : None              ,
-                                  'original_file_paths' : [ self.test_file] ,
-                                  'original_hash'       : self.file_hash    ,
-                                  'rebuild_hash'        : None              ,
-                                  'rebuild_status'      : 'Initial'         ,
-                                  'target_path'         : None              ,
-                                  'xml_report_status'   : None              }
+        assert metadata_data == { 'error'               : None                      ,
+                                  'file_name'           : None ,
+                                  'original_file_paths' : [ self.test_file]         ,
+                                  'original_hash'       : self.file_hash            ,
+                                  'rebuild_hash'        : None                      ,
+                                  'rebuild_status'      : 'Initial'                 ,
+                                  'target_path'         : None                      ,
+                                  'xml_report_status'   : None                      }
 
     def test_get_metadata_file_path(self):
         self.metadata_service.metadata_folder = self.test_metadata.metadata_folder_path()

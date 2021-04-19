@@ -10,6 +10,7 @@ from osbot_utils.utils.Json import json_save_file_pretty
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
+from cdr_plugin_folder_to_folder.utils.Logging import log_error
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
@@ -37,6 +38,7 @@ class File_Processing:
             return requests.request("POST", url, headers=headers, data=payload)
      
         except Exception as e:
+            log_error(str(e))
             raise ValueError(str(e))
 
     def xmlreport_request(self, endpoint, fileID):

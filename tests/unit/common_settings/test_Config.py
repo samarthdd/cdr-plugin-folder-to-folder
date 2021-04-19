@@ -21,8 +21,6 @@ class test_Config(TestCase):
     def test_load_values(self):
         config = self.config
 
-        self.assertEqual(config.gw_sdk_address , os.environ.get("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS))
-        self.assertEqual(config.gw_sdk_port    , int(os.environ.get("GW_SDK_PORT", DEFAULT_GW_SDK_PORT)))
         self.assertEqual(config.hd1_location   , os.environ.get("HD1_LOCATION"   , DEFAULT_HD1_LOCATION))
         self.assertEqual(config.hd2_location   , os.environ.get("HD2_LOCATION"   , DEFAULT_HD2_LOCATION))
         self.assertEqual(config.hd3_location   , os.environ.get("HD3_LOCATION"   , DEFAULT_HD3_LOCATION))

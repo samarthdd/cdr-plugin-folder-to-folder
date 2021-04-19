@@ -17,15 +17,13 @@ DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test
 DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , DEFAULT_HD1_NAME                )
 DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , DEFAULT_HD2_NAME                )
 DEFAULT_HD3_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , DEFAULT_HD3_NAME                )
-DEFAULT_GW_SDK_ADDRESS   = "91.109.25.70"
-DEFAULT_GW_SDK_PORT      = "8080"
 DEFAULT_ELASTIC_HOST     = "127.0.0.1"
 DEFAULT_ELASTIC_PORT     = "9200"
 DEFAULT_ELASTIC_SCHEMA   = "http"
 DEFAULT_KIBANA_HOST      = "127.0.0.1"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
-DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"91.109.25.70", "Port":"8080"}]}'
+DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"34.240.183.4AAA", "Port":"8080"}]}'
 API_VERSION              = "v0.5.3"
 
 
@@ -39,8 +37,6 @@ class Config:
 
     def __init__(self):
         if hasattr(self, 'root_folder') is False:                     # only set these values first time around
-            self.gw_sdk_address      = None
-            self.gw_sdk_port         = None
             self.hd1_location        = None
             self.hd2_location        = None
             self.hd2_data_location   = None
@@ -60,8 +56,6 @@ class Config:
     def load_values(self):
         Setup_Testing(configure_logging=False).set_test_root_dir()  # todo: fix test data so that we don't need to do this here
         load_dotenv(override=True)                                  # Load configuration from .env file that should exist in the root of the repo
-        self.gw_sdk_address      = os.getenv    ("GW_SDK_ADDRESS" , DEFAULT_GW_SDK_ADDRESS )
-        self.gw_sdk_port         = int(os.getenv("GW_SDK_PORT"    , DEFAULT_GW_SDK_PORT)   )
         self.root_folder         = os.getenv    ("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
         self.elastic_host        = os.getenv    ("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
         self.elastic_port        = os.getenv    ("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )

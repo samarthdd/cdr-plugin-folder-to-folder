@@ -14,24 +14,18 @@ class test_Loops(TestCase):
         self.loops = Loops()
 
     def test_LoopHashDirectories(self):
-        with self.assertRaises(TypeError) as error:
-            self.loops.LoopHashDirectories()
-        assert error.exception.args[0] == 'list indices must be integers or slices, not str'
+        self.loops.LoopHashDirectories()
 
     def test_LoopHashDirectoriesAsync(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        with self.assertRaises(TypeError):
-            loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=None))
+        loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=None))
 
     def test_LoopHashDirectoriesInternal(self):
-        with self.assertRaises(TypeError):
-            self.loops.LoopHashDirectoriesInternal(thread_count=None, do_single=None)
+        self.loops.LoopHashDirectoriesInternal(thread_count=None, do_single=None)
 
     def test_LoopHashDirectoriesInternal__bug(self):
         json_list = self.loops.hash_json.get_json_list()
-        with self.assertRaises(TypeError) as error:
-            for key in json_list:
-                json_list[key]["file_status"]
-        assert error.exception.args[0] == 'list indices must be integers or slices, not str'
+        for key in json_list:
+            json_list[key]["file_status"]
 

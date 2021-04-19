@@ -1,5 +1,6 @@
-from osbot_utils.utils.Files import path_combine, files_list
-from osbot_utils.utils.Misc import list_filter
+from osbot_utils.utils.Files import path_combine, files_list, file_contents_as_bytes, file_create_bytes
+from osbot_utils.utils.Misc import list_filter, str_to_bytes
+
 
 class Test_Data:
 
@@ -24,3 +25,21 @@ class Test_Data:
 
     def pdfs(self):
         return files_list(self.path_test_files, "*.jpg")
+
+    def create_test_pdf(self, text=None):
+        # see https://brendanzagaeski.appspot.com/0004.html for a description of the code bellow
+        text = text or "This is some text in Arial"
+        font = "Arial" # "Times-Roman"
+        small_pdf_bytes = str_to_bytes( '%PDF-1.1\n%\xc2\xa5\xc2\xb1\xc3\xab\n\n1 0 obj\n  << /Type /Catalog\n     /'
+                                        'Pages 2 0 R\n  >>\nendobj\n\n2 0 obj\n  << /Type /Pages\n     /Kids [3 0 R'
+                                        ']\n     /Count 1\n     /MediaBox [0 0 300 144]\n  >>\nendobj\n\n3 0 obj\n  '
+                                        '<<  /Type /Page\n      /Parent 2 0 R\n      /Resources\n       << /Font\n   '
+                                        '        << /F1\n               << /Type /Font\n                  /Subtype '
+                                       f'/Type1\n                  /BaseFont /{font}\n               >>\n      '
+                                        '     >>\n       >>\n      /Contents 4 0 R\n  >>\nendobj\n\n4 0 obj\n  << /L'
+                                       f'ength 55 >>\nstream\n  BT\n    /F1 18 Tf\n    0 0 Td\n    ({text}) T'
+                                        'j\n  ET\nendstream\nendobj\n\nxref\n0 5\n0000000000 65535 f \n0000000018 000'
+                                        '00 n \n0000000077 00000 n \n0000000178 00000 n \n0000000457 00000 n \ntraile'
+                                        'r\n  <<  /Root 1 0 R\n      /Size 5\n  >>\nstartxref\n565\n%%EOF\n')
+
+        return file_create_bytes(extension='_test.pdf',contents=small_pdf_bytes)
