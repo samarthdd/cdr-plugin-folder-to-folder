@@ -44,14 +44,17 @@ class test_Metadata(TestCase):
         assert metadata.file_hash == self.metadata_utils.file_hash(metadata.source_file_path()) # confirm hash of source file matches hash of file_path
         assert metadata.metadata_file_path() == path_combine(metadata.metadata_folder_path(),
                                                              DEFAULT_METADATA_FILENAME)         # confirm metadata file is place in correct location
+        file_paths = metadata.data.get('original_file_paths')
         assert file_paths == [self.file_path]                                                   # confirms that in this mode the entire path is preserved
 
         # adding same file 2nd time (with same hash and same name)
         assert metadata.add_file(self.file_path) == self.file_hash                              # adding the same file again
+        file_paths = metadata.data.get('original_file_paths')
         assert file_paths == [self.file_path]                                                   # should not impact this value (same as above)
 
         # adding same file 3nd time (with same hash but different name)
         assert metadata.add_file(self.file_copy_path) == self.file_hash                         # adding the same file again (with different name)
+        file_paths = metadata.data.get('original_file_paths')
         assert file_paths == [self.file_path, self.file_copy_path]                              # will make the new file path be added
 
         # adding same file 4th time (with self.path_hd1 set to parent folder of path)
@@ -59,6 +62,7 @@ class test_Metadata(TestCase):
         self.metadata.path_hd1 = file_parent_folder                                             # assign it to the metadata variable used to calculate virtual paths
 
         assert metadata.add_file(self.file_path) == self.file_hash
+        file_paths = metadata.data.get('original_file_paths')
         assert file_paths == [self.file_path, self.file_copy_path, file_name(self.file_path)]   # confirm that the virtual file path was added as the 3rd item (in this case the file name)
 
         #clean up
