@@ -23,7 +23,8 @@ DEFAULT_ELASTIC_SCHEMA   = "http"
 DEFAULT_KIBANA_HOST      = "127.0.0.1"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
-DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"34.240.183.4AAA", "Port":"8080"}]}'
+DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"34.240.183.4", "Port":"8080"}]}'
+DEFAULT_REQUEST_TIMEOUT  = 10   
 API_VERSION              = "v0.5.3"
 
 
@@ -51,6 +52,7 @@ class Config:
             self.thread_count        = None
             self.endpoints           = None
             self.endpoints_count     = None
+            self.request_timeout     = None
             self.load_values()                                      # due to the singleton pattern this will only be executed once
 
     def load_values(self):
@@ -63,6 +65,7 @@ class Config:
         self.kibana_host         = os.getenv    ("KIBANA_HOST"    , DEFAULT_KIBANA_HOST    )
         self.kibana_port         = os.getenv    ("KIBANA_PORT"    , DEFAULT_KIBANA_PORT    )
         self.thread_count        = os.getenv    ("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
+        self.request_timeout     = os.getenv    ("REQUEST_TIMEOUT", DEFAULT_REQUEST_TIMEOUT)
 
         json_string          = os.getenv("ENDPOINTS"      , DEFAULT_ENDPOINTS      )
         self.endpoints       = json.loads(json_string)
