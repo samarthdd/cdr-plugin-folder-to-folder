@@ -20,7 +20,6 @@ class test_File_Processing(TestCase):
 
     config    = None
     temp_root = None
-    #server = "34.245.221.234"
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -33,11 +32,10 @@ class test_File_Processing(TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        #folder_delete_all(cls.config.root_folder)   # remove temp folder files
         cls.config.load_values()                    # reset config values
 
     def setUp(self) -> None:
-        self.sdk_server      = '34.245.221.234'
+        self.sdk_server      = '34.240.183.4'
         self.sdk_port        = '8080'
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)
