@@ -102,6 +102,12 @@ class Loops(object):
     @log_duration
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
+        if not isinstance(thread_count,int):
+            raise TypeError("thread_count must be a integer")
+
+        if not isinstance(do_single,bool):
+            raise TypeError("thread_count must be a integer")
+
         self.events.add_log("LoopHashDirectoriesAsync started")
 
         self.status.get_from_file()
