@@ -10,7 +10,7 @@ from cdr_plugin_folder_to_folder.api.Server import Server
 
 def run_server(port):
     app = FastAPI()
-    Server(app=app, port=port, reload=False).setup().start()
+    Server(app=app, port=port, reload=False).add_routes().start()
 
 
 class Temp_API_Server:

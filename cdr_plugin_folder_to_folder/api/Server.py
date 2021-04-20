@@ -21,13 +21,7 @@ class Server:
         self.app        = app
         self.reload     = reload                                              # automatically reloads server on code changes
 
-    def fix_logging_bug(self):
-        # there were duplicated entries on logs
-        #    - https://github.com/encode/uvicorn/issues/614
-        #    - https://github.com/encode/uvicorn/issues/562
-        logging.getLogger().handlers.clear()                                # todo: see side effects of this
-
-    def setup(self):
+    def add_routes(self):
         self.app.include_router(router_processing       )
         self.app.include_router(router_pre_processing   )
         self.app.include_router(router_file_distribution)
@@ -36,8 +30,24 @@ class Server:
         self.fix_logging_bug()
         return self
 
+    def fix_logging_bug(self):
+        # there were duplicated entries on logs
+        #    - https://github.com/encode/uvicorn/issues/614
+        #    - https://github.com/encode/uvicorn/issues/562
+        logging.getLogger().handlers.clear()                                # todo: see side effects of this
+
     def start(self):
         uvicorn.run("cdr_plugin_folder_to_folder.api.Server:app", host=self.host, port=self.port, log_level=self.log_level, reload=self.reload)
+
+    def routes(self):
+        routes = {}
+        for route in self.app.routes:
+
+            if hasattr(route,"include_in_schema") and route.include_in_schema:
+                routes[route.path] = { 'path_format': route.path_format ,
+                                       'name'       : route.name        ,
+                                       'methods'    : route.methods     }
+        return routes
 
 # todo: refactor this into a separate class which can also be used by the individual sections (i.e. tags)
 tags_metadata = [
@@ -50,7 +60,7 @@ tags_metadata = [
 # we need to do this here so that when unicorn reload is enabled the "cdr_plugin_folder_to_folder.api.Server:app" has an fully setup instance of the Server object
 app     = FastAPI(openapi_tags=tags_metadata)
 server  = Server(app)
-server.setup()
+server.add_routes()
 
 def run_if_main():
     if __name__ == "__main__":

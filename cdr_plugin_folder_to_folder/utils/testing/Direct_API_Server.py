@@ -18,7 +18,7 @@ class Direct_API_Server:
 
     def setup(self):
         self.app    = FastAPI()
-        self.server = Server(self.app).setup()
+        self.server = Server(self.app).add_routes()
         self.client = TestClient(self.app)
         return self
 
