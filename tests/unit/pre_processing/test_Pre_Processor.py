@@ -19,36 +19,25 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 class test_Pre_Processor(TestCase):
     test_file = None
-    temp_hd1  = None
+    temp_dir  = None
     file_hash = None
 
     @classmethod
     def setUpClass(cls) -> None:
         cls.test_file     = temp_file(contents='Static text so that we have a static hash')
         cls.file_hash     = '500286533bf75d769e9180a19414d1c3502dd52093e7351a0a9b1385d8f8961c'
-        cls.temp_hd1      = temp_folder()
+        cls.temp_dir      = temp_folder()
         cls.pre_processor = Pre_Processor()
         Setup_Testing().configure_pre_processor(cls.pre_processor)
 
     @classmethod
     def tearDownClass(cls) -> None:
         file_delete      (cls.test_file)
-        folder_delete_all(cls.temp_hd1 )
+        folder_delete_all(cls.temp_dir )
         Metadata(file_hash=cls.file_hash).delete()
 
     def setUp(self) -> None:
-
-        #self.test_data     = Test_Data()
-        #self.test_file     = self.test_data.image()
-            self.pre_processor.clear_data_and_status_folders()
-
-        #self.path_h1       = self.pre_processor.config.hd1_location
-        #self.path_h2       = self.config.hd2_location
-        #self.path_h3       = self.config.hd3_location
-        #folder_create(self.path_h1)
-
-
-
+        self.pre_processor.clear_data_and_status_folders()
 
     def tearDown(self) -> None:
         pass
@@ -62,29 +51,28 @@ class test_Pre_Processor(TestCase):
     def test_file_hash(self):
         assert self.pre_processor.file_hash(self.test_file) == self.file_hash
 
-    #def test_file_metadata(self):
-
     def test_process_files(self):
         path_data   = self.pre_processor.storage.hd2_data()
         path_status = self.pre_processor.storage.hd2_status()
 
         assert len(files_list(path_data   )) == 0
         assert len(files_list(path_status )) == 0
-        #assert len(files_list(self.path_h1)) > 0
-
 
         self.pre_processor.process_files()
 
         assert len(files_list(path_data  )) > 0
         assert len(files_list(path_status)) == 2
 
-
-
     def test_process_file(self):
         metadata = Metadata(file_hash=self.file_hash)
         assert metadata.exists() is False
-        #source_file = self.test_data.images().pop()
         self.pre_processor.process(self.test_file)
         assert metadata.exists() is True
+
+    def test_prepare_folder(self):
+        folder_to_process = self.pre_processor.prepare_folder(self.temp_dir)
+        assert folder_to_process.startswith(self.pre_processor.storage.hd1())
+        assert os.path.isdir(folder_to_process)
+        folder_delete_all(folder_to_process)
 
 
