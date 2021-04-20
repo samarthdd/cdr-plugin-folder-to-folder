@@ -42,13 +42,18 @@ class Pre_Processor:
     def file_hash(self, file_path):
         return self.meta_service.file_hash(file_path)
 
-    def process_files(self):
-        hd1_location = self.storage.hd1()
-        for folderName, subfolders, filenames in os.walk(hd1_location):     # refactor this to be provided from the storage class
+    def process_folder(self, folder):
+        if not os.path.isdir(folder):
+            #add an event log
+            return
+        for folderName, subfolders, filenames in os.walk(folder):
             for filename in filenames:
-                self.hd1_path =  os.path.join(folderName, filename)
-                if os.path.isfile(self.hd1_path):
-                    self.process(self.hd1_path)
+                file_path =  os.path.join(folderName, filename)
+                if os.path.isfile(file_path):
+                    self.process(file_path)
+
+    def process_files(self):
+        self.process_folder(self.storage.hd1())
 
     def process(self, file_path):
         metadata = self.meta_service.create_metadata(file_path=file_path)
