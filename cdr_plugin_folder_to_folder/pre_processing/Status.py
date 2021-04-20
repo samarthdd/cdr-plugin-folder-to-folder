@@ -17,6 +17,7 @@ class FileStatus(Enum):
     IN_PROGRESS = "In Progress"
     COMPLETED   = "Completed Successfully"
     FAILED      = "Completed with errors"
+    TO_PROCESS  = "To Process"
 
 class Status:
 
@@ -56,25 +57,26 @@ class Status:
         create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())
 
-    def add_file(self):
-        self.get_from_file()
-        self.data["files_count"] += 1
-        self.write_to_file()
-
     async def update_counters_async(self, updated_status):
         await Status.lock.acquire()
         try:
             self.get_from_file()
-            if updated_status == FileStatus.IN_PROGRESS.value:
+
+            if updated_status == FileStatus.INITIAL:
+                self.data["files_count"] += 1
+            elif updated_status == FileStatus.IN_PROGRESS:
                 self.data["in_progress"] += 1
-            elif updated_status == FileStatus.COMPLETED.value:
+            elif updated_status == FileStatus.COMPLETED:
                 self.data["completed"] += 1
                 if self.data["in_progress"] > 0:
                     self.data["in_progress"] -= 1
-            elif updated_status == FileStatus.FAILED.value:
+            elif updated_status == FileStatus.FAILED:
                 self.data["failed"] += 1
                 if self.data["in_progress"] > 0:
                     self.data["in_progress"] -= 1
+            elif updated_status == FileStatus.TO_PROCESS:
+                self.data["files_to_process"] += 1
+
             self.write_to_file()
         finally:
             Status.lock.release()
@@ -84,11 +86,17 @@ class Status:
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self.update_counters_async(updated_status))
 
+    def add_file(self):
+        self.update_counters(FileStatus.INITIAL)
+
     def add_completed(self):
-        self.update_counters(FileStatus.COMPLETED.value)
+        self.update_counters(FileStatus.COMPLETED)
 
     def add_failed(self):
-        self.update_counters(FileStatus.FAILED.value)
+        self.update_counters(FileStatus.FAILED)
 
     def add_in_progress(self):
-        self.update_counters(FileStatus.IN_PROGRESS.value)
+        self.update_counters(FileStatus.IN_PROGRESS)
+
+    def add_to_process(self):
+        self.update_counters(FileStatus.TO_PROCESS)
