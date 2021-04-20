@@ -42,10 +42,6 @@ class Pre_Processor:
     def file_hash(self, file_path):
         return self.meta_service.file_hash(file_path)
 
-    # def file_hash_metadata(self, file_hash):
-    #     return self.meta_service.file_hash_metadata()
-    #     pass
-
     def process_files(self):
         hd1_location = self.storage.hd1()
         for folderName, subfolders, filenames in os.walk(hd1_location):     # refactor this to be provided from the storage class
@@ -59,13 +55,11 @@ class Pre_Processor:
 
         file_name      = metadata.file_name()
         original_hash  = metadata.original_hash()
-        status         = metadata.status()
+        status         = metadata.rebuild_status()
         self.update_status(file_name, original_hash, status)
-
 
     def update_status(self, file_name, original_hash, status):
         if status == FileStatus.INITIAL.value:
             self.hash_json.add_file(original_hash, file_name)
             self.hash_json.write_to_file()
             self.status.add_file()
-            self.status.write_to_file()

@@ -7,6 +7,7 @@ from osbot_utils.utils.Json import json_save_file_pretty
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Utils import Metadata_Utils
 from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 
 DEFAULT_METADATA_FILENAME = "metadata.json"
@@ -16,6 +17,7 @@ class Metadata:
 
     def __init__(self, file_hash=None):
         self.storage        = Storage()
+        self.process_status = Status()
         self.metadata_utils = Metadata_Utils()
         self.path_hd1       = self.storage.hd1()
         self.data           = self.default_data()
@@ -39,6 +41,8 @@ class Metadata:
     def add_file_path(self, file_path:str):
         if self.file_hash:
             file_paths = self.data.get('original_file_paths')
+            if 0 == len(file_paths):
+                self.process_status.add_to_process()
             if file_path.startswith(self.path_hd1):                         # check if path starts with hd1
                 file_path = os.path.relpath(file_path, self.path_hd1)
             if file_path not in file_paths:
@@ -105,6 +109,6 @@ class Metadata:
     def file_name(self):
         return self.data.get('file_name')
 
-    def status(self):
+    def rebuild_status(self):
         return self.data.get('rebuild_status')
 
