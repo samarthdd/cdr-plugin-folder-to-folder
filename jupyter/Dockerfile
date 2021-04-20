@@ -8,7 +8,7 @@ COPY    requirements.txt ./
 USER    jovyan
 RUN     pip install -r requirements.txt
 RUN     rm requirements.txt
-RUN     conda install python-graphviz
+#RUN     conda install python-graphviz
 RUN     jupyter nbextension enable --py --sys-prefix qgrid
 RUN     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
