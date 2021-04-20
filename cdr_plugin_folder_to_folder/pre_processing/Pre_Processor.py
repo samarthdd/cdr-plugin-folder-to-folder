@@ -47,8 +47,10 @@ class Pre_Processor:
             return folder_to_process
 
         dirname = os.path.join(self.storage.hd1(), os.path.basename(folder_to_process))
-        folder_copy(folder_to_process, dirname)
-        return dirname
+        try:
+            folder_copy(folder_to_process, dirname)
+        finally:
+            return dirname
 
     def process_folder(self, folder_to_process):
         if not os.path.isdir(folder_to_process):

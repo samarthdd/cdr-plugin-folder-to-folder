@@ -70,8 +70,8 @@ class test_Pre_Processor(TestCase):
         assert os.path.isfile(os.path.join(folder_to_process, filename))
         assert len(files_list(path_data  )) == 1
 
-        #self.pre_processor.process_folder(self.temp_dir)
-        #assert len(files_list(path_data  )) == 1
+        self.pre_processor.process_folder(self.temp_dir)
+        assert len(files_list(path_data  )) == 1
 
         folder_delete_all(folder_to_process)
         self.pre_processor.clear_data_and_status_folders()
