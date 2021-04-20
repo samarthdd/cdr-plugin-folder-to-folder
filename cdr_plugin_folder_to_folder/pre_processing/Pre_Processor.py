@@ -47,6 +47,8 @@ class Pre_Processor:
             return folder_to_process
 
         dirname = os.path.join(self.storage.hd1(), os.path.basename(folder_to_process))
+        if os.path.isdir(dirname):
+            folder_delete_all(dirname)
         try:
             folder_copy(folder_to_process, dirname)
         finally:
