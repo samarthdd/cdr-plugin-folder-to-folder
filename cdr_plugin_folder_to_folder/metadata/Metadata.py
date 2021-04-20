@@ -6,8 +6,7 @@ from osbot_utils.utils.Files import file_name, folder_exists, file_sha256, file_
 from osbot_utils.utils.Json import json_save_file_pretty
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Utils import Metadata_Utils
-from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
-from cdr_plugin_folder_to_folder.pre_processing.Status import Status
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 
 DEFAULT_METADATA_FILENAME = "metadata.json"
