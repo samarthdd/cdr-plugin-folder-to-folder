@@ -71,7 +71,7 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
-                self.status.update_counters(FileStatus.COMPLETED.value)
+                self.status.add_completed()
                 self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
                 events.add_log("Has been processed")
                 return True
@@ -84,7 +84,7 @@ class Loops(object):
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED.value)
-                self.status.update_counters(FileStatus.FAILED.value)
+                self.status.add_failed()
                 self.hash_json.update_status(file_hash, FileStatus.FAILED.value)
                 events.add_log("ERROR:" + str(error))
                 return False

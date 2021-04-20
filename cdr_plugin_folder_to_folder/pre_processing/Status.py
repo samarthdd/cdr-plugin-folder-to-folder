@@ -69,8 +69,12 @@ class Status:
                 self.data["in_progress"] += 1
             elif updated_status == FileStatus.COMPLETED.value:
                 self.data["completed"] += 1
+                if self.data["in_progress"] > 0:
+                    self.data["in_progress"] -= 1
             elif updated_status == FileStatus.FAILED.value:
                 self.data["failed"] += 1
+                if self.data["in_progress"] > 0:
+                    self.data["in_progress"] -= 1
             self.write_to_file()
         finally:
             Status.lock.release()
@@ -79,3 +83,12 @@ class Status:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self.update_counters_async(updated_status))
+
+    def add_completed(self):
+        self.update_counters(FileStatus.COMPLETED.value)
+
+    def add_failed(self):
+        self.update_counters(FileStatus.FAILED.value)
+
+    def add_in_progress(self):
+        self.update_counters(FileStatus.IN_PROGRESS.value)
