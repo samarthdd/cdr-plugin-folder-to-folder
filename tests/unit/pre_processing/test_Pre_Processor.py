@@ -52,6 +52,21 @@ class test_Pre_Processor(TestCase):
     def test_file_hash(self):
         assert self.pre_processor.file_hash(self.test_file) == self.file_hash
 
+    def test_process_folder(self):
+        filename = os.path.basename(self.test_file)
+        folder_to_process = self.pre_processor.prepare_folder(self.temp_dir)
+        assert folder_to_process.startswith(self.pre_processor.storage.hd1())
+        assert os.path.isdir(folder_to_process)
+        assert os.path.isfile(os.path.join(folder_to_process, filename))
+        folder_delete_all(folder_to_process)
+
+        self.pre_processor.clear_data_and_status_folders()
+        self.pre_processor.process_folder(self.temp_dir)
+        assert os.path.isdir(folder_to_process)
+        assert os.path.isfile(os.path.join(folder_to_process, filename))
+        folder_delete_all(folder_to_process)
+        self.pre_processor.clear_data_and_status_folders()
+
     def test_process_files(self):
         path_data   = self.pre_processor.storage.hd2_data()
         path_status = self.pre_processor.storage.hd2_status()
@@ -70,12 +85,6 @@ class test_Pre_Processor(TestCase):
         self.pre_processor.process(self.test_file)
         assert metadata.exists() is True
 
-    def test_prepare_folder(self):
-        folder_to_process = self.pre_processor.prepare_folder(self.temp_dir)
-        assert folder_to_process.startswith(self.pre_processor.storage.hd1())
-        assert os.path.isdir(folder_to_process)
-        filename = os.path.basename(self.test_file)
-        assert os.path.isfile(os.path.join(folder_to_process, filename))
-        folder_delete_all(folder_to_process)
+
 
 
