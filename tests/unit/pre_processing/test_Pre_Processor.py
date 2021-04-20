@@ -27,6 +27,7 @@ class test_Pre_Processor(TestCase):
         cls.test_file     = temp_file(contents='Static text so that we have a static hash')
         cls.file_hash     = '500286533bf75d769e9180a19414d1c3502dd52093e7351a0a9b1385d8f8961c'
         cls.temp_dir      = temp_folder()
+        file_copy(cls.test_file, cls.temp_dir)
         cls.pre_processor = Pre_Processor()
         Setup_Testing().configure_pre_processor(cls.pre_processor)
 
@@ -73,6 +74,8 @@ class test_Pre_Processor(TestCase):
         folder_to_process = self.pre_processor.prepare_folder(self.temp_dir)
         assert folder_to_process.startswith(self.pre_processor.storage.hd1())
         assert os.path.isdir(folder_to_process)
+        filename = os.path.basename(self.test_file)
+        assert os.path.isfile(os.path.join(folder_to_process, filename))
         folder_delete_all(folder_to_process)
 
 
