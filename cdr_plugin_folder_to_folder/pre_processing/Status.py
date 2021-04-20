@@ -26,8 +26,8 @@ class Status:
     def __init__(self):
         self.config = Config()
         self.folder = os.path.join(self.config.hd2_location, "status")
-        self.reset()
-        self.get_from_file()
+        if not self.get_from_file():
+            self.reset()
 
     def reset(self):
         self.data = {   "files_count"          : 0     ,
@@ -42,7 +42,7 @@ class Status:
 
     def get_from_file(self):
         if not os.path.isfile(self.get_file_path()):
-            return
+            return False
         try:
             with open(self.get_file_path()) as json_file:
                 self.data = json.load(json_file)
@@ -50,7 +50,7 @@ class Status:
             logger.error("Failed to init status from file: {medadata_folder}")
             logger.error("Failure details: {error}")
             raise error
-        return self.data
+        return True
 
     def write_to_file(self):
         create_folder(self.folder)
