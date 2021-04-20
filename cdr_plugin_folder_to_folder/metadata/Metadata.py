@@ -42,7 +42,7 @@ class Metadata:
         if self.file_hash:
             file_paths = self.data.get('original_file_paths')
             if 0 == len(file_paths):
-                self.process_status.add_to_process()
+                self.process_status.add_to_be_processed()
             if file_path.startswith(self.path_hd1):                         # check if path starts with hd1
                 file_path = os.path.relpath(file_path, self.path_hd1)
             if file_path not in file_paths:

@@ -70,10 +70,14 @@ class Status:
                 self.data["completed"] += 1
                 if self.data["in_progress"] > 0:
                     self.data["in_progress"] -= 1
+                if self.data["files_to_process"] > 0:
+                    self.data["files_to_process"] -= 1
             elif updated_status == FileStatus.FAILED:
                 self.data["failed"] += 1
                 if self.data["in_progress"] > 0:
                     self.data["in_progress"] -= 1
+                if self.data["files_to_process"] > 0:
+                    self.data["files_to_process"] -= 1
             elif updated_status == FileStatus.TO_PROCESS:
                 self.data["files_to_process"] += 1
 
@@ -98,5 +102,5 @@ class Status:
     def add_in_progress(self):
         self.update_counters(FileStatus.IN_PROGRESS)
 
-    def add_to_process(self):
+    def add_to_be_processed(self):
         self.update_counters(FileStatus.TO_PROCESS)
