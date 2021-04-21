@@ -18,6 +18,7 @@ aiofiles
 coveralls
 pytest
 pytest-cov
+pytest-datafiles
 
 # logging
 elasticsearch==7.12.0

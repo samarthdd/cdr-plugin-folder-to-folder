@@ -12,6 +12,7 @@ from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processi
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
+from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 
 from elasticsearch import Elasticsearch
 from datetime import datetime
@@ -34,6 +35,8 @@ class Loops(object):
         self.hash_json.get_from_file()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
         self.hash=None
+        self.report_elastic = Report_Elastic()
+        self.report_elastic.setup()
 
     def IsProcessing(self):
         return Loops.processing_started
@@ -55,7 +58,7 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                file_processing = File_Processing(events)
+                file_processing = File_Processing(events, self.report_elastic)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
                     return False
