@@ -5,6 +5,7 @@ from cdr_plugin_folder_to_folder.configure.Configure_Env import Configure_Env
 from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List
+from fastapi import FastAPI, HTTPException
 
 configure_env=Configure_Env()
 router_params = { "prefix": "/configuration"  ,
@@ -33,6 +34,10 @@ def configure_environment(item: CONFIGURATION):
     response = configure_env.configure(hd1_path=item.hd1_path,
                                        hd2_path=item.hd2_path,
                                        hd3_path=item.hd3_path)
+
+    if response == -1 :
+        raise HTTPException(status_code=404, detail="Data Paths are not valid")
+
     return response
 
 
@@ -40,5 +45,7 @@ def configure_environment(item: CONFIGURATION):
 def configure_multiple_gw_sdk_endpoints(item: ItemList):
     json_item=item.json()
     response = configure_env.configure_endpoints(endpoint_string=json_item)
+    if response == -1 :
+        raise HTTPException(status_code=404, detail="GW_sdk_endpoints are not valid")
     return response
 
