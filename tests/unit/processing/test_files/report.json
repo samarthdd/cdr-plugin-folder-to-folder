@@ -1,0 +1,363 @@
+{
+  "gw:GWallInfo": {
+    "@xsi:schemaLocation": "http://glasswall.com/namespace/gwallInfo.xsd",
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns:gw": "http://glasswall.com/namespace",
+    "gw:DocumentStatistics": {
+      "gw:DocumentSummary": {
+        "gw:TotalSizeInBytes": "7817",
+        "gw:FileType": "jpeg",
+        "gw:Version": "Not Applicable"
+      },
+      "gw:ContentManagementPolicy": {
+        "gw:Camera": [
+          {
+            "@cameraName": "pdfConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "javascript",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "acroform",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "actions_all",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "value_outside_reasonable_limits",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "retain_exported_streams",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "digital_signatures",
+                "gw:ContentValue": "disallow"
+              }
+            ]
+          },
+          {
+            "@cameraName": "wordConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "macros",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "review_comments",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "dynamic_data_exchange",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              }
+            ]
+          },
+          {
+            "@cameraName": "pptConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "macros",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "review_comments",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              }
+            ]
+          },
+          {
+            "@cameraName": "xlsConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "macros",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "review_comments",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "dynamic_data_exchange",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              }
+            ]
+          },
+          {
+            "@cameraName": "tiffConfig",
+            "gw:ContentSwitch": {
+              "gw:ContentName": "geotiff",
+              "gw:ContentValue": "sanitise"
+            }
+          }
+        ]
+      },
+      "gw:ContentGroups": {
+        "@groupCount": "3",
+        "gw:ContentGroup": [
+          {
+            "gw:BriefDescription": "JPEG document has Marker Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "6",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "APP0_Reserved_for_application_segments",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "18",
+                  "gw:AverageSizeInBytes": "18",
+                  "gw:MinSizeInBytes": "18",
+                  "gw:MaxSizeInBytes": "18"
+                },
+                {
+                  "gw:TechnicalDescription": "APP2_Reserved_for_application_segments",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "3162",
+                  "gw:AverageSizeInBytes": "3162",
+                  "gw:MinSizeInBytes": "3162",
+                  "gw:MaxSizeInBytes": "3162"
+                },
+                {
+                  "gw:TechnicalDescription": "DHT_Define_Huffman_tables",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "141",
+                  "gw:AverageSizeInBytes": "35",
+                  "gw:MinSizeInBytes": "29",
+                  "gw:MaxSizeInBytes": "46"
+                },
+                {
+                  "gw:TechnicalDescription": "DQT_Define_quantization_tables",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "138",
+                  "gw:AverageSizeInBytes": "69",
+                  "gw:MinSizeInBytes": "69",
+                  "gw:MaxSizeInBytes": "69"
+                },
+                {
+                  "gw:TechnicalDescription": "EOI_End_of_image",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "2",
+                  "gw:AverageSizeInBytes": "2",
+                  "gw:MinSizeInBytes": "2",
+                  "gw:MaxSizeInBytes": "2"
+                },
+                {
+                  "gw:TechnicalDescription": "SOI_Start_of_image",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "2",
+                  "gw:AverageSizeInBytes": "2",
+                  "gw:MinSizeInBytes": "2",
+                  "gw:MaxSizeInBytes": "2"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "2",
+              "gw:RemedyItem": [
+                {
+                  "gw:TechnicalDescription": "APP segment removed",
+                  "gw:InstanceCount": "2"
+                },
+                {
+                  "gw:TechnicalDescription": "Remediated 3180 bytes of padding at end of file.",
+                  "gw:InstanceCount": "1"
+                }
+              ]
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "JPEG document has Scan Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "4",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "ECS Section Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "4321",
+                  "gw:AverageSizeInBytes": "4321",
+                  "gw:MinSizeInBytes": "4321",
+                  "gw:MaxSizeInBytes": "4321"
+                },
+                {
+                  "gw:TechnicalDescription": "Scan Data Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "0",
+                  "gw:AverageSizeInBytes": "0",
+                  "gw:MinSizeInBytes": "0",
+                  "gw:MaxSizeInBytes": "0"
+                },
+                {
+                  "gw:TechnicalDescription": "Sequential Ecs Section Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "4321",
+                  "gw:AverageSizeInBytes": "4321",
+                  "gw:MinSizeInBytes": "4321",
+                  "gw:MaxSizeInBytes": "4321"
+                },
+                {
+                  "gw:TechnicalDescription": "Start Of Scan Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "4",
+                  "gw:AverageSizeInBytes": "4",
+                  "gw:MinSizeInBytes": "4",
+                  "gw:MaxSizeInBytes": "4"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "JPEG document has Frame Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "4",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "Define Huffman Table Instances",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "141",
+                  "gw:AverageSizeInBytes": "35",
+                  "gw:MinSizeInBytes": "29",
+                  "gw:MaxSizeInBytes": "46"
+                },
+                {
+                  "gw:TechnicalDescription": "Define Quantization Table Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "138",
+                  "gw:AverageSizeInBytes": "69",
+                  "gw:MinSizeInBytes": "69",
+                  "gw:MaxSizeInBytes": "69"
+                },
+                {
+                  "gw:TechnicalDescription": "Frame Data Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "0",
+                  "gw:AverageSizeInBytes": "0",
+                  "gw:MinSizeInBytes": "0",
+                  "gw:MaxSizeInBytes": "0"
+                },
+                {
+                  "gw:TechnicalDescription": "Frame Header Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "19",
+                  "gw:AverageSizeInBytes": "19",
+                  "gw:MinSizeInBytes": "19",
+                  "gw:MaxSizeInBytes": "19"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          }
+        ]
+      },
+      "gw:ExtractedItems": {
+        "@itemCount": "0"
+      }
+    }
+  },
+  "original_hash": "86df34018436a99e1e98ff51346591e189cd76c8518f7288bb1ea8336396259b"
+}
