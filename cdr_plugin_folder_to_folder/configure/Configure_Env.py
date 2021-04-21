@@ -32,18 +32,21 @@ class Configure_Env:
                     dotenv.set_key(dotenv_file, "HD1_LOCATION", environ["HD1_LOCATION"])
                 else:
                     log_error(message=f"hd1_path did not exist",data={"path": hd1_path})
+                    return -1
             if hd2_path:
                 if path.exists(hd2_path):
                     environ['HD2_LOCATION'] = hd2_path
                     dotenv.set_key(dotenv_file, "HD2_LOCATION", environ["HD2_LOCATION"])
                 else:
                     log_error(message=f"hd2_path did not exist", data={"path": hd2_path})
+                    return -1
             if hd3_path:
                 if path.exists(hd3_path):
                     environ['HD3_LOCATION'] = hd3_path
                     dotenv.set_key(dotenv_file, "HD3_LOCATION", environ["HD3_LOCATION"])
                 else:
                     log_error(message=f"hd3_path did not exist", data={"path": hd3_path})
+                    return -1
             self.config.load_values()
             return self.env_details()
 
@@ -74,7 +77,7 @@ class Configure_Env:
                 return json.loads(environ['ENDPOINTS'])
 
             else:
-                return "Endpoints are not valid"
+                return -1
 
 
         except Exception as error:
