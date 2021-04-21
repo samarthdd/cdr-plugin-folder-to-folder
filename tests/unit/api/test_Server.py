@@ -43,12 +43,12 @@ class test_Server(TestCase):
         imp.load_source('__main__', path_file)              # force reload and set __main__
         assert mock_run.call_count == 1
 
+    # @app.exception_handler(StarletteHTTPException)
+    # async def http_exception_handler(request, exc):
+    #    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
+    
     # lock the current rules mappings to that any new API changes also require an change to this test
     def test_routes(self):
-        #@app.exception_handler(StarletteHTTPException)
-        #async def http_exception_handler(request, exc):
-        #    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
-
         # routes before server.add_routes()
         assert [route.path for route in self.server.app.routes] == ['/openapi.json', '/static-offline-docs', '/docs', '/docs/oauth2-redirect', '/redoc']
         assert self.server.routes() == {}

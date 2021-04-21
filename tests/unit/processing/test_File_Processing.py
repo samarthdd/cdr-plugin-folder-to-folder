@@ -55,9 +55,8 @@ class test_File_Processing(TestCase):
         dir         = self.metadata.metadata_folder_path()
         self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, encodedFile=encodedFile, dir=dir)
 
-        pprint(self.events_log.get_from_file())
+        #pprint(self.events_log.get_from_file())
 
-    # target_file     = '/tmp/rebuilt-file.pdf'
 
     def test_pdf_rebuild(self,):
         #server         = "84.16.229.232"  # aws                                            # 5.1 lowest response time
