@@ -38,6 +38,7 @@ class Pre_Processor:
         folder_delete_all(status_target)
         folder_create(data_target)
         folder_create(status_target)
+        self.status.reset()
 
     def file_hash(self, file_path):
         return self.meta_service.file_hash(file_path)
@@ -67,11 +68,11 @@ class Pre_Processor:
                 if os.path.isfile(file_path):
                     self.process(file_path)
 
-        self.status.write_to_file()
         return True
 
     def process_files(self):
         self.process_folder(self.storage.hd1())
+        self.status.write_to_file()
 
     def process(self, file_path):
         metadata = self.meta_service.create_metadata(file_path=file_path)

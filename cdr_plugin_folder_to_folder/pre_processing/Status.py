@@ -68,8 +68,6 @@ class Status:
     async def update_counters_async(self, updated_status):
         await Status.lock.acquire()
         try:
-            self.get_from_file()
-
             if updated_status == FileStatus.INITIAL:
                 self.data["files_count"] += 1
             elif updated_status == FileStatus.IN_PROGRESS:
@@ -88,8 +86,6 @@ class Status:
                     self.data["files_to_process"] -= 1
             elif updated_status == FileStatus.TO_PROCESS:
                 self.data["files_to_process"] += 1
-
-            #self.write_to_file()
         finally:
             Status.lock.release()
 
