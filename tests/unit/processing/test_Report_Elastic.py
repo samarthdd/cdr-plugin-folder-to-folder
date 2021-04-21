@@ -36,6 +36,7 @@ class test_Report_Elastic(TestCase):
         assert self.original_hash == self.file_hash
 
         self.report_elastic = Report_Elastic()
+        self.report_elastic.setup()
 
         if self.report_elastic.enabled is False:
             pytest.skip('Elastic server not available')
@@ -46,7 +47,7 @@ class test_Report_Elastic(TestCase):
 
         assert result_add_report.get('_shards').get('successful') == 1
 
-        assert self.report_elastic.get_report   (original_hash=self.original_hash)               == report_data
+        assert self.report_elastic.get_report   (original_hash=self.original_hash)               == self.report_data
         assert self.report_elastic.delete_report(original_hash=self.original_hash).get('result') == 'deleted'
         assert self.report_elastic.get_report   (original_hash=self.original_hash)               == {}
 
