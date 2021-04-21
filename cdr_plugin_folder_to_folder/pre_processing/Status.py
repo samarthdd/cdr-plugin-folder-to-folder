@@ -44,7 +44,6 @@ class Status:
                         "failed"               : 0     ,
                         "in_progress"          : 0
                     }
-        self.write_to_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Status.STATUS_FILE_NAME)
