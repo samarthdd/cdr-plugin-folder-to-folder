@@ -66,6 +66,8 @@ class Pre_Processor:
                 file_path =  os.path.join(folderName, filename)
                 if os.path.isfile(file_path):
                     self.process(file_path)
+
+        self.status.write_to_file()
         return True
 
     def process_files(self):

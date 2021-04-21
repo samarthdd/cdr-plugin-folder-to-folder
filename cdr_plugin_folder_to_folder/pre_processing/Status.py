@@ -24,11 +24,18 @@ class Status:
     STATUS_FILE_NAME = "status.json"
     lock = asyncio.Lock()
 
+    _instance = None
+    def __new__(cls):                                               # singleton pattern
+        if cls._instance is None:
+            cls._instance = super(Status, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
-        self.config = Config()
-        self.folder = os.path.join(self.config.hd2_location, "status")
-        if not self.get_from_file():
-            self.reset()
+        if hasattr(self, 'folder') is False:                     # only set these values first time around
+            self.config = Config()
+            self.folder = os.path.join(self.config.hd2_location, "status")
+            if not self.get_from_file():
+                self.reset()
 
     def reset(self):
         self.data = {   "files_count"          : 0     ,
@@ -37,6 +44,7 @@ class Status:
                         "failed"               : 0     ,
                         "in_progress"          : 0
                     }
+        self.write_to_file()
 
     def get_file_path(self):
         return os.path.join(self.folder, Status.STATUS_FILE_NAME)
@@ -81,7 +89,7 @@ class Status:
             elif updated_status == FileStatus.TO_PROCESS:
                 self.data["files_to_process"] += 1
 
-            self.write_to_file()
+            #self.write_to_file()
         finally:
             Status.lock.release()
 
