@@ -10,9 +10,8 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
-from cdr_plugin_folder_to_folder.pre_processing.Status import Status
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
-from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 
 from elasticsearch import Elasticsearch
 from datetime import datetime
@@ -71,7 +70,7 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
-                self.status.update_counters(FileStatus.COMPLETED.value)
+                self.status.add_completed()
                 self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
                 events.add_log("Has been processed")
                 return True
@@ -84,7 +83,7 @@ class Loops(object):
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED.value)
-                self.status.update_counters(FileStatus.FAILED.value)
+                self.status.add_failed()
                 self.hash_json.update_status(file_hash, FileStatus.FAILED.value)
                 events.add_log("ERROR:" + str(error))
                 return False

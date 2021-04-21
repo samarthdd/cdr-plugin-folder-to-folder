@@ -15,6 +15,7 @@ from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 
 class File_Processing:
 
@@ -23,6 +24,7 @@ class File_Processing:
         self.events_log     = events_log
         self.storage        = Storage()
         self.config         = Config()
+        self.status         = Status()
 
     def base64request(self, endpoint, api_route, base64enc_file):
         try:
@@ -131,6 +133,7 @@ class File_Processing:
             return False
 
         self.meta_service.set_status_inprogress(dir)
+        self.status.add_in_progress()
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):

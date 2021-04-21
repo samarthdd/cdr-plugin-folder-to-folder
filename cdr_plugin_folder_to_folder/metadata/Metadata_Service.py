@@ -32,18 +32,11 @@ class Metadata_Service:
         metadata.add_file(file_path)
         return metadata
 
-    # def set_metadata(self, metadata):
-    #     self.metadata = metadata
-
     def get_from_file(self, metadata_folder):
         self.metadata_folder=metadata_folder
 
         with open(self.get_metadata_file_path()) as json_file:
             self.metadata = json.load(json_file)
-        #except Exception as error:
-        #    logger.error("Failed to init metadata from file: {medadata_folder}")
-        #    logger.error("Failure details: {error}")
-        #    raise error
         return self.metadata
 
     def get_metadata_file_path(self):
