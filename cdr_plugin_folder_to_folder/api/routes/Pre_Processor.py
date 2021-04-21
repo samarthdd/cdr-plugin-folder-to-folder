@@ -23,7 +23,7 @@ def clear_data_and_status_folders():
     pre_processor.clear_data_and_status_folders()
     return status_ok(message="Data cleared from HD2")
 
-@router.post("/pre_process_folder/")
+@router.post("/pre_process_folder")
 def pre_process_a_folder(item: DIRECTORY):
     pre_processor = Pre_Processor()
     pre_processor.process_folder(folder_to_process=item.folder)
