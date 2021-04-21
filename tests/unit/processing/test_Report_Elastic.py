@@ -2,11 +2,9 @@ from unittest import TestCase
 from unittest.mock import patch, call
 
 import os
-import json
 import pytest
 
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import temp_file, file_delete, temp_folder, folder_delete_all, file_name, folder_copy
 from osbot_utils.utils.Json import json_load_file
 
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
@@ -21,7 +19,6 @@ class test_Report_Elastic(TestCase):
     test_file = None
     @classmethod
     def setUpClass(cls) -> None:
-        cls.test_file            = 'report.json'
         cls.file_hash            = '86df34018436a99e1e98ff51346591e189cd76c8518f7288bb1ea8336396259b'
 
     @classmethod
@@ -33,8 +30,7 @@ class test_Report_Elastic(TestCase):
         report_file_path = os.path.join(FIXTURE_DIR, 'report.json')
         assert os.path.isfile(report_file_path)
 
-        with open(report_file_path) as json_file:
-            self.report_data = json.load(json_file) 
+        self.report_data = json_load_file(report_file_path)
 
         self.original_hash   = self.report_data['original_hash']
         assert self.original_hash == self.file_hash
