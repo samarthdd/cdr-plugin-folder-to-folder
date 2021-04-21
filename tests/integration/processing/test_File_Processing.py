@@ -17,6 +17,7 @@ from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processi
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
+from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 
 
 class test_File_Processing(TestCase):
@@ -43,7 +44,8 @@ class test_File_Processing(TestCase):
         self.sdk_port        = '8080'
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)
-        self.file_processing = File_Processing(events_log=self.events_log)
+        self.report_elastic  = Report_Elastic()
+        self.file_processing = File_Processing(events_log=self.events_log, report_elastic=self.report_elastic)
         self.storage         = Storage()
 
     def test_get_xmlreport(self):

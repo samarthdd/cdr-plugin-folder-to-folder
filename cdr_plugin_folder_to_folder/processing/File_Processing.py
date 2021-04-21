@@ -16,15 +16,17 @@ from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Servi
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status
+from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 
 class File_Processing:
 
-    def __init__(self, events_log):
+    def __init__(self, events_log, report_elastic):
         self.meta_service   = Metadata_Service()
         self.events_log     = events_log
         self.storage        = Storage()
         self.config         = Config()
         self.status         = Status()
+        self.report_elastic = report_elastic
 
     def base64request(self, endpoint, api_route, base64enc_file):
         try:
@@ -68,7 +70,10 @@ class File_Processing:
             raise ValueError('Failed to obtain the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
+        json_obj['original_hash'] = os.path.basename(dir)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
+
+        self.report_elastic.add_report(json_obj)
 
     # Save to HD3
     def save_file(self, result, processed_path):
