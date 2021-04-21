@@ -43,10 +43,6 @@ class test_Server(TestCase):
         imp.load_source('__main__', path_file)              # force reload and set __main__
         assert mock_run.call_count == 1
 
-    # @app.exception_handler(StarletteHTTPException)
-    # async def http_exception_handler(request, exc):
-    #    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
-    
     # lock the current rules mappings to that any new API changes also require an change to this test
     def test_routes(self):
         # routes before server.add_routes()
@@ -76,11 +72,19 @@ class test_Server(TestCase):
                                           '/status'                                              : { 'methods': {'GET' }, 'name': 'status'                              , 'path_format': '/status'                                              },
                                           '/version'                                             : { 'methods': {'GET' }, 'name': 'version'                             , 'path_format': '/version'                                             }}
 
+
+    # todo add global exception handler
+    #def test__exception_in_method
+    # @app.exception_handler(StarletteHTTPException)
+    # async def http_exception_handler(request, exc):
+    #    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
+
     # FastAPI allows multiple rules mappings (which should never happen)
     def test__detect_duplicate_routes(self):
         self.server.add_routes()
         paths_format = [route.path for route in self.server.app.routes]
         assert sorted(paths_format) == list_set(paths_format)
+
 
 
 

@@ -2,13 +2,14 @@ import os
 import json
 
 from osbot_utils.utils.Files import file_name, folder_exists, file_sha256, file_exists, folder_create, path_combine, \
-    folder_delete_all, file_copy
+    folder_delete_all, file_copy, files_list
 from osbot_utils.utils.Json import json_save_file_pretty
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Utils import Metadata_Utils
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 
+DEFAULT_REPORT_FILENAME   = "report.json"
 DEFAULT_METADATA_FILENAME = "metadata.json"
 DEFAULT_SOURCE_FILENAME   = "source"
 
@@ -74,12 +75,11 @@ class Metadata:
     def exists(self):
         return folder_exists(self.metadata_folder_path())
 
-    # def load(self):
-    #     #self.file_hash = file_hash
-    #     pass
+    def metadata_file_exists(self):
+        return file_exists(self.metadata_file_path())
 
     def metadata_file_path(self):
-        if self.file_hash:
+        if self.file_hash:                              # todo: find a better solution that having to add this to all methods
             return path_combine(self.metadata_folder_path(), DEFAULT_METADATA_FILENAME)
 
     def metadata_folder_path(self):
@@ -111,3 +111,9 @@ class Metadata:
     def rebuild_status(self):
         return self.data.get('rebuild_status')
 
+    def report_file_path(self):
+        if self.file_hash:
+            return path_combine(self.metadata_folder_path(), DEFAULT_REPORT_FILENAME)
+
+    def report_file_exists(self):
+        return file_exists(self.report_file_path())

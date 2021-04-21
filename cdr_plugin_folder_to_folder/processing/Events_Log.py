@@ -41,11 +41,14 @@ class Events_Log:
         create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())
 
-    def add_log(self, log):
+    def add_log(self, message, data=None):
+        if data is str:
+            data = {"str": data }
         self.get_from_file()
 
         json_data= {    "timestamp" : str(datetime.now()),
-                        "log"       : log                ,
+                        "message"   : message            ,
+                        "data"      : data  or {}        ,
                         "uuid"      : self.unique_id     }
 
         self.data["events"].append(json_data)

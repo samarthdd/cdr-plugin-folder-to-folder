@@ -36,6 +36,7 @@ class test_File_Processing(TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         cls.config.load_values()                    # reset config values
+        folder_delete_all(cls.temp_root)
 
     def setUp(self) -> None:
         self.sdk_server      = '34.240.183.4'  # todo: use value from env variables
@@ -45,20 +46,22 @@ class test_File_Processing(TestCase):
         self.file_processing = File_Processing(events_log=self.events_log)
         self.storage         = Storage()
 
-    def test_do_rebuild(self):
-        pprint(self.metadata.metadata_folder_path())
-        pprint(folder_files(self.config.root_folder,pattern="*"))
+    def test_get_xmlreport(self):
+        endpoint = ''
+        headers = ''
+        dir     = ''
+
+    def test_do_rebuild(self):          # refactor
         endpoint    = f'http://{self.sdk_server}:{self.sdk_port}'
         hash        = Metadata_Utils().file_hash(self.test_file)
         encodedFile = FileService.base64encode(self.test_file)
-        #dir         = './test_data/scenario-1/hd2/data/087a783915875b069c89d517491dd42b9e1b3619464a750e72a7ab44c06fa645'
         dir         = self.metadata.metadata_folder_path()
         self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, encodedFile=encodedFile, dir=dir)
+        assert self.metadata.metadata_file_exists()
+        assert self.metadata.report_file_exists()
 
-        #pprint(self.events_log.get_from_file())
 
-
-    def test_pdf_rebuild(self,):
+    def test_pdf_rebuild(self,):            # refactor into separate test file
         #server         = "84.16.229.232"  # aws                                            # 5.1 lowest response time
         server          = "192.168.0.249"   # local                                         # 3.9 lowest response time
         server          = "cdr-plugin-dev-sdk-lb-1930604683.eu-west-1.elb.amazonaws.com"    # 4.5 lowest response time

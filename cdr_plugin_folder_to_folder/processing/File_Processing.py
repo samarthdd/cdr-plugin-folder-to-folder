@@ -89,6 +89,8 @@ class File_Processing:
 
     @log_duration
     def do_rebuild(self, endpoint, hash, encodedFile, dir):
+        event_data = { "endpoint": endpoint, "hash": hash, "encodedFile": encodedFile,"dir":dir }
+        self.events_log.add_log('Starting File rebuild',  event_data)
         response = self.rebuild(endpoint, encodedFile)
         result = response.text
         if not result:
