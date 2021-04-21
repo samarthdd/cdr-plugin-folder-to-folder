@@ -16,8 +16,8 @@ from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testin
 class test_Index_Pattern(TestCase):
 
     def setUp(self) -> None:
-        self.config = Config().load_values()
-        Setup_Testing().set_config_for_local_testing(self.config)
+        self.config = Config()
+        Setup_Testing().configure_config(self.config)
         self.host   = self.config.kibana_host
         self.port   = self.config.kibana_port
         self.kibana = Kibana(host=self.host, port=self.port).setup()
@@ -30,7 +30,7 @@ class test_Index_Pattern(TestCase):
 
     def test_create_info_exists_delete(self):
         result = self.index_pattern.create()
-        pprint(result)
+        #pprint(result)
         assert result.get('attributes').get('title') == self.pattern_name
         assert self.index_pattern.exists() is True
         assert list_set(self.index_pattern.info()) == ['fields', 'id', 'namespaces', 'references', 'score', 'title',

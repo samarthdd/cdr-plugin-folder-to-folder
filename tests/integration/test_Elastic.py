@@ -12,8 +12,7 @@ class test_Elastic(TestCase):
 
     def setUp(self) -> None:
         self.elastic = Elastic()
-        Setup_Testing().set_config_for_local_testing(config=self.elastic.config)
-        self.elastic.setup()
+        Setup_Testing().configure_elastic(elastic=self.elastic)
         if self.elastic.enabled is False:
             pytest.skip('Elastic server not available')
 
@@ -33,3 +32,5 @@ class test_Elastic(TestCase):
         assert self.elastic.server_online() is True
         self.elastic.config.elastic_port='9201'
         assert self.elastic.server_online() is False
+        self.elastic.config.elastic_port = '9200'                   # need to restore this value since we are modifying an singleton object
+        assert self.elastic.server_online() is True

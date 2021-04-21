@@ -16,8 +16,8 @@ from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testin
 class test_Kibana(TestCase):
 
     def setUp(self) -> None:
-        self.config = Config().load_values()
-        Setup_Testing().set_config_for_local_testing(self.config)
+        self.config = Config()
+        Setup_Testing().configure_config(self.config)
 
         self.host       = self.config.kibana_host
         self.port       = self.config.kibana_port

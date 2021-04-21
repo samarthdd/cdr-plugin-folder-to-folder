@@ -1,6 +1,6 @@
 import json
 
-from cdr_plugin_folder_to_folder.common_settings.Config import API_VERSION
+from cdr_plugin_folder_to_folder.common_settings.Config import API_VERSION, Config
 from cdr_plugin_folder_to_folder.configure.Configure_Env import Configure_Env
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -23,6 +23,10 @@ class ItemList(BaseModel):
     Endpoints : List[ENDPOINTS]
 
 router = APIRouter(**router_params)
+
+@router.get("/config/")
+def config():
+    return Config().values()
 
 @router.post("/configure_env/",response_model=CONFIGURATION)
 def configure_environment(item: CONFIGURATION):

@@ -15,8 +15,9 @@ class test_Logging(TestCase):
     def setUpClass(cls) -> None:
         cls.index_name = 'temp_log_index'
         cls.logging = Logging(index_name=cls.index_name)
+
         cls.elastic = cls.logging.elastic()
-        Setup_Testing().set_config_for_local_testing(config=cls.elastic.config)
+        Setup_Testing().configure_elastic(cls.elastic)
         cls.logging.setup()
         if cls.elastic.enabled is False:
             pytest.skip('Elastic server not available')

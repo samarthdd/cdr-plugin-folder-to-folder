@@ -3,6 +3,7 @@ import os.path
 import shutil
 import base64
 
+# todo: remove methods that are provided by osbot_utils
 class FileService:
 
     @staticmethod

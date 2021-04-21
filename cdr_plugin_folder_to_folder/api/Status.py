@@ -8,7 +8,7 @@ from cdr_plugin_folder_to_folder.utils.Logging import log_debug, logging
 class Status:
 
     def __init__(self):
-        self.config = Config().load_values()
+        self.config = Config()
 
     def now(self):
         data = {

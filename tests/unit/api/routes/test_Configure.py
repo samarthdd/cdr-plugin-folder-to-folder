@@ -2,16 +2,22 @@ import json
 from unittest import TestCase
 
 import pytest
+from osbot_utils.utils.Misc import list_set
 
 from cdr_plugin_folder_to_folder.utils.testing.Direct_API_Server import Direct_API_Server
 from os import environ,path,remove
 
-class test_Configure_Env(TestCase):
+class test_Configure(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
         cls.client = Direct_API_Server().setup()
         cls.prefix = 'configuration'
+
+    def test_config(self):
+        path = f"{self.prefix}/config/"
+        response = self.client.GET(path)
+        assert list_set(response) == ['elastic_host', 'elastic_port', 'elastic_schema', 'endpoints', 'hd1_location', 'hd2_data_location', 'hd2_location', 'hd2_status_location', 'hd3_location', 'kibana_host', 'kibana_port', 'root_folder', 'thread_count']
 
     def test_configure(self):
         path = f"{self.prefix}/configure_env/"

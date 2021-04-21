@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 
+# todo: to delete (check if this is stil used)
 class File_Service:
 
     def copy_file(self,src,dst):
