@@ -7,9 +7,6 @@ env:
 # events but only for the master branch
 on:
   workflow_dispatch:
-  push:
-    branches: 
-     - main
 
 jobs:
   test-cdr-plugin:
