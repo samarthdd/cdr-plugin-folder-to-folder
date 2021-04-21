@@ -68,6 +68,7 @@ class File_Processing:
             raise ValueError('Failed to obtain the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
+        json_obj['original_hash'] = os.path.basename(dir)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
     # Save to HD3
