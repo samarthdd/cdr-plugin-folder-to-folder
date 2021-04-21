@@ -31,7 +31,6 @@ class Loops(object):
         self.config = Config()
         self.status = Status()
         self.hash_json = Hash_Json()
-        self.status.get_from_file()
         self.hash_json.get_from_file()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
         self.hash=None
@@ -109,7 +108,6 @@ class Loops(object):
 
         self.events.add_log("LoopHashDirectoriesAsync started")
 
-        self.status.get_from_file()
         self.hash_json.get_from_file()
 
         rootdir = os.path.join(self.config.hd2_location, "data")
@@ -167,6 +165,7 @@ class Loops(object):
         finally:
             Loops.processing_started = False
             Loops.lock.release()
+            self.status.write_to_file()
 
     @log_duration
     def LoopHashDirectories(self):
