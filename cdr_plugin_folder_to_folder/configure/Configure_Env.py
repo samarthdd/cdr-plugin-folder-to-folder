@@ -7,6 +7,7 @@ import dotenv
 
 import logging as logger
 
+from cdr_plugin_folder_to_folder.utils.Logging import log_error
 from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
 from urllib.parse import urljoin
 import requests
@@ -15,6 +16,7 @@ logger.basicConfig(level=logger.INFO)
 
 class Configure_Env:
     def __init__(self):
+        self.config = Config()
         Setup_Testing().set_test_root_dir()
         dotenv_file = dotenv.find_dotenv()
         if not dotenv_file:
@@ -29,19 +31,20 @@ class Configure_Env:
                     environ['HD1_LOCATION'] = hd1_path
                     dotenv.set_key(dotenv_file, "HD1_LOCATION", environ["HD1_LOCATION"])
                 else:
-                    return 0
+                    log_error(message=f"hd1_path did not exist",data={"path": hd1_path})
             if hd2_path:
-                if path.exists(hd1_path):
+                if path.exists(hd2_path):
                     environ['HD2_LOCATION'] = hd2_path
                     dotenv.set_key(dotenv_file, "HD2_LOCATION", environ["HD2_LOCATION"])
                 else:
-                    return 0
+                    log_error(message=f"hd2_path did not exist", data={"path": hd2_path})
             if hd3_path:
-                if path.exists(hd1_path):
+                if path.exists(hd3_path):
                     environ['HD3_LOCATION'] = hd3_path
                     dotenv.set_key(dotenv_file, "HD3_LOCATION", environ["HD3_LOCATION"])
                 else:
-                    return 0
+                    log_error(message=f"hd3_path did not exist", data={"path": hd3_path})
+            self.config.load_values()
             return self.env_details()
 
         except Exception as error:
@@ -67,6 +70,7 @@ class Configure_Env:
                 environ['ENDPOINTS'] = valid_endpoint_string
                 logger.info(f"ENDPOINTS : {environ['ENDPOINTS']}")
                 dotenv.set_key(dotenv_file, "ENDPOINTS", environ["ENDPOINTS"])
+                self.config.load_values()
                 return json.loads(environ['ENDPOINTS'])
 
             else:
