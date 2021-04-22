@@ -70,6 +70,7 @@ class Pre_Processor:
 
         return True
 
+    @log_duration
     def process_files(self):
         self.process_folder(self.storage.hd1())
         self.status.write_to_file()

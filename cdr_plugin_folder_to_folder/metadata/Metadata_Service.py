@@ -30,6 +30,7 @@ class Metadata_Service:
     def create_metadata(self, file_path):
         metadata = Metadata()
         metadata.add_file(file_path)
+        self.metadata_elastic.add_metadata(metadata.data)                            # save metadata to elastic
         return metadata
 
     def get_from_file(self, metadata_folder):
