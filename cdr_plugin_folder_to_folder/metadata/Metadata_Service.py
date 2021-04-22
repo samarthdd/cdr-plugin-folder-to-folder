@@ -4,7 +4,7 @@ import os
 
 import logging as logger
 
-from osbot_utils.utils.Files import file_sha256, file_name
+from osbot_utils.utils.Files import file_sha256
 from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata

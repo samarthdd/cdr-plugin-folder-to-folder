@@ -1,3 +1,4 @@
+from osbot_utils.utils.Json import json_to_str
 from osbot_utils.utils.Misc import datetime_now
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
@@ -12,10 +13,8 @@ class Status:
 
     def now(self):
         data = {
-            "config": {
-                "elastic" : f"{self.config.elastic_schema}://{self.config.elastic_host}:{self.config.elastic_port}",
-                "kibana"  : f"{self.config.elastic_schema}://{self.config.kibana_host }:{self.config.kibana_port }"
-            },
+            "config": self.config.values(),
+
             "date": datetime_now()                      ,
             "check_logging" : self.check_logging()
         }

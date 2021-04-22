@@ -116,17 +116,18 @@ class Config:
 
     def values(self):
         return {
-            "hd1_location"       : self.hd1_location       ,
-            "hd2_location"       : self.hd2_location       ,
-            "hd2_data_location"  : self.hd2_data_location  ,
-            "hd2_status_location": self.hd2_status_location,
-            "hd3_location"       : self.hd3_location       ,
-            "root_folder"        : self.root_folder        ,
-            "elastic_host"       : self.elastic_host       ,
-            "elastic_port"       : self.elastic_port       ,
-            "elastic_schema"     : self.elastic_schema     ,
-            "kibana_host"        : self.kibana_host        ,
-            "kibana_port"        : self.kibana_port        ,
-            "thread_count"       : self.thread_count       ,
-            "endpoints"          : self.endpoints
+            "hd1_location"       : self.hd1_location        ,
+            "hd2_location"       : self.hd2_location        ,
+            "hd2_data_location"  : self.hd2_data_location   ,
+            "hd2_status_location": self.hd2_status_location ,
+            "hd3_location"       : self.hd3_location        ,
+            "root_folder"        : self.root_folder         ,
+            "elastic_host"       : self.elastic_host        ,
+            "elastic_port"       : self.elastic_port        ,
+            "elastic_schema"     : self.elastic_schema      ,
+            "kibana_host"        : self.kibana_host         ,
+            "kibana_port"        : self.kibana_port         ,
+            "thread_count"       : self.thread_count        ,
+            "endpoints"          : self.endpoints           ,
+            "request_timeout"    : self.request_timeout
         }
