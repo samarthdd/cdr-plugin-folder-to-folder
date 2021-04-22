@@ -110,15 +110,16 @@ class File_Processing:
             raise ValueError('Failed to rebuild the file')
 
         for path in self.meta_service.get_original_file_paths(dir):
-            processed_path = path
+            rebuild_file_path = path
             if path.startswith(self.config.hd1_location):
-                processed_path = path.replace(self.config.hd1_location, self.config.hd3_location)
+                rebuild_file_path = path.replace(self.config.hd1_location, self.config.hd3_location)
             else:
-                processed_path = os.path.join(self.config.hd3_location, path)
+                rebuild_file_path = os.path.join(self.config.hd3_location, path)
 
-            self.save_file(result, processed_path)
-            file_size = os.path.getsize(processed_path)
+            self.save_file(result, rebuild_file_path)
+            file_size = os.path.getsize(rebuild_file_path)
             self.meta_service.set_rebuild_file_size(dir, file_size)
+            self.meta_service.set_rebuild_file_path(dir, rebuild_file_path)
 
         headers = response.headers
         fileIdKey = "X-Adaptation-File-Id"
