@@ -69,3 +69,34 @@ class Metadata_Service:
 
     def set_error(self, metadata_folder, error_details):
         self.set_metadata_field(metadata_folder, 'error', error_details)
+
+    def set_xml_report_status(self, metadata_folder, xml_report_status):
+        self.set_metadata_field(metadata_folder, 'xml_report_status', xml_report_status)
+
+    def set_rebuild_server(self, metadata_folder, rebuild_server):
+        self.set_metadata_field(metadata_folder, 'rebuild_server', rebuild_server)
+
+    def set_server_version(self, metadata_folder, server_version):
+        self.set_metadata_field(metadata_folder, 'server_version', server_version)
+
+    def set_original_file_size(self, metadata_folder, file_size):
+        self.set_metadata_field(metadata_folder, 'original_file_size', file_size)
+
+    def set_original_file_extension(self, metadata_folder, file_extension):
+        self.set_metadata_field(metadata_folder, 'original_file_extension', file_extension)
+
+    def set_rebuild_file_path(self, metadata_folder, rebuild_file_path):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_path', rebuild_file_path)
+
+    def set_rebuild_hash(self, metadata_folder, rebuild_hash):
+        self.set_metadata_field(metadata_folder, 'rebuild_hash', rebuild_hash)
+
+    def set_rebuild_file_size(self, metadata_folder, file_size):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_size', file_size)
+
+    def set_rebuild_file_extension(self, metadata_folder, file_extension):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_extension', file_extension)
+
+    def set_rebuild_file_duration(self, metadata_folder, rebuild_file_duration):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_duration', rebuild_file_duration)
+

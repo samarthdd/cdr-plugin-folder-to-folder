@@ -111,42 +111,6 @@ class Metadata:
     def set_file_name(self, file_name):
         self.update_field('file_name', file_name)
 
-    def set_xml_report_status(self, xml_report_status):
-        self.update_field('xml_report_status', xml_report_status)
-
-    def set_rebuild_server(self, rebuild_server):
-        self.update_field('rebuild_server', rebuild_server)
-
-    def set_server_version(self, server_version):
-        self.update_field('server_version', server_version)
-
-    def set_error(self, error):
-        self.update_field('error', error)
-
-    def set_original_file_size(self, file_size):
-        self.update_field('original_file_size', file_size)
-
-    def set_original_file_extension(self, file_extension):
-        self.update_field('original_file_extension', file_extension)
-
-    def set_rebuild_file_path(self, rebuild_file_path):
-        self.update_field('rebuild_file_path', rebuild_file_path)
-
-    def set_rebuild_hash(self, rebuild_hash):
-        self.update_field('rebuild_hash', rebuild_hash)
-
-    def set_rebuild_status(self, rebuild_status):
-        self.update_field('rebuild_status', rebuild_status)
-
-    def set_rebuild_file_size(self, file_size):
-        self.update_field('rebuild_file_size', file_size)
-
-    def set_rebuild_file_extension(self, file_extension):
-        self.update_field('rebuild_file_extension', file_extension)
-
-    def set_rebuild_file_duration(self, rebuild_file_duration):
-        self.update_field('rebuild_file_duration', rebuild_file_duration)
-
     def source_file_path(self):
         if self.file_hash:
             return path_combine(self.metadata_folder_path(), DEFAULT_SOURCE_FILENAME)
