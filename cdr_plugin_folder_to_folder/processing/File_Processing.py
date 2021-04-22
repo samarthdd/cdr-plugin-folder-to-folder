@@ -71,6 +71,8 @@ class File_Processing:
             raise ValueError('Failed to obtain the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
+        file_extension = json_obj["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
+        self.meta_service.set_rebuild_file_extension(dir, file_extension)
         json_obj['original_hash'] = os.path.basename(dir)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
@@ -96,6 +98,7 @@ class File_Processing:
     @log_duration
     def do_rebuild(self, endpoint, hash, source_path, dir):
 
+        self.meta_service.set_original_file_extension(dir)
         self.meta_service.set_rebuild_server(dir, endpoint)
 
         file_size = os.path.getsize(source_path)
