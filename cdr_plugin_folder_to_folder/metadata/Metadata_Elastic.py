@@ -1,17 +1,18 @@
-from osbot_utils.decorators.methods.cache_on_self import cache_on_self
+from osbot_utils.decorators.methods.cache_on_self  import cache_on_self
+from cdr_plugin_folder_to_folder.utils.Elastic     import Elastic
 
-from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
+DEFAULT_TIME_FIELD = 'timestamp'
 
 class Metadata_Elastic:
     def __init__(self):
         self.index_name = 'files_metadata'
         self.id_key     = 'original_hash'
+        self.time_field = DEFAULT_TIME_FIELD
         self.enabled    = False
 
     @cache_on_self
     def elastic(self):
-        return Elastic(index_name=self.index_name, id_key=self.id_key)
-
+        return Elastic(index_name=self.index_name, id_key=self.id_key, time_field=self.time_field)
 
     def setup(self, delete_existing=False):
         elastic = self.elastic()

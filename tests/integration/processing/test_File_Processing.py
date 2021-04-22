@@ -85,31 +85,32 @@ class test_File_Processing(TestCase):
         assert b'Glasswall Processed' not in original_bytes
 
         assert str_to_bytes(text)     in     rebuild_base64
+        assert b'Glasswall Processed' in     rebuild_base64
         #pprint(rebuild_base64)
-        assert b'Glasswall Protected' in     rebuild_base64
-        #assert b'Glasswall Processed' in rebuild_base64
+        #assert b'Glasswall Protected' in     rebuild_base64
 
 
-    def test_server_status(self,):            # refactor into separate test file
-        server         = "84.16.229.232"  # aws                                            # 5.1 lowest response time
-        #server          = "192.168.0.249"   # local                                         # 3.9 lowest response time
-        server          = "34.254.193.225"                                                 # 0.5 lowest response time
-        server          = "CompliantK8sICAPLB-d6bf82358f9adc63.elb.eu-west-1.amazonaws.com"
-        server          = "34.243.13.180"
-        url             = f"http://{server}:8080/api/rebuild/base64"
-        headers         = { 'accept': 'application/json',
-                            'Content-Type': 'application/json'}
-        text            = random_text("random text - ")
-        test_pdf        = Test_Data().create_test_pdf(text=text)
-        original_bytes  = file_contents_as_bytes(test_pdf)
 
-        original_base64 = bytes_to_base64(original_bytes)
-        post_data       = {"Base64": original_base64}
-        try:
-            result = POST(url, data=post_data, headers=headers)
-            rebuild_base64 = base64_to_bytes(result)
-            pprint(rebuild_base64)
-        except Exception as error:
-            pprint(error)
-    #`
+    # def test_server_status(self,):            # refactor into separate test file
+    #     server         = "84.16.229.232"  # aws                                            # 5.1 lowest response time
+    #     #server          = "192.168.0.249"   # local                                         # 3.9 lowest response time
+    #     server          = "34.254.193.225"                                                 # 0.5 lowest response time
+    #     server          = "CompliantK8sICAPLB-d6bf82358f9adc63.elb.eu-west-1.amazonaws.com"
+    #     server          = "34.243.13.180"
+    #     url             = f"http://{server}:8080/api/rebuild/base64"
+    #     headers         = { 'accept': 'application/json',
+    #                         'Content-Type': 'application/json'}
+    #     text            = random_text("random text - ")
+    #     test_pdf        = Test_Data().create_test_pdf(text=text)
+    #     original_bytes  = file_contents_as_bytes(test_pdf)
+    #
+    #     original_base64 = bytes_to_base64(original_bytes)
+    #     post_data       = {"Base64": original_base64}
+    #     try:
+    #         result = POST(url, data=post_data, headers=headers)
+    #         rebuild_base64 = base64_to_bytes(result)
+    #         pprint(rebuild_base64)
+    #     except Exception as error:
+    #         pprint(error)
+    # #`
 
