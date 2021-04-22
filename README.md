@@ -75,7 +75,7 @@ The Metadata_Service class manages the creation and updating of the metadata.jso
 
 ### Fast API
 
-- Open `http:0.0.0.0:8880`
+- Open `http://localhost:8880`
 - Endpoints
 
 | API Endpoint | Method | Description | 
@@ -85,18 +85,15 @@ The Metadata_Service class manages the creation and updating of the metadata.jso
 | /loop   | GET | Processing of HD2 files and storing result in HD3 |
 
 ## Jupyter Notebook
-- Open `http:0.0.0.0:8888/`
+- Open `http://localhost:8888/`
 - Use `access_token` as password
 
 ## Minio
-- Open `http:0.0.0.0:9000/`
+- Open `http://localhost:9000/`
 - Use `access_token` as password
 
 ## Elastic Search
-- Open `http:0.0.0.0:5601/`
+- Open `http://localhost:5601/`
 - Use `access_token` as password
 
-## Kibana
-- Open `http:0.0.0.0:9200/`
-- Use `access_token` as password
 
