@@ -19,7 +19,7 @@ provider "esxi" {
 module "sdk" {
   source         = "./../ova"
   name_prefix    = "sdk"
-  ovf_source     = var.ovf_urls.sdk
+  ovf_source     = var.ova_source.sdk
   instance_count = var.instance_counts.sdk
   vcpu_count     = 4
   memory_mib     = 2048
@@ -28,7 +28,7 @@ module "sdk" {
 module "offline_desktop" {
   source         = "./../ova"
   name_prefix    = "offline-desktop"
-  ovf_source     = var.ovf_urls.offline_desktop
+  ovf_source     = var.ova_source.offline_desktop
   instance_count = var.instance_counts.offline_desktop
   vcpu_count     = 2
   memory_mib     = 2048
@@ -37,7 +37,7 @@ module "offline_desktop" {
 module "workflow" {
   source         = "./../ova"
   name_prefix    = "workflow"
-  ovf_source     = var.ovf_urls.workflow
+  ovf_source     = var.ova_source.workflow
   instance_count = var.instance_counts.workflow
   vcpu_count     = 2
   memory_mib     = 2048

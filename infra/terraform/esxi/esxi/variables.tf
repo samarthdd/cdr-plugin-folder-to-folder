@@ -10,18 +10,14 @@ variable "esxi_credentials" {
   description = "ESXi connection details"
 }
 
-variable "ovf_urls" {
+variable "ova_source" {
   type = object({
     sdk             = string
     workflow        = string
     offline_desktop = string
   })
 
-  description = "URLs to OVAs"
-  validation {
-    condition     = alltrue([for url in values(var.ovf_urls) : can(regex("https?://.+\\.ov[af]", url))])
-    error_message = "URLs have to be valid HTTP/S urls to file ending with .ova or .ovf extention."
-  }
+  description = "URLs / Local Path to OVAs"
 }
 
 variable "instance_counts" {
