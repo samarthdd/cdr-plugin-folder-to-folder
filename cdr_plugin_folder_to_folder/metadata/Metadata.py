@@ -55,14 +55,22 @@ class Metadata:
             self.set_file_name(file_name(file_path))
 
     def default_data(self):
-        return {   "file_name"          : None                      ,
-                   "original_file_paths": []                        ,
-                   "original_hash"      : None                      ,
-                   'rebuild_hash'       : None                      ,
-                   "rebuild_status"     : FileStatus.INITIAL.value  ,
-                   "xml_report_status"  : None                      ,
-                   "target_path"        : None                      ,
-                   "error"              : None
+        return {   'file_name'              : None                      ,
+                   'xml_report_status'      : None                      ,
+                   'last_update_time'       : None                      ,
+                   'rebuild_server'         : None                      ,
+                   'server_version'         : None                      ,
+                   'error'                  : None                      ,
+                   'original_file_paths'    : []                        ,
+                   'original_hash'          : None                      ,
+                   'original_file_extension': None                      ,
+                   'original_file_size'     : None                      ,
+                   'rebuild_file_path'      : None                      ,
+                   'rebuild_hash'           : None                      ,
+                   'rebuild_status'         : FileStatus.INITIAL.value  ,
+                   'rebuild_file_extension' : None                      ,
+                   'rebuild_file_size'      : None                      ,
+                   'rebuild_file_duration'  : None
                  }
 
     def delete(self):
