@@ -8,6 +8,13 @@ terraform {
   }
 }
 
+provider "esxi" {
+  esxi_hostname = var.esxi_credentials.host
+  esxi_hostport = var.esxi_credentials.ssh_port
+  esxi_username = var.esxi_credentials.username
+  esxi_password = var.esxi_credentials.password
+}
+
 resource "esxi_guest" "this" {
   count      = var.instance_count
   guest_name = "${var.name_prefix}-${count.index}"
