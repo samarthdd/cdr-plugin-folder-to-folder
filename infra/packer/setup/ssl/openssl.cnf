@@ -27,4 +27,4 @@ extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1  = menlo-dev01.glasswall-icap.com
+DNS.1  = cdr-dev01.glasswall-icap.com
