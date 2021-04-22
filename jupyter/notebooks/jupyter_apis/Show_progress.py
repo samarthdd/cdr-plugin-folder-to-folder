@@ -26,7 +26,7 @@ class Show_progress:
             
     def stop(self):
         self.event.set()
-        time.sleep(4)
+        time.sleep(8)
         
     def show_progress(self,max,value):
         progress_bar = widgets.IntProgress(min=0, max=max, description='Progress Bar:', bar_style='info', )
