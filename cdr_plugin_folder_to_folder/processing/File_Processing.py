@@ -7,6 +7,7 @@ import xmltodict
 
 from osbot_utils.utils.Files import folder_create
 from osbot_utils.utils.Json import json_save_file_pretty
+from datetime import datetime, timedelta
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
@@ -95,6 +96,8 @@ class File_Processing:
     @log_duration
     def do_rebuild(self, endpoint, hash, source_path, dir):
 
+        self.meta_service.set_rebuild_server(dir, endpoint)
+
         file_size = os.path.getsize(source_path)
         self.meta_service.set_original_file_size(dir, file_size)
 
@@ -120,6 +123,8 @@ class File_Processing:
             file_size = os.path.getsize(rebuild_file_path)
             self.meta_service.set_rebuild_file_size(dir, file_size)
             self.meta_service.set_rebuild_file_path(dir, rebuild_file_path)
+            rebuild_hash = self.meta_service.file_hash(rebuild_file_path)
+            self.meta_service.set_rebuild_hash(dir, rebuild_hash)
 
         headers = response.headers
         fileIdKey = "X-Adaptation-File-Id"
@@ -128,9 +133,11 @@ class File_Processing:
         if fileIdKey in headers:
             self.get_xmlreport(endpoint, headers[fileIdKey], dir)
             self.events_log.add_log('The XML report has been saved')
+            self.meta_service.set_xml_report_status(dir, "Obtained")
         else:
             self.events_log.add_log('No X-Adaptation-File-Id header found in the response')
             raise ValueError("No X-Adaptation-File-Id header found in the response")
+            self.meta_service.set_xml_report_status(dir, "Failed to obtain")
 
     @log_duration
     def processDirectory (self, endpoint, dir):
@@ -158,6 +165,10 @@ class File_Processing:
             raise ValueError("File does not exist")
 
         self.events_log.add_log("Sending to rebuild")
+        tik = datetime.now()
         self.do_rebuild(endpoint, hash, source_path, dir)
+        tok = datetime.now()
+        delta = tok - tik
+        self.meta_service.set_rebuild_file_duration(dir, str(delta))
 
         return True
