@@ -4,6 +4,7 @@ import json
 from osbot_utils.utils.Files import file_name, folder_exists, file_sha256, file_exists, folder_create, path_combine, \
     folder_delete_all, file_copy
 from osbot_utils.utils.Json import json_save_file_pretty
+from osbot_utils.utils.Misc import datetime_now
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Utils import Metadata_Utils
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
@@ -98,63 +99,70 @@ class Metadata:
         if self.exists():
             json_save_file_pretty(python_object=self.data, path=self.metadata_file_path())
 
+    def update_field(self, field, updated_value):
+        self.data[field] = updated_value
+        self.data['last_update_time'] = datetime_now()
+        self.save()
+
     def set_file_hash(self, file_hash):
         self.file_hash = file_hash
-        self.data['original_hash'] = file_hash
+        self.update_field('original_hash', file_hash)
 
     def set_file_name(self, file_name):
-        self.data['file_name'] = file_name
+        self.update_field('file_name', file_name)
 
     def set_xml_report_status(self, xml_report_status):
-        self.data['xml_report_status'] = xml_report_status
-
-    def set_last_update_time(self, last_update_time):
-        self.data['last_update_time'] = last_update_time
+        self.update_field('xml_report_status', xml_report_status)
 
     def set_rebuild_server(self, rebuild_server):
-        self.data['rebuild_server'] = rebuild_server
+        self.update_field('rebuild_server', rebuild_server)
 
     def set_server_version(self, server_version):
-        self.data['server_version'] = server_version
+        self.update_field('server_version', server_version)
 
     def set_error(self, error):
-        self.data['error'] = error
+        self.update_field('error', error)
 
     def set_original_file_size(self, file_size):
-        self.data['original_file_size'] = file_size
+        self.update_field('original_file_size', file_size)
 
     def set_original_file_extension(self, file_extension):
-        self.data['original_file_extension'] = file_extension
+        self.update_field('original_file_extension', file_extension)
 
     def set_rebuild_file_path(self, rebuild_file_path):
-        self.data['rebuild_file_path'] = rebuild_file_path
+        self.update_field('rebuild_file_path', rebuild_file_path)
 
     def set_rebuild_hash(self, rebuild_hash):
-        self.data['rebuild_hash'] = rebuild_hash
+        self.update_field('rebuild_hash', rebuild_hash)
 
     def set_rebuild_status(self, rebuild_status):
-        self.data['rebuild_status'] = rebuild_status
+        self.update_field('rebuild_status', rebuild_status)
 
     def set_rebuild_file_size(self, file_size):
-        self.data['rebuild_file_size'] = file_size
+        self.update_field('rebuild_file_size', file_size)
 
     def set_rebuild_file_extension(self, file_extension):
-        self.data['rebuild_file_extension'] = file_extension
+        self.update_field('rebuild_file_extension', file_extension)
 
     def set_rebuild_file_duration(self, rebuild_file_duration):
-        self.data['rebuild_file_duration'] = rebuild_file_duration
+        self.update_field('rebuild_file_duration', rebuild_file_duration)
 
     def source_file_path(self):
         if self.file_hash:
             return path_combine(self.metadata_folder_path(), DEFAULT_SOURCE_FILENAME)
-    # data wrappers
 
-    def original_hash(self):
+    def get_original_hash(self):
         return self.data.get('original_hash')
 
-    def file_name(self):
+    def get_file_name(self):
         return self.data.get('file_name')
 
-    def rebuild_status(self):
+    def get_rebuild_status(self):
         return self.data.get('rebuild_status')
+
+    def get_original_file_paths(self):
+        return self.data.get('get_original_file_paths')
+
+    def get_last_update_time(self):
+        return self.data.get('last_update_time')
 

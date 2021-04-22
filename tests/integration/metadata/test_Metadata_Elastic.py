@@ -43,7 +43,7 @@ class test_Metadata_Elastic(TestCase):
     def test_add_metadata(self):
         metadata            = self.metadata_service.create_metadata(file_path=self.test_file)
         metadata_data       = metadata.data
-        original_hash       = metadata.original_hash()
+        original_hash       = metadata.get_original_hash()
         result_add_metadata = self.metadata_elastic.add_metadata(metadata_data)
 
         assert original_hash == self.file_hash

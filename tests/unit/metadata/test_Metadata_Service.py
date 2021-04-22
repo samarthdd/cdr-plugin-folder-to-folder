@@ -18,7 +18,7 @@ class test_Metadata_Service(TestCase):
         metadata.add_file(self.test_file)
         assert metadata.data == {   'file_name'              : file_name(self.test_file) ,
                                     'xml_report_status'      : None                      ,
-                                    'last_update_time'       : None                      ,
+                                    'last_update_time'       : metadata.get_last_update_time() ,
                                     'rebuild_server'         : None                      ,
                                     'server_version'         : None                      ,
                                     'error'                  : None                      ,
