@@ -56,19 +56,16 @@ class Metadata_Service:
     def is_initial_status(self, metadata_folder):
         return (self.get_status(metadata_folder) == FileStatus.INITIAL.value)
 
-    def set_status(self, metadata_folder, status):
-        self.get_from_file(metadata_folder)
-        self.metadata.set_rebuild_status(status)
-
     def set_status_inprogress(self, metadata_folder):
         self.set_status(metadata_folder, FileStatus.IN_PROGRESS.value)
 
-    def set_error(self, metadata_folder, error_details):
+    def set_metadata_field(self, metadata_folder, field_name, value):
         self.get_from_file(metadata_folder)
-        self.metadata.set_error(error_details)
+        self.metadata.update_field(field_name, value)
+        self.metadata_elastic.add_metadata(self.metadata.data) # save metadata to elastic
 
-    def write_metadata_to_file(self, metadata, metadata_folder):
-        self.metadata = metadata
-        self.metadata_folder = metadata_folder
-        json_save_file_pretty(self.metadata, self.get_metadata_file_path())     # save metadata to file storage
-        self.metadata_elastic.add_metadata(self.metadata.data)                  # save metadata to elastic
+    def set_status(self, metadata_folder, rebuild_status):
+        self.set_metadata_field(metadata_folder, 'rebuild_status', rebuild_status)
+
+    def set_error(self, metadata_folder, error_details):
+        self.set_metadata_field(metadata_folder, 'error', error_details)
