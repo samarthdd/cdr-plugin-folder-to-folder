@@ -105,6 +105,45 @@ class Metadata:
     def set_file_name(self, file_name):
         self.data['file_name'] = file_name
 
+    def set_xml_report_status(self, xml_report_status):
+        self.data['xml_report_status'] = xml_report_status
+
+    def set_last_update_time(self, last_update_time):
+        self.data['last_update_time'] = last_update_time
+
+    def set_rebuild_server(self, rebuild_server):
+        self.data['rebuild_server'] = rebuild_server
+
+    def set_server_version(self, server_version):
+        self.data['server_version'] = server_version
+
+    def set_error(self, error):
+        self.data['error'] = error
+
+    def set_original_file_size(self, file_size):
+        self.data['original_file_size'] = file_size
+
+    def set_original_file_extension(self, file_extension):
+        self.data['original_file_extension'] = file_extension
+
+    def set_rebuild_file_path(self, rebuild_file_path):
+        self.data['rebuild_file_path'] = rebuild_file_path
+
+    def set_rebuild_hash(self, rebuild_hash):
+        self.data['rebuild_hash'] = rebuild_hash
+
+    def set_rebuild_status(self, rebuild_status):
+        self.data['rebuild_status'] = rebuild_status
+
+    def set_rebuild_file_size(self, file_size):
+        self.data['rebuild_file_size'] = file_size
+
+    def set_rebuild_file_extension(self, file_extension):
+        self.data['rebuild_file_extension'] = file_extension
+
+    def set_rebuild_file_duration(self, rebuild_file_duration):
+        self.data['rebuild_file_duration'] = rebuild_file_duration
+
     def source_file_path(self):
         if self.file_hash:
             return path_combine(self.metadata_folder_path(), DEFAULT_SOURCE_FILENAME)
