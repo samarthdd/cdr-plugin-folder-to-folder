@@ -43,7 +43,7 @@ class test_Metadata_Elastic(TestCase):
     def test_add_metadata(self):
         metadata            = self.metadata_service.create_metadata(file_path=self.test_file)
         metadata_data       = metadata.data
-        original_hash       = metadata.original_hash()
+        original_hash       = metadata.get_original_hash()
         result_add_metadata = self.metadata_elastic.add_metadata(metadata_data)
 
         assert original_hash == self.file_hash
@@ -62,14 +62,23 @@ class test_Metadata_Elastic(TestCase):
         metadata_data = self.metadata_service.get_from_file(metadata.metadata_folder_path())
 
         assert self.metadata_service.metadata_folder == self.test_metadata_folder
-        assert metadata_data == { 'error'               : None                      ,
-                                  'file_name'           : file_name(self.test_file) ,
-                                  'original_file_paths' : [ self.test_file]         ,
-                                  'original_hash'       : self.file_hash            ,
-                                  'rebuild_hash'        : None                      ,
-                                  'rebuild_status'      : 'Initial'                 ,
-                                  'target_path'         : None                      ,
-                                  'xml_report_status'   : None                      }
+        assert metadata_data == {   'file_name'              : file_name(self.test_file) ,
+                                    'xml_report_status'      : None                      ,
+                                    'last_update_time'       : None                      ,
+                                    'rebuild_server'         : None                      ,
+                                    'server_version'         : None                      ,
+                                    'error'                  : None                      ,
+                                    'original_file_paths'    : [ self.test_file]         ,
+                                    'original_hash'          : self.file_hash            ,
+                                    'original_file_extension': None                      ,
+                                    'original_file_size'     : None                      ,
+                                    'rebuild_file_path'      : None                      ,
+                                    'rebuild_hash'           : None                      ,
+                                    'rebuild_status'         : FileStatus.INITIAL.value  ,
+                                    'rebuild_file_extension' : None                      ,
+                                    'rebuild_file_size'      : None                      ,
+                                    'rebuild_file_duration'  : None
+                                    }
 
         metadata.delete()
 

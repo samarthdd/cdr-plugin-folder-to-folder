@@ -31,7 +31,8 @@ class test_File_Processing(TestCase):
         cls.config    = Config()
         cls.temp_root = folder_create('/tmp/temp_root') # temp_folder()
         cls.config.set_root_folder(root_folder=cls.temp_root)
-        cls.metadata  = Metadata_Service().create_metadata(cls.test_file)
+        cls.meta_service = Metadata_Service()
+        cls.metadata  = cls.meta_service.create_metadata(cls.test_file)
 
 
     @classmethod
@@ -44,7 +45,7 @@ class test_File_Processing(TestCase):
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)
         self.report_elastic  = Report_Elastic()
-        self.file_processing = File_Processing(events_log=self.events_log, report_elastic=self.report_elastic)
+        self.file_processing = File_Processing(events_log=self.events_log, report_elastic=self.report_elastic, meta_service=self.meta_service )
         self.storage         = Storage()
 
     def test_do_rebuild(self):
@@ -52,10 +53,8 @@ class test_File_Processing(TestCase):
         pprint(folder_files(self.config.root_folder,pattern="*"))
         endpoint    = f'http://{self.sdk_server}:{self.sdk_port}'
         hash        = Metadata_Utils().file_hash(self.test_file)
-        encodedFile = FileService.base64encode(self.test_file)
-        #dir         = './test_data/scenario-1/hd2/data/087a783915875b069c89d517491dd42b9e1b3619464a750e72a7ab44c06fa645'
         dir         = self.metadata.metadata_folder_path()
-        self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, encodedFile=encodedFile, dir=dir)
+        self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, source_path=self.test_file, dir=dir)
 
         pprint(self.events_log.get_from_file())
 
