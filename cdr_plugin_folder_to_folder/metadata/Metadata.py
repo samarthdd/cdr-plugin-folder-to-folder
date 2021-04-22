@@ -161,7 +161,7 @@ class Metadata:
         return self.data.get('rebuild_status')
 
     def get_original_file_paths(self):
-        return self.data.get('get_original_file_paths')
+        return self.data.get('original_file_paths')
 
     def get_last_update_time(self):
         return self.data.get('last_update_time')
