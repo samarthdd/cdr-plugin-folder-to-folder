@@ -16,16 +16,23 @@ class test_Metadata_Service(TestCase):
         metadata  = self.metadata_service.create_metadata(self.test_file)
         metadata.delete()
         metadata.add_file(self.test_file)
-
-        assert metadata.data == {  'file_name'           : file_name(self.test_file)  ,
-                                   'original_file_paths' : [self.test_file]           ,
-                                   'original_hash'       : file_sha256(self.test_file),
-                                   'rebuild_hash'        : None                       ,
-                                   'rebuild_status'      : FileStatus.INITIAL.value   ,
-                                   'target_path'         : None                       ,
-                                   'xml_report_status'   : None                       ,
-                                   'error'               : None                       ,
-                                 }
+        assert metadata.data == {   'file_name'              : file_name(self.test_file) ,
+                                    'xml_report_status'      : None                      ,
+                                    'last_update_time'       : metadata.get_last_update_time() ,
+                                    'rebuild_server'         : None                      ,
+                                    'server_version'         : None                      ,
+                                    'error'                  : None                      ,
+                                    'original_file_paths'    : [self.test_file]          ,
+                                    'original_hash'          : file_sha256(self.test_file) ,
+                                    'original_file_extension': None                      ,
+                                    'original_file_size'     : None                      ,
+                                    'rebuild_file_path'      : None                      ,
+                                    'rebuild_hash'           : None                      ,
+                                    'rebuild_status'         : FileStatus.INITIAL.value  ,
+                                    'rebuild_file_extension' : None                      ,
+                                    'rebuild_file_size'      : None                      ,
+                                    'rebuild_file_duration'  : None
+                                    }
         assert metadata.delete() is True
 
     def test_file_hash(self):

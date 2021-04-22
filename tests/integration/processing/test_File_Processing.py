@@ -31,7 +31,8 @@ class test_File_Processing(TestCase):
         cls.config    = Config()
         cls.temp_root = folder_create('/tmp/temp_root') # temp_folder()
         cls.config.set_root_folder(root_folder=cls.temp_root)
-        cls.metadata  = Metadata_Service().create_metadata(cls.test_file)
+        cls.meta_service = Metadata_Service()
+        cls.metadata  = cls.meta_service.create_metadata(cls.test_file)
 
 
     @classmethod
@@ -45,7 +46,7 @@ class test_File_Processing(TestCase):
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)
         self.report_elastic  = Report_Elastic()
-        self.file_processing = File_Processing(events_log=self.events_log, report_elastic=self.report_elastic)
+        self.file_processing = File_Processing(events_log=self.events_log, report_elastic=self.report_elastic, meta_service=self.meta_service )
         self.storage         = Storage()
 
     def test_get_xmlreport(self):
@@ -56,11 +57,11 @@ class test_File_Processing(TestCase):
     def test_do_rebuild(self):          # refactor
         endpoint    = f'http://{self.sdk_server}:{self.sdk_port}'
         hash        = Metadata_Utils().file_hash(self.test_file)
-        encodedFile = FileService.base64encode(self.test_file)
         dir         = self.metadata.metadata_folder_path()
-        self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, encodedFile=encodedFile, dir=dir)
+        self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, source_path=self.test_file, dir=dir)
         assert self.metadata.metadata_file_exists()
         assert self.metadata.report_file_exists()
+
 
 
     def test_pdf_rebuild(self,):            # refactor into separate test file

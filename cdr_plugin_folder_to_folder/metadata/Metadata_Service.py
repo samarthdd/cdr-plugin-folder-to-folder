@@ -28,15 +28,15 @@ class Metadata_Service:
         self.metadata_elastic = Metadata_Elastic().setup()
 
     def create_metadata(self, file_path):
-        metadata = Metadata()
-        metadata.add_file(file_path)
-        return metadata
+        self.metadata = Metadata()
+        self.metadata.add_file(file_path)
+        self.metadata_elastic.add_metadata(self.metadata.data)                            # save metadata to elastic
+        return self.metadata
 
     def get_from_file(self, metadata_folder):
+        self.metadata = Metadata(os.path.basename(metadata_folder))
+        self.metadata.get_from_file()
         self.metadata_folder=metadata_folder
-
-        with open(self.get_metadata_file_path()) as json_file:
-            self.metadata = json.load(json_file)
         return self.metadata
 
     def get_metadata_file_path(self):
@@ -47,30 +47,58 @@ class Metadata_Service:
 
     def get_original_file_paths(self, metadata_folder):
         self.get_from_file(metadata_folder)
-        return self.metadata["original_file_paths"]
+        return self.metadata.get_original_file_paths()
 
     def get_status(self, metadata_folder):
         self.get_from_file(metadata_folder)
-        return self.metadata["rebuild_status"]
+        return self.metadata.get_rebuild_status()
 
     def is_initial_status(self, metadata_folder):
         return (self.get_status(metadata_folder) == FileStatus.INITIAL.value)
 
-    def set_status(self, metadata_folder, status):
-        self.get_from_file(metadata_folder)
-        self.metadata["rebuild_status"] = status
-        self.write_metadata_to_file(self.metadata, metadata_folder)
-
     def set_status_inprogress(self, metadata_folder):
         self.set_status(metadata_folder, FileStatus.IN_PROGRESS.value)
 
-    def set_error(self, metadata_folder, error_details):
+    def set_metadata_field(self, metadata_folder, field_name, value):
         self.get_from_file(metadata_folder)
-        self.metadata["error"] = error_details
-        self.write_metadata_to_file(self.metadata, metadata_folder)
+        self.metadata.update_field(field_name, value)
+        self.metadata_elastic.add_metadata(self.metadata.data) # save metadata to elastic
 
-    def write_metadata_to_file(self, metadata, metadata_folder):
-        self.metadata = metadata
-        self.metadata_folder = metadata_folder
-        json_save_file_pretty(self.metadata, self.get_metadata_file_path())     # save metadata to file storage
-        self.metadata_elastic.add_metadata(metadata)                            # save metadata to elastic
+    def set_status(self, metadata_folder, rebuild_status):
+        self.set_metadata_field(metadata_folder, 'rebuild_status', rebuild_status)
+
+    def set_error(self, metadata_folder, error_details):
+        self.set_metadata_field(metadata_folder, 'error', error_details)
+
+    def set_xml_report_status(self, metadata_folder, xml_report_status):
+        self.set_metadata_field(metadata_folder, 'xml_report_status', xml_report_status)
+
+    def set_rebuild_server(self, metadata_folder, rebuild_server):
+        self.set_metadata_field(metadata_folder, 'rebuild_server', rebuild_server)
+
+    def set_server_version(self, metadata_folder, server_version):
+        self.set_metadata_field(metadata_folder, 'server_version', server_version)
+
+    def set_original_file_size(self, metadata_folder, file_size):
+        self.set_metadata_field(metadata_folder, 'original_file_size', file_size)
+
+    def set_original_file_extension(self, metadata_folder):
+        self.get_from_file(metadata_folder)
+        filename, file_extension = os.path.splitext(self.metadata.get_file_name())
+        self.set_metadata_field(metadata_folder, 'original_file_extension', file_extension)
+
+    def set_rebuild_file_path(self, metadata_folder, rebuild_file_path):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_path', rebuild_file_path)
+
+    def set_rebuild_hash(self, metadata_folder, rebuild_hash):
+        self.set_metadata_field(metadata_folder, 'rebuild_hash', rebuild_hash)
+
+    def set_rebuild_file_size(self, metadata_folder, file_size):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_size', file_size)
+
+    def set_rebuild_file_extension(self, metadata_folder, file_extension):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_extension', file_extension)
+
+    def set_rebuild_file_duration(self, metadata_folder, rebuild_file_duration):
+        self.set_metadata_field(metadata_folder, 'rebuild_file_duration', rebuild_file_duration)
+

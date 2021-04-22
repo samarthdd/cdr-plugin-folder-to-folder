@@ -58,7 +58,7 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                file_processing = File_Processing(events, self.report_elastic)
+                file_processing = File_Processing(events, self.report_elastic, meta_service)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
                     return False
