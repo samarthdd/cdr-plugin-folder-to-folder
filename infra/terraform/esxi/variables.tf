@@ -70,6 +70,12 @@ variable "sdk_memory_mib" {
   }
 }
 
+variable "sdk_disk_size" {
+  type        = number
+  description = "disk size"
+  default     = 50
+}
+
 variable "workflow_vcpu_count" {
   type        = number
   description = "Count of vCPU per instance"
@@ -90,6 +96,12 @@ variable "workflow_memory_mib" {
     condition     = var.workflow_memory_mib >= 1024
     error_message = "Error: var.workflow_memory_mib must be >= 1024."
   }
+}
+
+variable "workflow_disk_size" {
+  type        = number
+  description = "disk size"
+  default     = 50
 }
 
 variable "desktop_vcpu_count" {
@@ -114,6 +126,11 @@ variable "desktop_memory_mib" {
   }
 }
 
+variable "desktop_disk_size" {
+  type        = number
+  description = "disk size"
+  default     = 50
+}
 
 variable "network_esxi1" {
   type        = string

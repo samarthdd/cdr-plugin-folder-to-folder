@@ -9,6 +9,7 @@ module "sdk" {
   memory_mib     = var.sdk_memory_mib
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
+  boot_disk_size = var.sdk_disk_size
 }
 
 module "offline_desktop" {
@@ -19,6 +20,7 @@ module "offline_desktop" {
   instance_count = var.instance_counts1.offline_desktop
   vcpu_count     = var.desktop_vcpu_count
   memory_mib     = var.desktop_memory_mib
+  boot_disk_size = var.desktop_disk_size
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
 }
@@ -31,6 +33,7 @@ module "workflow" {
   instance_count = var.instance_counts1.workflow
   vcpu_count     = var.workflow_vcpu_count
   memory_mib     = var.workflow_memory_mib
+  boot_disk_size = var.workflow_disk_size
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
 }
@@ -44,6 +47,7 @@ module "sdk2" {
   instance_count = var.instance_counts2.sdk
   vcpu_count     = var.sdk_vcpu_count
   memory_mib     = var.sdk_memory_mib
+  boot_disk_size = var.sdk_disk_size
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
 }
@@ -56,6 +60,7 @@ module "offline_desktop2" {
   instance_count = var.instance_counts2.offline_desktop
   vcpu_count     = var.desktop_vcpu_count
   memory_mib     = var.desktop_memory_mib
+  boot_disk_size = var.desktop_disk_size
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
 
@@ -69,6 +74,7 @@ module "workflow2" {
   instance_count = var.instance_counts2.workflow
   vcpu_count     = var.workflow_vcpu_count
   memory_mib     = var.workflow_memory_mib
+  boot_disk_size = var.workflow_disk_size
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
 }
