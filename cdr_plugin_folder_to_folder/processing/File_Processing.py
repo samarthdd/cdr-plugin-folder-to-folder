@@ -20,8 +20,8 @@ from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 
 class File_Processing:
 
-    def __init__(self, events_log, report_elastic):
-        self.meta_service   = Metadata_Service()
+    def __init__(self, events_log, report_elastic, meta_service):
+        self.meta_service   = meta_service
         self.events_log     = events_log
         self.storage        = Storage()
         self.config         = Config()
@@ -93,7 +93,16 @@ class File_Processing:
             self.events_log.add_log('Decoding FAILED. The HTML file has been saved')
 
     @log_duration
-    def do_rebuild(self, endpoint, hash, encodedFile, dir):
+    def do_rebuild(self, endpoint, hash, source_path, dir):
+
+        file_size = os.path.getsize(source_path)
+        self.meta_service.set_original_file_size(dir, file_size)
+
+        encodedFile = FileService.base64encode(source_path)
+        if not encodedFile:
+            self.events_log.add_log("Failed to encode the file")
+            raise ValueError("Failed to encode the file")
+
         response = self.rebuild(endpoint, encodedFile)
         result = response.text
         if not result:
@@ -108,6 +117,8 @@ class File_Processing:
                 processed_path = os.path.join(self.config.hd3_location, path)
 
             self.save_file(result, processed_path)
+            file_size = os.path.getsize(processed_path)
+            self.meta_service.set_rebuild_file_size(dir, file_size)
 
         headers = response.headers
         fileIdKey = "X-Adaptation-File-Id"
@@ -145,12 +156,7 @@ class File_Processing:
             self.events_log.add_log("File does not exist")
             raise ValueError("File does not exist")
 
-        encodedFile = FileService.base64encode(source_path)
-        if not encodedFile:
-            self.events_log.add_log("Failed to encode the file")
-            raise ValueError("Failed to encode the file")
-
         self.events_log.add_log("Sending to rebuild")
-        self.do_rebuild(endpoint, hash, encodedFile, dir)
+        self.do_rebuild(endpoint, hash, source_path, dir)
 
         return True
