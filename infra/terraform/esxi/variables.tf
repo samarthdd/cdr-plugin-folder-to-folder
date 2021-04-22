@@ -49,9 +49,9 @@ variable "ova_source" {
 }
 
 variable "sdk_vcpu_count" {
-  type        = number
+  type        = string
   description = "Count of vCPU per instance"
-  default     = 4
+  default     = "4"
 
   validation {
     condition     = var.sdk_vcpu_count >= 1
@@ -77,9 +77,9 @@ variable "sdk_disk_size" {
 }
 
 variable "workflow_vcpu_count" {
-  type        = number
+  type        = string
   description = "Count of vCPU per instance"
-  default     = 2
+  default     = "2"
 
   validation {
     condition     = var.workflow_vcpu_count >= 1
@@ -105,9 +105,9 @@ variable "workflow_disk_size" {
 }
 
 variable "desktop_vcpu_count" {
-  type        = number
+  type        = string
   description = "Count of vCPU per instance"
-  default     = 2
+  default     = "2"
 
   validation {
     condition     = var.desktop_vcpu_count >= 1

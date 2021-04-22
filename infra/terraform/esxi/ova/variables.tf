@@ -40,9 +40,9 @@ variable "network" {
 }
 
 variable "vcpu_count" {
-  type        = number
+  type        = string
   description = "Count of vCPU per instance"
-  default     = 1
+  default     = "1"
 
   validation {
     condition     = var.vcpu_count >= 1
