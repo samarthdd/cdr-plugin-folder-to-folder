@@ -4,6 +4,7 @@ import requests
 import ntpath
 import os.path
 import xmltodict
+import subprocess
 
 from osbot_utils.utils.Files import folder_create
 from osbot_utils.utils.Json import json_save_file_pretty
@@ -69,6 +70,15 @@ class File_Processing:
         except Exception as e:
             raise ValueError(str(e))
 
+    def git_commit(self):
+        git_commit = 'Not available'
+        try:
+            git_commit = subprocess.check_output(["git", "describe"]).strip()
+        except Exception as e:
+            pass
+
+        return git_commit
+
     def rebuild (self, endpoint, base64enc_file):
         return self.base64request(endpoint, "api/rebuild/base64", base64enc_file)
 
@@ -107,6 +117,7 @@ class File_Processing:
 
         self.meta_service.set_server_version(dir, self.server_version(endpoint))
         self.meta_service.set_f2f_plugin_version(dir, API_VERSION)
+        self.meta_service.set_f2f_plugin_git_commit(dir, self.git_commit())
         self.meta_service.set_original_file_extension(dir)
         self.meta_service.set_rebuild_server(dir, endpoint)
 
