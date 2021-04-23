@@ -48,13 +48,6 @@ class Loops(object):
     def HasBeenStopped(self):
         return not Loops.continue_processing
 
-    def server_version(self, endpoint):
-        try:
-            #todo: get it from the server
-            return 'Not available'
-        except Exception as e:
-            raise ValueError(str(e))
-
     def git_commit(self):
         git_commit = 'Not available'
         try:
@@ -73,7 +66,6 @@ class Loops(object):
         endpoint = "http://" + self.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + self.config.endpoints['Endpoints'][endpoint_index]['Port']
         events.add_log("Processing with: " + endpoint)
 
-        meta_service.set_server_version(itempath, self.server_version(endpoint))
         meta_service.set_f2f_plugin_version(itempath, API_VERSION)
         meta_service.set_f2f_plugin_git_commit(itempath, self.git_commit())
 
