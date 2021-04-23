@@ -31,7 +31,6 @@ class Analysis_Json:
         self.id      = 0
         self.get_from_file()
 
-
     def is_hash(self, value):
         return is_regex_full_match(Analysis_Json.REGEX_HASH, value)
 
@@ -44,7 +43,7 @@ class Analysis_Json:
             self.analysis_data.update(json_data)
             self.write_to_file()
             return True
-        log_error(message='in Hash_Json.add_file bad data provided', data = {'file_hash': file_hash, 'file_name': file_name})
+        log_error(message='in Analysis_Json.add_file bad data provided', data = {'file_hash': file_hash, 'file_name': file_name})
         return False
 
     def get_file_path(self):
@@ -61,30 +60,29 @@ class Analysis_Json:
     def update_report(self, index, report_json):
         self.get_from_file()
 
-        self.analysis_data[index]["file_type"] = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"][
-            "gw:FileType"]
+        self.analysis_data[index]["file_type"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
+        self.analysis_data[index]["file_size"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:TotalSizeInBytes"]
 
-        self.analysis_data[index]["file_size"] = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"][
-            "gw:TotalSizeInBytes"]
-        self.analysis_data[index]["remediated_item_count"], self.analysis_data[index][
-            "remediate_items_list"] = self.get_remediated_item(report_json)
+        self.analysis_data[index]["remediated_item_count"], \
+        self.analysis_data[index]["remediate_items_list"]       = self.get_remediated_item_details(report_json)
 
-        self.analysis_data[index]["sanitised_item_count"], self.analysis_data[index][
-            "sanitised_items_list"] = self.get_sanitize_item(report_json)
+        self.analysis_data[index]["sanitised_item_count"], \
+        self.analysis_data[index]["sanitised_items_list"]       = self.get_sanitisation_item_details(report_json)
 
-        self.analysis_data[index]["issue_item_count"], self.analysis_data[index]["issue_item_list"] = self.get_issue_item(
-            report_json)
+        self.analysis_data[index]["issue_item_count"],\
+        self.analysis_data[index]["issue_item_list"]            = self.get_issue_item_details(report_json)
 
         self.write_to_file()
 
 
-    def get_remediated_item(self, report_json):
-        remediate_count = 0
-        remediate_items_list = []
+    def get_remediated_item_details(self, report_json):
+        total_remediate_count = 0
+        remediate_items_list  = []
 
         for item in report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:ContentGroups"]["gw:ContentGroup"]:
-            remediate_count = remediate_count + int(item["gw:RemedyItems"]["@itemCount"])
-            if "gw:RemedyItem" in item["gw:RemedyItems"] and remediate_count>0:
+            remediate_count=int(item["gw:RemedyItems"]["@itemCount"])
+            total_remediate_count = total_remediate_count + remediate_count
+            if "gw:RemedyItem" in item["gw:RemedyItems"] and remediate_count > 0:
 
                 if "gw:TechnicalDescription" in item["gw:RemedyItems"]["gw:RemedyItem"]:
                     remediate_items_list.append(item["gw:RemedyItems"]["gw:RemedyItem"]["gw:TechnicalDescription"])
@@ -92,39 +90,44 @@ class Analysis_Json:
                     for remediate_item in item["gw:RemedyItems"]["gw:RemedyItem"]:
                         remediate_items_list.append(remediate_item["gw:TechnicalDescription"])
 
+        return total_remediate_count, remediate_items_list
 
-        return remediate_count, remediate_items_list
 
-
-    def get_sanitize_item(self, report_json):
-        sanitisation_count = 0
-        sanitisation_items_list = []
+    def get_sanitisation_item_details(self, report_json):
+        total_sanitisation_count = 0
+        sanitisation_items_list  = []
 
         for item in report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:ContentGroups"]["gw:ContentGroup"]:
-            sanitisation_count = sanitisation_count + int(item["gw:SanitisationItems"]["@itemCount"])
+            sanitisation_count=int(item["gw:SanitisationItems"]["@itemCount"])
+            total_sanitisation_count = total_sanitisation_count + sanitisation_count
+
             if "gw:SanitisationItem" in item["gw:SanitisationItems"] and sanitisation_count > 0:
+
                 if "gw:TechnicalDescription" in item["gw:SanitisationItems"]["gw:SanitisationItem"]:
                     sanitisation_items_list.append(
                         item["gw:SanitisationItems"]["gw:SanitisationItem"]["gw:TechnicalDescription"])
                 else:
-                    for sanitisation_item in item["gw:RemedyItems"]["gw:RemedyItem"]:
+                    for sanitisation_item in item["gw:SanitisationItems"]["gw:SanitisationItem"]:
                         sanitisation_items_list.append(sanitisation_item["gw:TechnicalDescription"])
 
-        return sanitisation_count, sanitisation_items_list
+        return total_sanitisation_count, sanitisation_items_list
 
-    def get_issue_item(self, report_json):
-        issue_count = 0
-        issue_items_list = []
+    def get_issue_item_details(self, report_json):
+        total_issue_count  = 0
+        issue_items_list   = []
+
         for item in report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:ContentGroups"]["gw:ContentGroup"]:
-            issue_count = issue_count + int(item["gw:IssueItems"]["@itemCount"])
-            if "gw:IssueItem" in item["gw:IssueItems"] and issue_count>0:
+            issue_count=int(item["gw:IssueItems"]["@itemCount"])
+            total_issue_count = total_issue_count + issue_count
+            if "gw:IssueItem" in item["gw:IssueItems"] and issue_count > 0:
+
                 if "gw:TechnicalDescription" in item["gw:IssueItems"]["gw:IssueItem"]:
                     issue_items_list.append(item["gw:IssueItems"]["gw:IssueItem"]["gw:TechnicalDescription"])
                 else:
-                    for issue_item in item["gw:RemedyItems"]["gw:RemedyItem"]:
+                    for issue_item in item["gw:IssueItems"]["gw:IssueItem"]:
                         issue_items_list.append(issue_item["gw:TechnicalDescription"])
 
-        return issue_count, issue_items_list
+        return total_issue_count, issue_items_list
 
 
 
