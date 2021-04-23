@@ -4,18 +4,34 @@ import ipywidgets as widgets
 from IPython.display import clear_output
 import ipywidgets as widgets
 import time 
+from datetime import datetime
 
 class Show_progress:
     def __init__(self, api):
         self.event = threading.Event()
         self.api=api
+        self.start_time=datetime.now()
+        self.end_time  =None
+        self.time_taken=None
         
     def start(self):
+        
         status= self.api.get_processing_status()
 
-        max   = status["files_count"]
+        max   = status["files_to_process"]
         value = status ["completed"] + status ["failed"]
+            
+        if max == value and max != 0:
+            self.event.set()
+            self.end_time=datetime.now()
+            
+            self.time_taken = self.end_time-self.start_time
+            display("Processing is completed")
+            
         progress_bar  = self.show_progress(max,value)
+        
+        if self.time_taken :
+            display(f"Total time taken : {self.time_taken}")
 
         display(status)
         display(progress_bar)
@@ -26,6 +42,7 @@ class Show_progress:
             
     def stop(self):
         self.event.set()
+        self.end_time=datetime.now()
         time.sleep(8)
         
     def show_progress(self,max,value):
