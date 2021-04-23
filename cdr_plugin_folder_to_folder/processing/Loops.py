@@ -77,8 +77,6 @@ class Loops(object):
         meta_service.set_f2f_plugin_version(itempath, API_VERSION)
         meta_service.set_f2f_plugin_git_commit(itempath, self.git_commit())
 
-        duplicate_files_count = meta_service.get_duplicate_files_count(itempath)
-
         if os.path.isdir(itempath):
             try:
                 file_processing = File_Processing(events, self.report_elastic, meta_service)
@@ -95,7 +93,7 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
                 meta_service.set_status(itempath, FileStatus.COMPLETED.value)
-                self.status.add_completed(duplicate_files_count)
+                self.status.add_completed()
                 self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
                 events.add_log("Has been processed")
                 return True
@@ -108,7 +106,7 @@ class Loops(object):
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED.value)
-                self.status.add_failed(duplicate_files_count)
+                self.status.add_failed()
                 self.hash_json.update_status(file_hash, FileStatus.FAILED.value)
                 events.add_log("ERROR:" + str(error))
                 return False

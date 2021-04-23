@@ -76,21 +76,21 @@ class Status:
                 self.data["files_left_to_be_copied"] += count
             elif updated_status == FileStatus.INITIAL:
                 self.data["files_copied"] += 1
-                if self.data["files_left_to_be_copied"] >= 1:
+                if self.data["files_left_to_be_copied"] > 0:
                     self.data["files_left_to_be_copied"] -= 1
             elif updated_status == FileStatus.IN_PROGRESS:
                 self.data["in_progress"] += 1
             elif updated_status == FileStatus.COMPLETED:
                 self.data["completed"] += 1
-                if self.data["in_progress"] >= 1:
+                if self.data["in_progress"] > 0:
                     self.data["in_progress"] -= 1
-                if self.data["files_left_to_process"] >= 1:
+                if self.data["files_left_to_process"] > 0:
                     self.data["files_left_to_process"] -= 1
             elif updated_status == FileStatus.FAILED:
                 self.data["failed"] += 1
-                if self.data["in_progress"] >= 1:
+                if self.data["in_progress"] > 0:
                     self.data["in_progress"] -= 1
-                if self.data["files_left_to_process"] >= 1:
+                if self.data["files_left_to_process"] > 0:
                     self.data["files_left_to_process"] -= 1
             elif updated_status == FileStatus.TO_PROCESS:
                 self.data["files_to_process"] += 1
@@ -109,14 +109,14 @@ class Status:
     def add_file(self):
         self.update_counters(FileStatus.INITIAL)
 
-    def add_completed(self, count = 1):
-        self.update_counters(FileStatus.COMPLETED, count)
+    def add_completed(self):
+        self.update_counters(FileStatus.COMPLETED)
 
-    def add_failed(self, count = 1):
-        self.update_counters(FileStatus.FAILED, count)
+    def add_failed(self):
+        self.update_counters(FileStatus.FAILED)
 
-    def add_in_progress(self, count = 1):
-        self.update_counters(FileStatus.IN_PROGRESS, count)
+    def add_in_progress(self):
+        self.update_counters(FileStatus.IN_PROGRESS)
 
     def add_to_be_processed(self):
         self.update_counters(FileStatus.TO_PROCESS)

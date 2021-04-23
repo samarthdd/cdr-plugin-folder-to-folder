@@ -160,7 +160,7 @@ class File_Processing:
             return False
 
         self.meta_service.set_status_inprogress(dir)
-        self.status.add_in_progress(self.meta_service.get_duplicate_files_count(dir))
+        self.status.add_in_progress()
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
