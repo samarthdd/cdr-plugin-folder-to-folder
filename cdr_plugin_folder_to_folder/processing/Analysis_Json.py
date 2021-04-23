@@ -58,21 +58,24 @@ class Analysis_Json:
         json_save_file_pretty(self.analysis_data, self.get_file_path())
 
     def update_report(self, index, report_json):
-        self.get_from_file()
+        try:
+            self.get_from_file()
 
-        self.analysis_data[index]["file_type"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
-        self.analysis_data[index]["file_size"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:TotalSizeInBytes"]
+            self.analysis_data[index]["file_type"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
+            self.analysis_data[index]["file_size"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:TotalSizeInBytes"]
 
-        self.analysis_data[index]["remediated_item_count"], \
-        self.analysis_data[index]["remediate_items_list"]       = self.get_remediated_item_details(report_json)
+            self.analysis_data[index]["remediated_item_count"], \
+            self.analysis_data[index]["remediate_items_list"]       = self.get_remediated_item_details(report_json)
 
-        self.analysis_data[index]["sanitised_item_count"], \
-        self.analysis_data[index]["sanitised_items_list"]       = self.get_sanitisation_item_details(report_json)
+            self.analysis_data[index]["sanitised_item_count"], \
+            self.analysis_data[index]["sanitised_items_list"]       = self.get_sanitisation_item_details(report_json)
 
-        self.analysis_data[index]["issue_item_count"],\
-        self.analysis_data[index]["issue_item_list"]            = self.get_issue_item_details(report_json)
+            self.analysis_data[index]["issue_item_count"],\
+            self.analysis_data[index]["issue_item_list"]            = self.get_issue_item_details(report_json)
 
-        self.write_to_file()
+            self.write_to_file()
+        except Exception as e:
+            raise e
 
 
     def get_remediated_item_details(self, report_json):
