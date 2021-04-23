@@ -11,6 +11,8 @@ from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
+from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
+
 logger.basicConfig(level=logger.INFO)
 
 class Pre_Processor:
@@ -29,6 +31,8 @@ class Pre_Processor:
         self.hash_json = Hash_Json()
         self.status = Status()
         self.status.reset()
+
+        self.analysis_json = Analysis_Json()
 
     @log_duration
     def clear_data_and_status_folders(self):
@@ -87,4 +91,8 @@ class Pre_Processor:
         if status == FileStatus.INITIAL.value:
             self.hash_json.add_file(original_hash, file_name)
             self.hash_json.write_to_file()
+
+            self.analysis_json.add_file(original_hash, file_name)
+            self.analysis_json.write_to_file()
+
             self.status.add_file()
