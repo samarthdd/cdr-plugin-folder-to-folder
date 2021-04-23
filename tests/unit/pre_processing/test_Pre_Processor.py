@@ -85,6 +85,11 @@ class test_Pre_Processor(TestCase):
 
         self.pre_processor.process_files()
 
+        pprint('**********: DATA')
+        pprint(files_list(path_data  ))
+        pprint('**********: STATUS')
+        pprint(files_list(path_status))
+        pprint('------------------------')
         assert len(files_list(path_data  )) > 0
         assert len(files_list(path_status)) == 2
 
