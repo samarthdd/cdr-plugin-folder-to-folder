@@ -9,7 +9,7 @@ from osbot_utils.utils.Files import folder_create
 from osbot_utils.utils.Json import json_save_file_pretty
 from datetime import datetime, timedelta
 
-from cdr_plugin_folder_to_folder.common_settings.Config import Config
+from cdr_plugin_folder_to_folder.common_settings.Config import Config, API_VERSION
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.Logging import log_error
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
@@ -62,6 +62,13 @@ class File_Processing:
         except Exception as e:
             raise ValueError(str(e))
 
+    def server_version(self, endpoint):
+        try:
+            #todo: get it from the server
+            return 'Not available'
+        except Exception as e:
+            raise ValueError(str(e))
+
     def rebuild (self, endpoint, base64enc_file):
         return self.base64request(endpoint, "api/rebuild/base64", base64enc_file)
 
@@ -98,6 +105,8 @@ class File_Processing:
     @log_duration
     def do_rebuild(self, endpoint, hash, source_path, dir):
 
+        self.meta_service.set_server_version(dir, self.server_version(endpoint))
+        self.meta_service.set_f2f_plugin_version(dir, API_VERSION)
         self.meta_service.set_original_file_extension(dir)
         self.meta_service.set_rebuild_server(dir, endpoint)
 
