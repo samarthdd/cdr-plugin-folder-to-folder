@@ -49,6 +49,9 @@ class Metadata_Service:
         self.get_from_file(metadata_folder)
         return self.metadata.get_original_file_paths()
 
+    def get_duplicate_files_count(self, medadata_folder):
+        return len(self.metadata.get_original_file_paths())
+
     def get_status(self, metadata_folder):
         self.get_from_file(metadata_folder)
         return self.metadata.get_rebuild_status()
