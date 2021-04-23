@@ -77,7 +77,6 @@ class Analysis_Json:
         except Exception as e:
             raise e
 
-
     def get_remediated_item_details(self, report_json):
         total_remediate_count = 0
         remediate_items_list  = []
@@ -94,7 +93,6 @@ class Analysis_Json:
                         remediate_items_list.append(remediate_item["gw:TechnicalDescription"])
 
         return total_remediate_count, remediate_items_list
-
 
     def get_sanitisation_item_details(self, report_json):
         total_sanitisation_count = 0
@@ -131,11 +129,3 @@ class Analysis_Json:
                         issue_items_list.append(issue_item["gw:TechnicalDescription"])
 
         return total_issue_count, issue_items_list
-
-
-
-
-
-
-
-
