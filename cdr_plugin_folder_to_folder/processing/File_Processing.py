@@ -73,7 +73,7 @@ class File_Processing:
     def git_commit(self):
         git_commit = 'Not available'
         try:
-            git_commit = subprocess.check_output(["git", "describe"]).strip()
+            git_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").rstrip()
         except Exception as e:
             pass
 
