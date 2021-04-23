@@ -65,7 +65,17 @@ class Pre_Processor:
            return False
 
         folder_to_process = self.prepare_folder(folder_to_process)
-        
+
+        files_count = 0
+
+        for folderName, subfolders, filenames in os.walk(folder_to_process):
+            for filename in filenames:
+                file_path =  os.path.join(folderName, filename)
+                if os.path.isfile(file_path):
+                    files_count += 1
+
+        self.status.add_files_count(files_count)
+
         for folderName, subfolders, filenames in os.walk(folder_to_process):
             for filename in filenames:
                 file_path =  os.path.join(folderName, filename)

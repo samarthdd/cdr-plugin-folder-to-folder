@@ -29,6 +29,8 @@ class File_Processing:
         self.config         = Config()
         self.status         = Status()
         self.report_elastic = report_elastic
+        self.sdk_api_version    = "Not available"
+        self.sdk_engine_version = "Not available"
 
         self.analysis_json  = Analysis_Json()
 
@@ -146,6 +148,16 @@ class File_Processing:
             self.events_log.add_log('No X-Adaptation-File-Id header found in the response')
             raise ValueError("No X-Adaptation-File-Id header found in the response")
             self.meta_service.set_xml_report_status(dir, "Failed to obtain")
+
+        SDKEngineVersionKey = "X-SDK-Engine-Version"
+        SDKAPIVersionKey = "X-SDK-Api-Version"
+
+        if SDKEngineVersionKey in headers:
+            self.sdk_engine_version = headers[SDKEngineVersionKey]
+        if SDKAPIVersionKey in headers:
+            self.sdk_api_version = headers[SDKAPIVersionKey]
+
+        self.meta_service.set_server_version(dir, "Engine:" + self.sdk_engine_version + " API:" + self.sdk_api_version )
 
     @log_duration
     def processDirectory (self, endpoint, dir):
