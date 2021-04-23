@@ -3,10 +3,11 @@ import os.path
 import sys
 import threading
 import asyncio
+import subprocess
 
 from osbot_utils.utils.Files import create_folder, folder_exists
 
-from cdr_plugin_folder_to_folder.common_settings.Config import Config
+from cdr_plugin_folder_to_folder.common_settings.Config import Config, API_VERSION
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
@@ -47,6 +48,22 @@ class Loops(object):
     def HasBeenStopped(self):
         return not Loops.continue_processing
 
+    def server_version(self, endpoint):
+        try:
+            #todo: get it from the server
+            return 'Not available'
+        except Exception as e:
+            raise ValueError(str(e))
+
+    def git_commit(self):
+        git_commit = 'Not available'
+        try:
+            git_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").rstrip()
+        except Exception as e:
+            pass
+
+        return git_commit
+
     @log_duration
     def ProcessDirectoryWithEndpoint(self, itempath, file_hash, endpoint_index):
         meta_service = Metadata_Service()
@@ -55,6 +72,10 @@ class Loops(object):
 
         endpoint = "http://" + self.config.endpoints['Endpoints'][endpoint_index]['IP'] + ":" + self.config.endpoints['Endpoints'][endpoint_index]['Port']
         events.add_log("Processing with: " + endpoint)
+
+        meta_service.set_server_version(itempath, self.server_version(endpoint))
+        meta_service.set_f2f_plugin_version(itempath, API_VERSION)
+        meta_service.set_f2f_plugin_git_commit(itempath, self.git_commit())
 
         if os.path.isdir(itempath):
             try:

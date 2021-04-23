@@ -71,7 +71,9 @@ class Metadata:
                    'rebuild_status'         : FileStatus.INITIAL.value  ,
                    'rebuild_file_extension' : None                      ,
                    'rebuild_file_size'      : None                      ,
-                   'rebuild_file_duration'  : None
+                   'rebuild_file_duration'  : None                      ,
+                   'f2f_plugin_version'     : None                      ,
+                   'f2f_plugin_git_commit'  : None
                  }
 
     def delete(self):
