@@ -86,7 +86,7 @@ class test_Pre_Processor(TestCase):
         self.pre_processor.process_files()
 
         assert len(files_list(path_data  )) > 0
-        assert len(files_list(path_status)) == 2
+        assert len(files_list(path_status)) == 3
 
     def test_process_file(self):
         metadata = Metadata(file_hash=self.file_hash)
