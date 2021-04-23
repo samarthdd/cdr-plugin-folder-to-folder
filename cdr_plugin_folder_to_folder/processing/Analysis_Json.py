@@ -52,8 +52,6 @@ class Analysis_Json:
 
     def get_from_file(self):
         self.analysis_data = json_load_file(self.get_file_path())
-        print("get_from_file")
-        print(self.analysis_data)
         return self.analysis_data
 
     def write_to_file(self):
@@ -61,8 +59,6 @@ class Analysis_Json:
         json_save_file_pretty(self.analysis_data, self.get_file_path())
 
     def update_report(self, index, report_json):
-        print("self.report_data[index]")
-        print(self.analysis_data)
         self.get_from_file()
 
         self.analysis_data[index]["file_type"] = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"][
@@ -78,9 +74,8 @@ class Analysis_Json:
 
         self.analysis_data[index]["issue_item_count"], self.analysis_data[index]["issue_item_list"] = self.get_issue_item(
             report_json)
-        print(self.analysis_data[index])
+
         self.write_to_file()
-        print("written")
 
 
     def get_remediated_item(self, report_json):
