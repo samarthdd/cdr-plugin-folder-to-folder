@@ -46,7 +46,7 @@ class API_Client:
         assert self.pre_process() == '["Processing is done"]'
         assert self.start_process() == '"Loop completed"'
 
-        return "all files processed "
+        return "all files processed"
 
     def start_process(self):
         return self._request_post('/processing/start')

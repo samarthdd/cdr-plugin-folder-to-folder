@@ -18,13 +18,14 @@ Terraform for OVA/OVF ESXi deployment
   - [1. OVA/OVF](#1-ovaovf)
     - [1.1. Requirements](#11-requirements)
     - [1.2. Configuration](#12-configuration)
+    - [1.3. Terraform_apply](#13-Terraform_apply)
   - [2. VMDK](#2-vmdk)
     - [2.1. Configuration](#21-configuration)
   - [3. Apply](#3-apply)
 
 ## 1. OVA/OVF
 
-> See an example in ova.tf.example
+> See an example in \infra\terraform\esxi\tfvars\secret.auto.tfvars.example
 
 ### 1.1. Requirements
 
@@ -36,20 +37,19 @@ sudo bash ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle
 
 ### 1.2. Configuration
 
-Make a copy of *secret.auto.tfvars.example* and place your credentials.
-
+Navigate to tfvars folder 
 ```shell
-cp -pv secret.auto.tfvars.example secret.auto.tfvars
-"${VISUAL}" secret.auto.tfvars
+cd infra/terraform/esxi/tfvars
 ```
+Make a copy of *secret.auto.tfvars.example* and place your credentials.
+```shell
+cp secret.auto.tfvars.example secret.auto.tfvars
+```
+update details as require in secret.auto.tfvars
 
 Now, we have to initialize Terraform.
 
-```shell
-terraform init -upgrade
-```
-
-Configure VMs modules using variables from esxi-instance module. See an example at *esxi-instance/variables.tf*. See the list of variables in *variables.tf* or refer to the table below.
+Configure VMs details using secret.auto.tfvars. See an example at *infra/terraform/esxi/tfvars/secret.auto.tfvars.example*. See the list of variables below.
 
 |        Variable | Description                      |
 | --------------: | -------------------------------- |
@@ -64,6 +64,24 @@ Configure VMs modules using variables from esxi-instance module. See an example 
 |   auto_power_on | Will power on instances if true  |
 |  boot_disk_size | HDD size of GiB                  |
 
+
+### 1.3. Terraform_apply
+
+once the value is updated in secret.auto.tfvars run
+
+```shell
+terraform init -var-file=./tfvars/secret.auto.tfvars
+```
+run terraform plan to validate the code
+
+```shell
+terraform plan -var-file=./tfvars/secret.auto.tfvars
+```
+run terraform apply to deploy the VMs
+
+```shell
+terraform apply -var-file=./tfvars/secret.auto.tfvars
+```
 
 ## 2. VMDK
 

@@ -1,3 +1,15 @@
+variable "esxi_credentials" {
+  type = object({
+    username             = string
+    password             = string
+    host                 = string
+    allow_unverified_ssl = bool
+    ssh_port             = number
+    ssl_port             = number
+  })
+  description = "ESXi connection details"
+}
+
 variable "instance_count" {
   type        = number
   description = "Count of instances"
@@ -28,9 +40,9 @@ variable "network" {
 }
 
 variable "vcpu_count" {
-  type        = number
+  type        = string
   description = "Count of vCPU per instance"
-  default     = 1
+  default     = "1"
 
   validation {
     condition     = var.vcpu_count >= 1

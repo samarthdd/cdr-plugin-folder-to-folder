@@ -13,8 +13,6 @@ class Show_progress:
     def start(self):
         status= self.api.get_processing_status()
 
-        clear_output(wait=True)
-
         max   = status["files_count"]
         value = status ["completed"] + status ["failed"]
         progress_bar  = self.show_progress(max,value)
@@ -24,10 +22,11 @@ class Show_progress:
        
         if not self.event.is_set():
             threading.Timer(2, self.start).start()
+            clear_output(wait=True)
             
     def stop(self):
         self.event.set()
-        time.sleep(4)
+        time.sleep(8)
         
     def show_progress(self,max,value):
         progress_bar = widgets.IntProgress(min=0, max=max, description='Progress Bar:', bar_style='info', )
