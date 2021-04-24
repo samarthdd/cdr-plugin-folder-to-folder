@@ -18,6 +18,7 @@ from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
+from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
 
 class File_Processing:
 
@@ -30,6 +31,8 @@ class File_Processing:
         self.report_elastic = report_elastic
         self.sdk_api_version    = "Not available"
         self.sdk_engine_version = "Not available"
+
+        self.analysis_json  = Analysis_Json()
 
     def base64request(self, endpoint, api_route, base64enc_file):
         try:
@@ -73,12 +76,15 @@ class File_Processing:
             raise ValueError('Failed to obtain the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
+
         file_extension = json_obj["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
         self.meta_service.set_rebuild_file_extension(dir, file_extension)
         json_obj['original_hash'] = os.path.basename(dir)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
         self.report_elastic.add_report(json_obj)
+
+        self.analysis_json.update_report(os.path.basename(dir), json_obj)
 
     # Save to HD3
     def save_file(self, result, processed_path):
@@ -99,7 +105,6 @@ class File_Processing:
 
     @log_duration
     def do_rebuild(self, endpoint, hash, source_path, dir):
-
         self.meta_service.set_original_file_extension(dir)
         self.meta_service.set_rebuild_server(dir, endpoint)
 

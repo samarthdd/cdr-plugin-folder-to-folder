@@ -23,7 +23,7 @@ DEFAULT_ELASTIC_SCHEMA   = "http"
 DEFAULT_KIBANA_HOST      = "127.0.0.1"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
-DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"34.240.183.4", "Port":"8080"}]}'
+DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"91.109.25.88", "Port":"8080"}]}'
 DEFAULT_REQUEST_TIMEOUT  = 60
 API_VERSION              = "v0.5.4"
 
