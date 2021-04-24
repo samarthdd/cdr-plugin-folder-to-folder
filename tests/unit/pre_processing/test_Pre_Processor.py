@@ -81,7 +81,7 @@ class test_Pre_Processor(TestCase):
         path_status = self.pre_processor.storage.hd2_status()
 
         assert len(files_list(path_data   )) == 0
-        assert len(files_list(path_status )) == 0
+        assert len(files_list(path_status )) == 1       # should have the status.json file
 
         self.pre_processor.process_files()
 
@@ -91,7 +91,7 @@ class test_Pre_Processor(TestCase):
         pprint(files_list(path_status))
         pprint('------------------------')
         assert len(files_list(path_data  )) > 0
-        assert len(files_list(path_status)) == 2
+        assert len(files_list(path_status)) == 2        # should have the status.json and hash.json files
 
     def test_process_file(self):
         metadata = Metadata(file_hash=self.file_hash)

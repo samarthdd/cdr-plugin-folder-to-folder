@@ -65,15 +65,15 @@ class Loops(object):
 
                 log_data = {
                         'file': original_file_path,
-                        'status': FileStatus.COMPLETED.value,
+                        'status': FileStatus.COMPLETED,
                         'error': 'none',
                         'timestamp': datetime.now(),
                     }
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, "none")
-                meta_service.set_status(itempath, FileStatus.COMPLETED.value)
+                meta_service.set_status(itempath, FileStatus.COMPLETED)
                 self.status.add_completed()
-                self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
+                self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
                 events.add_log("Has been processed")
                 return True
             except Exception as error:
@@ -84,9 +84,9 @@ class Loops(object):
                 }
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
-                meta_service.set_status(itempath, FileStatus.FAILED.value)
+                meta_service.set_status(itempath, FileStatus.FAILED)
                 self.status.add_failed()
-                self.hash_json.update_status(file_hash, FileStatus.FAILED.value)
+                self.hash_json.update_status(file_hash, FileStatus.FAILED)
                 events.add_log("ERROR:" + str(error))
                 return False
 
@@ -128,11 +128,11 @@ class Loops(object):
             file_hash   =  key
 
             itempath = os.path.join(rootdir, key)
-            if (FileStatus.INITIAL.value != json_list[key]["file_status"]):
+            if (FileStatus.INITIAL != json_list[key]["file_status"]):
                 continue
 
             if not os.path.exists(itempath):
-                json_list[key]["file_status"] = FileStatus.FAILED.value
+                json_list[key]["file_status"] = FileStatus.FAILED
                 continue
 
             # limit the number of parallel threads
@@ -168,7 +168,7 @@ class Loops(object):
         finally:
             Loops.processing_started = False
             Loops.lock.release()
-            self.status.write_to_file()
+            self.status.save()
 
     @log_duration
     def LoopHashDirectories(self):

@@ -33,7 +33,7 @@ class Hash_Json:
     def add_file(self, file_hash, file_name):
         if self.is_hash(file_hash) and file_name:
             json_value  = {"file_name"  : file_name,
-                           "file_status": FileStatus.INITIAL.value}
+                           "file_status": FileStatus.INITIAL}
 
             json_data   = {file_hash: json_value}
 

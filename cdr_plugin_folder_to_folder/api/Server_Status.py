@@ -6,7 +6,7 @@ from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 from cdr_plugin_folder_to_folder.utils.Logging import log_debug, logging
 
 
-class Status:
+class Server_Status:
 
     def __init__(self):
         self.config = Config()

@@ -79,7 +79,7 @@ class test_Metadata_Elastic(TestCase):
                                     'original_file_size'     : None                      ,
                                     'rebuild_file_path'      : None                      ,
                                     'rebuild_hash'           : None                      ,
-                                    'rebuild_status'         : FileStatus.INITIAL.value  ,
+                                    'rebuild_status'         : FileStatus.INITIAL        ,
                                     'rebuild_file_extension' : None                      ,
                                     'rebuild_file_size'      : None                      ,
                                     'rebuild_file_duration'  : None

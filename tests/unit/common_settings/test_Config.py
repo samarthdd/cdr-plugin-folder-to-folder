@@ -26,7 +26,7 @@ class test_Config(TestCase):
         self.assertEqual(abspath(config.hd2_location)   , abspath(os.environ.get("HD2_LOCATION"   , DEFAULT_HD2_LOCATION)))
         self.assertEqual(abspath(config.hd3_location)   , abspath(os.environ.get("HD3_LOCATION"   , DEFAULT_HD3_LOCATION)))
         self.assertEqual(abspath(config.root_folder )   , abspath(os.environ.get("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER )))
-        self.assertEqual(config.endpoints      , json.loads(os.environ.get("ENDPOINTS"      , DEFAULT_ENDPOINTS)))
+        self.assertEqual(config.endpoints               , json.loads(os.environ.get("ENDPOINTS"   , DEFAULT_ENDPOINTS   )))
         assert config.endpoints['Endpoints'][0]['IP']
         assert config.endpoints['Endpoints'][0]['Port']
 

@@ -41,7 +41,7 @@ class test_File_Processing(TestCase):
         folder_delete_all(cls.temp_root)
 
     def setUp(self) -> None:
-        self.sdk_server      = '34.240.183.4'  # todo: use value from env variables
+        self.sdk_server      = '18.202.245.131'  # todo: use value from env variables
         self.sdk_port        = '8080'
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)
@@ -54,6 +54,7 @@ class test_File_Processing(TestCase):
         headers = ''
         dir     = ''
 
+    # todo move this test to integration tests and refactor test here to mock the server response
     def test_do_rebuild(self):          # refactor
         endpoint    = f'http://{self.sdk_server}:{self.sdk_port}'
         hash        = Metadata_Utils().file_hash(self.test_file)
@@ -65,10 +66,8 @@ class test_File_Processing(TestCase):
 
 
     def test_pdf_rebuild(self,):            # refactor into separate test file
-        server         = "84.16.229.232"  # aws                                            # 5.1 lowest response time
-        #server          = "192.168.0.249"   # local                                         # 3.9 lowest response time
-        server          = "34.254.193.225"                                                 # 0.5 lowest response time
-        server          = "CompliantK8sICAPLB-d6bf82358f9adc63.elb.eu-west-1.amazonaws.com"
+        #server          = "192.168.0.249"   # local
+        server          = "18.202.245.131"
         url             = f"http://{server}:8080/api/rebuild/base64"
         headers         = { 'accept': 'application/json',
                             'Content-Type': 'application/json'}

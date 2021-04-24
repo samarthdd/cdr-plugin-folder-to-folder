@@ -40,4 +40,4 @@ def process_single_file():
 @router.get("/status")
 def get_the_processing_status():
     status = Status()
-    return JSONResponse(status.data)
+    return JSONResponse(status.data())

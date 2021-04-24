@@ -54,10 +54,10 @@ class Metadata_Service:
         return self.metadata.get_rebuild_status()
 
     def is_initial_status(self, metadata_folder):
-        return (self.get_status(metadata_folder) == FileStatus.INITIAL.value)
+        return (self.get_status(metadata_folder) == FileStatus.INITIAL)
 
     def set_status_inprogress(self, metadata_folder):
-        self.set_status(metadata_folder, FileStatus.IN_PROGRESS.value)
+        self.set_status(metadata_folder, FileStatus.IN_PROGRESS)
 
     def set_metadata_field(self, metadata_folder, field_name, value):
         self.get_from_file(metadata_folder)
