@@ -92,7 +92,7 @@ class Loops(object):
             except Exception as error:
                 log_data = {
                     'file': original_file_path,
-                    'status': FileStatus.FAILED.value,
+                    'status': FileStatus.FAILED,
                     'error': str(error),
                 }
                 log_error('error in ProcessDirectoryWithEndpoint', data=log_data)

@@ -5,7 +5,7 @@ import ntpath
 import os.path
 import xmltodict
 
-from osbot_utils.utils.Files import folder_create
+from osbot_utils.utils.Files import folder_create, parent_folder
 from osbot_utils.utils.Json import json_save_file_pretty
 from datetime import datetime, timedelta
 
@@ -99,9 +99,11 @@ class File_Processing:
         if decoded:
             FileService.wrtie_binary_file(dirname, basename, decoded)
             self.events_log.add_log('The decoded file has been saved')
+            return processed_path
         else:
-            FileService.wrtie_file(dirname, basename + ".html", result)
+            FileService.wrtie_file(dirname, basename + ".html", result)                     # todo: capture better this workflow
             self.events_log.add_log('Decoding FAILED. The HTML file has been saved')
+            return processed_path + '.html'                                                 # todo: refactor this workflow and how this is calculated
 
     @log_duration
     def do_rebuild(self, endpoint, hash, source_path, dir):
@@ -132,12 +134,17 @@ class File_Processing:
             else:
                 rebuild_file_path = os.path.join(self.config.hd3_location, path)
 
-            self.save_file(result, rebuild_file_path)
-            file_size = os.path.getsize(rebuild_file_path)
+            folder_create(parent_folder(rebuild_file_path))                         # make sure parent folder exists
+
+            final_rebuild_file_path = self.save_file(result, rebuild_file_path)     # returns actual file saved (which could be .html)
+
+            # todo: improve the performance of these update since each will trigger a save
+            file_size    = os.path.getsize(final_rebuild_file_path)                 # calculate rebuilt file fize
+            rebuild_hash = self.meta_service.file_hash(final_rebuild_file_path)     # calculate hash of final_rebuild_file_path
+
             self.meta_service.set_rebuild_file_size(dir, file_size)
-            self.meta_service.set_rebuild_file_path(dir, rebuild_file_path)
-            rebuild_hash = self.meta_service.file_hash(rebuild_file_path)
-            self.meta_service.set_rebuild_hash(dir, rebuild_hash)
+            self.meta_service.set_rebuild_file_path(dir, final_rebuild_file_path)   # capture final_rebuild_file_path
+            self.meta_service.set_rebuild_hash(dir, rebuild_hash)                   # capture it
 
         headers = response.headers
         fileIdKey = "X-Adaptation-File-Id"
