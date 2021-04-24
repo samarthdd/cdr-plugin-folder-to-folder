@@ -18,6 +18,7 @@ from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
+from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
 
 class File_Processing:
 
@@ -28,6 +29,10 @@ class File_Processing:
         self.config         = Config()
         self.status         = Status()
         self.report_elastic = report_elastic
+        self.sdk_api_version    = "Not available"
+        self.sdk_engine_version = "Not available"
+
+        self.analysis_json  = Analysis_Json()
 
     def base64request(self, endpoint, api_route, base64enc_file):
         try:
@@ -71,12 +76,15 @@ class File_Processing:
             raise ValueError('Failed to obtain the XML report')
 
         json_obj = xmltodict.parse(xmlreport)
+
         file_extension = json_obj["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
         self.meta_service.set_rebuild_file_extension(dir, file_extension)
         json_obj['original_hash'] = os.path.basename(dir)
         json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
         self.report_elastic.add_report(json_obj)
+
+        self.analysis_json.update_report(os.path.basename(dir), json_obj)
 
     # Save to HD3
     def save_file(self, result, processed_path):
@@ -97,8 +105,7 @@ class File_Processing:
 
     @log_duration
     def do_rebuild(self, endpoint, hash, source_path, dir):
-
-        event_data = {"endpoint": endpoint, "hash": hash, "source_path": source_path, "dir": dir } # todo: see if we can us a variable that holds the params data
+        event_data = {"endpoint": endpoint, "hash": hash, "source_path": source_path, "dir": dir } # todo: see if we can use a variable that holds the params data
         self.events_log.add_log('Starting File rebuild', event_data)
 
         self.meta_service.set_original_file_extension(dir)
@@ -119,7 +126,7 @@ class File_Processing:
             raise ValueError('Failed to rebuild the file')
 
         for path in self.meta_service.get_original_file_paths(dir):
-            rebuild_file_path = path
+            #rebuild_file_path = path
             if path.startswith(self.config.hd1_location):
                 rebuild_file_path = path.replace(self.config.hd1_location, self.config.hd3_location)
             else:
@@ -145,6 +152,16 @@ class File_Processing:
             self.events_log.add_log('No X-Adaptation-File-Id header found in the response')
             raise ValueError("No X-Adaptation-File-Id header found in the response")
 
+
+        SDKEngineVersionKey = "X-SDK-Engine-Version"
+        SDKAPIVersionKey = "X-SDK-Api-Version"
+
+        if SDKEngineVersionKey in headers:
+            self.sdk_engine_version = headers[SDKEngineVersionKey]
+        if SDKAPIVersionKey in headers:
+            self.sdk_api_version = headers[SDKAPIVersionKey]
+
+        self.meta_service.set_server_version(dir, "Engine:" + self.sdk_engine_version + " API:" + self.sdk_api_version )
 
     @log_duration
     def processDirectory (self, endpoint, dir):

@@ -102,3 +102,8 @@ class Metadata_Service:
     def set_rebuild_file_duration(self, metadata_folder, rebuild_file_duration):
         self.set_metadata_field(metadata_folder, 'rebuild_file_duration', rebuild_file_duration)
 
+    def set_f2f_plugin_version(self, metadata_folder, rebuild_file_duration):
+        self.set_metadata_field(metadata_folder, 'f2f_plugin_version', rebuild_file_duration)
+
+    def set_f2f_plugin_git_commit(self, metadata_folder, rebuild_file_duration):
+        self.set_metadata_field(metadata_folder, 'f2f_plugin_git_commit', rebuild_file_duration)

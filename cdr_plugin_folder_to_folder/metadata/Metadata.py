@@ -73,7 +73,9 @@ class Metadata:
                    'rebuild_status'         : FileStatus.INITIAL ,
                    'rebuild_file_extension' : None               ,
                    'rebuild_file_size'      : None               ,
-                   'rebuild_file_duration'  : None
+                   'rebuild_file_duration'  : None               ,
+                   'f2f_plugin_version'     : None               ,
+                   'f2f_plugin_git_commit'  : None
                  }
 
     def delete(self):
@@ -107,7 +109,10 @@ class Metadata:
 
     def set_file_hash(self, file_hash):
         self.file_hash = file_hash
-        self.update_field('original_hash', file_hash)
+        self.data['original_hash'] = file_hash
+        self.data['last_update_time'] = datetime_now()
+        if not self.exists():
+            self.save()
 
     def set_file_name(self, file_name):
         self.update_field('file_name', file_name)
