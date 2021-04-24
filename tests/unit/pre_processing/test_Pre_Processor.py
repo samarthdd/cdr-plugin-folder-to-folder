@@ -91,7 +91,7 @@ class test_Pre_Processor(TestCase):
         pprint(files_list(path_status))
         pprint('------------------------')
         assert len(files_list(path_data  )) > 0
-        assert len(files_list(path_status)) == 3            # should have the status.json and hash.json files
+        assert len(files_list(path_status)) == 3            # should have: status.json, hash.json , events.json
 
     def test_process_file(self):
         metadata = Metadata(file_hash=self.file_hash)
