@@ -22,6 +22,8 @@ class Setup_Testing:
         return path_repo
 
     def configure_config(self, config):
+        from pprint import pprint
+        pprint(">>>>>>>>> in  Setup_Testing.configure_config")
         config.kibana_host = '127.0.0.1'
         config.elastic_host = '127.0.0.1'
         return self

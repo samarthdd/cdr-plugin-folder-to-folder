@@ -75,7 +75,9 @@ class Config:
         self.set_hd1_location(os.getenv("HD1_LOCATION", DEFAULT_HD1_LOCATION))       # set hd1, hd2 and hd3 values
         self.set_hd2_location(os.getenv("HD2_LOCATION", DEFAULT_HD2_LOCATION))
         self.set_hd3_location(os.getenv("HD3_LOCATION", DEFAULT_HD3_LOCATION))
-
+        from pprint import pprint
+        pprint(">>>>>>>>> in  config")
+        pprint(self.values())
         return self
 
     def ensure_last_char_is_not_forward_slash(self, path: str):

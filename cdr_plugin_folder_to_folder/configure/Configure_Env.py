@@ -17,7 +17,6 @@ logger.basicConfig(level=logger.INFO)
 class Configure_Env:
     def __init__(self):
         self.config = Config()
-        Setup_Testing().set_test_root_dir()
         dotenv_file = dotenv.find_dotenv()
         if not dotenv_file:
             with open("./.env", "w"):
