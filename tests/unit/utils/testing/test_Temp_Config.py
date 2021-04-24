@@ -11,9 +11,13 @@ from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 
 class test_Temp_Config(TestCase):
 
+    def setUp(self) -> None:
+        self.setup_testing = Setup_Testing()
+
     def test__setUpClass__tearDownClass(self):
         config          = Config()
         original_config = config.values()
+
         assert Temp_Config.setup_testing        is None
         assert Temp_Config.storage              is None
         assert Temp_Config.config               is None
@@ -29,4 +33,6 @@ class test_Temp_Config(TestCase):
         assert Temp_Config.setup_testing        is None
         assert Temp_Config.storage              is None
         assert Temp_Config.config               is None
+
+        self.setup_testing.configure_static_logging()
         assert original_config == config.values()
