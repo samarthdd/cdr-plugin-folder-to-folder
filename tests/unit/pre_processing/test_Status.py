@@ -45,7 +45,7 @@ class test_Status(Temp_Config):
 
             assert status.add_to_be_processed()
             assert status.get_current_status() == FileStatus.TO_PROCESS
-            assert status.get_files_to_process() == 1
+            assert status.get_files_to_process() == i
 
 
         assert json_load_file(status.status_file_path()) == status.data()
