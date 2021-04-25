@@ -20,8 +20,8 @@ class Setup_Testing:
         return path_repo
 
     def configure_config(self, config): # todo: see if this is still needed (with the use of /etc/hosts to map to es01 and kib01)
-        config.kibana_host = '127.0.0.1'
-        config.elastic_host = '127.0.0.1'
+        #config.kibana_host = '127.0.0.1'
+        #config.elastic_host = '127.0.0.1'
         return self
 
     def configure_elastic(self, elastic):
