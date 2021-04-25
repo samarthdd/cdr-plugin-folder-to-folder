@@ -5,10 +5,8 @@ from osbot_utils.utils.Files import parent_folder, temp_folder, folder_delete_al
 
 class Setup_Testing:
 
-    def __init__(self, configure_logging=True):
+    def __init__(self,):
         self.temp_root_folder = None
-        if configure_logging:
-            self.configure_static_logging()                                     # todo refactor once this logging use of static object is also refactored
 
     def path_repo_root(self):
         """find the root path via getting the parent folder of the location of the
@@ -21,9 +19,7 @@ class Setup_Testing:
         chdir(path_repo)
         return path_repo
 
-    def configure_config(self, config):
-        from pprint import pprint
-        pprint(">>>>>>>>> in  Setup_Testing.configure_config")
+    def configure_config(self, config): # todo: see if this is still needed (with the use of /etc/hosts to map to es01 and kib01)
         config.kibana_host = '127.0.0.1'
         config.elastic_host = '127.0.0.1'
         return self
@@ -49,14 +45,22 @@ class Setup_Testing:
         return self
 
 
-    def configure_static_logging(self):
-        from cdr_plugin_folder_to_folder.utils.Logging import logging
-        self.configure_logging(logging=logging)
-        return self
+    # def configure_static_logging(self):
+    #     #from cdr_plugin_folder_to_folder.utils.Logging import logging
+    #     #self.configure_logging(logging=logging)
+    #     return self
 
     def get_config(self):
         from cdr_plugin_folder_to_folder.common_settings.Config import Config       # needs to be here due to circular references with this class and Config
         return Config()
+
+    def pytest_skip_if_elastic_not_available(self):
+        import pytest
+        from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
+        elastic = Elastic()
+        self.configure_elastic(elastic=elastic)
+        if elastic.enabled is False:
+            pytest.skip('Elastic server not available')
 
     def set_config_to_temp_folder(self):
         self.temp_root_folder = temp_folder()

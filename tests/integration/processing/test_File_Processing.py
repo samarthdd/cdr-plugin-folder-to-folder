@@ -42,7 +42,7 @@ class test_File_Processing(TestCase):
         folder_delete_all(cls.temp_root)
 
     def setUp(self) -> None:
-        self.sdk_server      = '18.202.245.131'  # todo: use value from env variables
+        self.sdk_server      = '34.244.186.10'  # todo: use value from env variables
         self.sdk_port        = '8080'
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)
@@ -69,7 +69,7 @@ class test_File_Processing(TestCase):
 
     def test_pdf_rebuild(self,):            # refactor into separate test file
         #server          = "192.168.0.249"   # local
-        server          = "18.202.245.131"
+        server          = "34.244.186.10"
         url             = f"http://{server}:8080/api/rebuild/base64"
         headers         = { 'accept': 'application/json',
                             'Content-Type': 'application/json'}

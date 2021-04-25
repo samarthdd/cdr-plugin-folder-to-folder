@@ -1,6 +1,7 @@
 import os
 import json
 from dotenv import load_dotenv
+from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import folder_not_exists, path_combine, folder_create, create_folder, temp_folder, \
     folder_exists
 
@@ -23,7 +24,7 @@ DEFAULT_ELASTIC_SCHEMA   = "http"
 DEFAULT_KIBANA_HOST      = "kib01"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
-DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"18.202.245.131", "Port":"8080"}]}'
+DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"34.244.186.10", "Port":"8080"}]}'
 DEFAULT_REQUEST_TIMEOUT  = 60
 API_VERSION              = "v0.5.4"
 
@@ -56,7 +57,7 @@ class Config:
             self.load_values()                                      # due to the singleton pattern this will only be executed once
 
     def load_values(self):
-        Setup_Testing(configure_logging=False).set_test_root_dir()  # todo: fix test data so that we don't need to do this here
+        Setup_Testing().set_test_root_dir()                         # todo: fix test data so that we don't need to do this here
         load_dotenv(override=True)                                  # Load configuration from .env file that should exist in the root of the repo
         self.root_folder         = os.getenv    ("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
         self.elastic_host        = os.getenv    ("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
@@ -75,9 +76,7 @@ class Config:
         self.set_hd1_location(os.getenv("HD1_LOCATION", DEFAULT_HD1_LOCATION))       # set hd1, hd2 and hd3 values
         self.set_hd2_location(os.getenv("HD2_LOCATION", DEFAULT_HD2_LOCATION))
         self.set_hd3_location(os.getenv("HD3_LOCATION", DEFAULT_HD3_LOCATION))
-        from pprint import pprint
-        pprint(">>>>>>>>> in  config")
-        pprint(self.values())
+        #pprint(self.values())
         return self
 
     def ensure_last_char_is_not_forward_slash(self, path: str):

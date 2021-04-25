@@ -39,4 +39,5 @@ class Log_Duration:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.duration.end()
         message_duration = time_delta_to_str(self.duration.duration)
+        message_duration = self.duration.seconds()
         log_message(level=self.level, message=self.message, duration=message_duration, from_class=self.from_class, from_method=self.from_method)

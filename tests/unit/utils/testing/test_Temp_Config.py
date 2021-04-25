@@ -34,5 +34,5 @@ class test_Temp_Config(TestCase):
         assert Temp_Config.storage              is None
         assert Temp_Config.config               is None
 
-        self.setup_testing.configure_static_logging()
+        #self.setup_testing.configure_static_logging()
         assert original_config == config.values()

@@ -40,7 +40,7 @@ class test_Setup_Testing(TestCase):
         assert original_config != temp_config
 
         self.setup_testing.restore_config()
-        self.setup_testing.configure_static_logging()
+        #self.setup_testing.configure_static_logging()
         assert original_config == config.values()
         assert parent_folder(config.root_folder) != temp_folder_current()
         assert folder_not_exists(temp_config.get('root_folder'))

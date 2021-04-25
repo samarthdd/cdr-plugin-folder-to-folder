@@ -11,10 +11,11 @@ from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testin
 class test_Elastic(TestCase):
 
     def setUp(self) -> None:
-        self.elastic = Elastic()
-        Setup_Testing().configure_elastic(elastic=self.elastic)
-        if self.elastic.enabled is False:
-            pytest.skip('Elastic server not available')
+        Setup_Testing().pytest_skip_if_elastic_not_available()
+        self.elastic = Elastic().setup()
+        #Setup_Testing().configure_elastic(elastic=self.elastic)
+        #if self.elastic.enabled is False:
+        #    pytest.skip('Elastic server not available')
 
     def test_elastic(self):
         assert len(self.elastic.elastic().index_list()) > 0

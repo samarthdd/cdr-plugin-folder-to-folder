@@ -21,8 +21,8 @@ class test_File_Distributor(TestCase):
         cls.pre_processor = Pre_Processor()
         cls.pre_processor.clear_data_and_status_folders()
         cls.stage_1       = cls.pre_processor.process(cls.test_file)
-        cls.stage_2       = Loops().LoopHashDirectories()
-        assert cls.stage_2 is True
+        #cls.stage_2       = Loops().LoopHashDirectories()
+        #assert cls.stage_2 is True
 
     @classmethod
     def tearDownClass(cls) -> None:

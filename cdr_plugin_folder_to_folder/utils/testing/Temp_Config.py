@@ -1,16 +1,20 @@
 from unittest import TestCase
 
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
+from cdr_plugin_folder_to_folder.utils.Logging_Process import start_logging
 from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
 
 class Temp_Config(TestCase):
+    config        = None
+    log_worker    = None
     setup_testing = None
     storage       = None
-    config        = None
+
 
     @classmethod
     def setUpClass(cls) -> None:
         cls.setup_testing = Setup_Testing()
+        cls.log_worker    = start_logging()
         cls.storage       = Storage()
         cls.config        = cls.storage.config
 

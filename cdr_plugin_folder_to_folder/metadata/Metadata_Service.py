@@ -13,6 +13,7 @@ from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 from enum import Enum
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
+from cdr_plugin_folder_to_folder.utils.Logging import log_info
 
 logger.basicConfig(level=logger.INFO)
 
@@ -30,7 +31,9 @@ class Metadata_Service:
     def create_metadata(self, file_path):
         self.metadata = Metadata()
         self.metadata.add_file(file_path)
-        self.metadata_elastic.add_metadata(self.metadata.data)                            # save metadata to elastic
+
+        #self.metadata_elastic.add_metadata(self.metadata.data)                            # save metadata to elastic
+        log_info(message=f"created metadata for: {self.metadata.get_file_name()}", data={"file_path": file_path, "metadata_file_path": self.metadata.metadata_file_path()})
         return self.metadata
 
     def get_from_file(self, metadata_folder):

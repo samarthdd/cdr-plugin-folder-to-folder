@@ -40,8 +40,8 @@ class test_Analysis_Json(TestCase):
     def test___init__(self):
         assert abspath(self.analysis_json.folder) == self.storage.hd2_status()
 
-    @patch("cdr_plugin_folder_to_folder.utils.Logging.Logging.error")
-    def test_add_file(self, patch_log_error):
+    @patch("multiprocessing.queues.Queue.put_nowait")
+    def test_add_file(self, patch_put_nowait):
         analysis_data = self.analysis_json.get_from_file()
         if analysis_data.get('self.test_file_hash'):
             del analysis_data[self.test_file_hash]
@@ -53,9 +53,12 @@ class test_Analysis_Json(TestCase):
         assert self.analysis_json.add_file(self.test_file_hash , None               ) is False
         assert self.analysis_json.add_file(None                , None               ) is False
 
-        assert patch_log_error.mock_calls == [call(message='in Analysis_Json.add_file bad data provided', data={'file_hash': 'AAAA'              , 'file_name': self.test_file_name }),
-                                              call(message='in Analysis_Json.add_file bad data provided', data={'file_hash': self.test_file_hash , 'file_name': None                }),
-                                              call(message='in Analysis_Json.add_file bad data provided', data={'file_hash': None                , 'file_name': None                })]
+        assert patch_put_nowait.mock_calls ==[call({'level': 'ERROR', 'message': 'in Analysis_Json.add_file bad data provided', 'data': {'file_hash': 'AAAA'                , 'file_name': self.test_file_name}, 'duration': 0, 'from_method': 'add_file', 'from_class': 'Analysis_Json'}),
+                                              call({'level': 'ERROR', 'message': 'in Analysis_Json.add_file bad data provided', 'data': {'file_hash': self.test_file_hash   , 'file_name': None               }, 'duration': 0, 'from_method': 'add_file', 'from_class': 'Analysis_Json'}),
+                                              call({'level': 'ERROR', 'message': 'in Analysis_Json.add_file bad data provided', 'data': {'file_hash': None                  , 'file_name': None               }, 'duration': 0, 'from_method': 'add_file', 'from_class': 'Analysis_Json'})]
+        # assert patch_log_error.mock_calls == [call(message='in Analysis_Json.add_file bad data provided', data={'file_hash': 'AAAA'              , 'file_name': self.test_file_name }),
+        #                                       call(message='in Analysis_Json.add_file bad data provided', data={'file_hash': self.test_file_hash , 'file_name': None                }),
+        #                                       call(message='in Analysis_Json.add_file bad data provided', data={'file_hash': None                , 'file_name': None                })]
 
 
     def test_get_file_path(self):

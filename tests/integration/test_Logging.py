@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-import pytest
-from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import random_text, list_set
 
 from cdr_plugin_folder_to_folder.utils.Logging import Logging
@@ -13,14 +11,15 @@ class test_Logging(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        Setup_Testing().pytest_skip_if_elastic_not_available()
         cls.index_name = 'temp_log_index'
         cls.logging = Logging(index_name=cls.index_name)
 
         cls.elastic = cls.logging.elastic()
-        Setup_Testing().configure_elastic(cls.elastic)
+        #Setup_Testing().configure_elastic(cls.elastic)
         cls.logging.setup()
-        if cls.elastic.enabled is False:
-            pytest.skip('Elastic server not available')
+        #if cls.elastic.enabled is False:
+        #    pytest.skip('Elastic server not available')
 
     @classmethod
     def tearDownClass(cls) -> None:

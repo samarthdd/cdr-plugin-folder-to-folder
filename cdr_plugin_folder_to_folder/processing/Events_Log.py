@@ -10,6 +10,10 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from enum import Enum
 from datetime import datetime 
 import uuid
+
+from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
+from cdr_plugin_folder_to_folder.utils.Logging import log_info
+
 logger.basicConfig(level=logger.INFO)
 
 class Events_Log:
@@ -42,6 +46,7 @@ class Events_Log:
         json_save_file_pretty(self.data, self.get_file_path())
 
     def add_log(self, message, data=None):
+        log_info(message=message, data=data)
         if data is str:
             data = {"str": data }
         self.get_from_file()
