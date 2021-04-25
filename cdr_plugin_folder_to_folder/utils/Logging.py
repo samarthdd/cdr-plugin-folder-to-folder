@@ -82,7 +82,6 @@ class Logging:
 
 logging_queue   = Queue()
 logging_enabled = Value('i', 0)
-logging_counter = Value('i', 0)
 
 def set_logging_queue(queue):           # use to enabled multiple process to send logging messages to a particular queue
     global logging_queue

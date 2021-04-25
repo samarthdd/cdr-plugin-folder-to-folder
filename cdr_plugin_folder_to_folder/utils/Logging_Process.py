@@ -5,7 +5,7 @@ from time import sleep
 
 from osbot_utils.utils.Dev import pprint
 
-from cdr_plugin_folder_to_folder.utils.Logging import logging_queue, logging_enabled, Logging, logging_counter
+from cdr_plugin_folder_to_folder.utils.Logging import logging_queue, logging_enabled, Logging
 
 logging_process               = None
 logging_worker                = None
@@ -16,19 +16,17 @@ def start_logging():
     global logging_worker
     queue   = logging_queue
     enabled = logging_enabled
-    count   = logging_counter
-    #pprint(f'logging_enabled.value: {logging_enabled.value}')
     if logging_worker is None and logging_enabled.value ==0:       # if it already enabled don't start a new process
-        worker = multiprocessing.Process(target=start_logging_process, args=(queue, enabled, count), daemon=True)
+        worker = multiprocessing.Process(target=start_logging_process, args=(queue, enabled), daemon=True)
         worker.start()
         logging_enabled.value = 1       # set enabled value
         logging_worker = worker
     return logging_worker
 
 
-def start_logging_process(queue: Queue, enabled: Value, count: Value):
+def start_logging_process(queue: Queue, enabled: Value):
     global logging_process
-    logging_process = Logging_Process(queue=queue, enabled=enabled, count=count)
+    logging_process = Logging_Process(queue=queue, enabled=enabled)
     pprint('>> start_logging_process')
     logging_process.start()
 
@@ -39,8 +37,7 @@ def start_logging_process(queue: Queue, enabled: Value, count: Value):
 
 class Logging_Process:
 
-    def __init__(self, queue : Queue, enabled: Value, count: Value):
-        self._count   = count
+    def __init__(self, queue : Queue, enabled: Value):
         self._enabled = enabled
         self._queue   = queue
         self._logging = None
@@ -81,8 +78,6 @@ class Logging_Process:
                 pprint(kwargs)
             self.log_message(**kwargs)
 
-            with self._count.get_lock():
-                self._count.value += 1
             # todo refactor into method focused on internal logging messages
             if  kwargs.get('level'  ) == 'DEBUG'        and  \
                 kwargs.get('message') == 'stop_logging' and  \
