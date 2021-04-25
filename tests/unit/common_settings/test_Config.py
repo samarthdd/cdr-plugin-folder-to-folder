@@ -93,7 +93,7 @@ class test_Config(TestCase):
         assert self.config.hd1_location == hd1_location
         assert file_exists(hd1_location)
         self.config.load_values()
-        assert self.config.hd1_location == './test_data/scenario-1/hd1'
+        assert abspath(self.config.hd1_location) == abspath('./test_data/scenario-1/hd1')
         assert folder_delete_all(hd1_location)
 
     def test_set_hd2_location(self):
@@ -106,7 +106,7 @@ class test_Config(TestCase):
         assert file_exists(hd2_location)
 
         self.config.load_values()
-        assert self.config.hd2_location == './test_data/scenario-1/hd2'
+        assert abspath(self.config.hd2_location) == abspath('./test_data/scenario-1/hd2')
         assert folder_delete_all(hd2_location)
 
     def test_set_hd3_location(self):
@@ -116,5 +116,5 @@ class test_Config(TestCase):
         assert self.config.hd3_location == hd3_location
         assert file_exists(hd3_location)
         self.config.load_values()
-        assert self.config.hd3_location == './test_data/scenario-1/hd3'
+        assert abspath(self.config.hd3_location) == abspath('./test_data/scenario-1/hd3')
         assert folder_delete_all(hd3_location)
