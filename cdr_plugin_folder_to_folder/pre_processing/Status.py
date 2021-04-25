@@ -68,10 +68,6 @@ class Status:
             self.reset()
         return self
 
-    @log_duration
-    def reload_data_from_hd2(self):
-
-        return self.storage.hd2_metadatas()
 
     def reset(self):
         self._status_data = self.default_data()

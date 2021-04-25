@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from typing import List
 from fastapi import FastAPI, HTTPException
 
+from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
+
 configure_env=Configure_Env()
 router_params = { "prefix": "/configuration"  ,
                   "tags"  : ['Configuration'] }
@@ -49,3 +51,6 @@ def configure_multiple_gw_sdk_endpoints(item: ItemList):
         raise HTTPException(status_code=404, detail="GW_sdk_endpoints are not valid")
     return response
 
+@router.put("/reset_elastic_file_metadata/")
+def reset_elastic_file_metadata():
+    return Metadata_Elastic().reset_elastic_data()

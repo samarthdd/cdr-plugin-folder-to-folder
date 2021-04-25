@@ -32,7 +32,7 @@ class Metadata_Service:
         self.metadata = Metadata()
         self.metadata.add_file(file_path)
 
-        #self.metadata_elastic.add_metadata(self.metadata.data)                            # save metadata to elastic
+        self.metadata_elastic.add_metadata(self.metadata.data)                            # save metadata to elastic
         log_info(message=f"created metadata for: {self.metadata.get_file_name()}", data={"file_path": file_path, "metadata_file_path": self.metadata.metadata_file_path()})
         return self.metadata
 

@@ -11,16 +11,19 @@ from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elast
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
+from cdr_plugin_folder_to_folder.utils.Logging_Process import process_all_log_entries_and_end_logging_process
 from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
+from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 
 
-class test_Metadata_Elastic(TestCase):
+class test_Metadata_Elastic(Temp_Config):
     test_file = None
     @classmethod
     def setUpClass(cls) -> None:
+        super().setUpClass()
         cls.test_file            = temp_file(contents='Static text so that we have a static hash')
         cls.file_hash            = '500286533bf75d769e9180a19414d1c3502dd52093e7351a0a9b1385d8f8961c'
-        cls.metadata_elastic = Metadata_Elastic()
+        cls.metadata_elastic     = Metadata_Elastic()
         Setup_Testing().configure_metadata_elastic(cls.metadata_elastic)
         cls.metadata_service = Metadata_Service()
         cls.metadata_service.metadata_elastic = cls.metadata_elastic
@@ -30,6 +33,7 @@ class test_Metadata_Elastic(TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
+        super().tearDownClass()
         file_delete(cls.test_file)
 
     def setUp(self) -> None:
@@ -37,7 +41,8 @@ class test_Metadata_Elastic(TestCase):
 
         #self.test_metadata_folder = self.test_metadata.metadata_folder_path()
 
-        Pre_Processor().clear_data_and_status_folders()
+        #Pre_Processor().clear_data_and_status_folders()
+        pass
 
     def test_add_metadata(self):
         metadata            = self.metadata_service.create_metadata(file_path=self.test_file)
@@ -60,6 +65,34 @@ class test_Metadata_Elastic(TestCase):
     def test_clear_all_metadata(self):
         self.metadata_elastic.delete_all_metadata()
         assert len(self.metadata_elastic.get_all_metadata()) == 0
+
+    def test_reload_metadatas(self):
+        count = 2
+        self.add_test_files(count=count,execute_stage_1=True)
+        assert self.metadata_elastic.reload_metadatas() == count
+
+    def test_reset_elastic_data(self):
+        count     = 10              # use 1000
+        text_size = 500             # use 50000
+        self.add_test_files(count=count, text_size=text_size, execute_stage_1=True)
+        message = self.metadata_elastic.reset_elastic_data()
+        assert message == f'Elastic files_metadata has been reset and {count + 2} metadata items loaded'
+
+
+
+
+
+    # @log_duration
+    # def reload_data_from_hd2(self):
+    #     return self.storage.hd2_metadatas()
+    #
+    # def test_reload_data_from_hd2(self):
+    #     self.add_test_files(count=1, execute_stage_1=True)
+    #     result = self.status.reload_data_from_hd2()
+    #     pprint(result)
+    #
+    #     process_all_log_entries_and_end_logging_process()
+
 
     def test_get_from_file(self):
         metadata = self.metadata_service.create_metadata(file_path=self.test_file)

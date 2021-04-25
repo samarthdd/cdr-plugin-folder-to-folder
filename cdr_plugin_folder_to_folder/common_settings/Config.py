@@ -25,7 +25,7 @@ DEFAULT_KIBANA_HOST      = "kib01"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
 DEFAULT_TEST_SDK         = '34.242.205.32'
-DEFAULT_ENDPOINTS        = f'{{"Endpoints":[{{"IP":"{DEFAULT_TEST_SDK}", "Port":"8080"}}]}}'
+DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"' + DEFAULT_TEST_SDK + '", "Port":"8080"}]}'
 DEFAULT_REQUEST_TIMEOUT  = 60
 API_VERSION              = "v0.5.52"
 
