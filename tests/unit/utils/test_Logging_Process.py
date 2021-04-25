@@ -10,7 +10,7 @@ from osbot_utils.utils.Misc import random_text
 
 from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 from cdr_plugin_folder_to_folder.utils.Logging import log_info, log_error, logging_queue, log_message, logging_enabled, \
-    log_warning, logging_counter
+    log_warning, logging_counter, log_debug
 from cdr_plugin_folder_to_folder.utils.Logging_Process import start_logging_process, start_logging
 from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
 
@@ -26,7 +26,7 @@ class test_Logging_Process(TestCase):
 
     def test__start_logging(self):
         # todo: understand better why this test takes about 1.1 secs to execute (some of it is caused by the processing process starting, and elastic being setup)
-        worker = start_logging()                                        # trigger logging process
+        log_worker = start_logging()                                        # trigger logging process
         log_info()                                                      # send 4 log messages
         log_warning()
         log_info(message=random_text(), data={'a': 42})
@@ -36,5 +36,9 @@ class test_Logging_Process(TestCase):
         #            from_method="self.from_method")
 
         counter = logging_counter                   # get counter
-        while counter.value != 4:                   # wait for the 4 messages being processed
-            worker.join(timeout=0.1)                # join worker process to give it time to execute
+
+        log_debug(message='stop_logging', data={'when': 'now'})
+        log_worker.join()
+
+        #while counter.value != 4:                   # wait for the 4 messages being processed
+        #    worker.join(timeout=0.1)                # join worker process to give it time to execute

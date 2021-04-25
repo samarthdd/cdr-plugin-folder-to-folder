@@ -26,7 +26,7 @@ DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
 DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"34.244.186.10", "Port":"8080"}]}'
 DEFAULT_REQUEST_TIMEOUT  = 60
-API_VERSION              = "v0.5.4"
+API_VERSION              = "v0.5.5"
 
 
 
