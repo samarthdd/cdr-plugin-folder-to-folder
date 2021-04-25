@@ -113,11 +113,10 @@ class File_Processing:
             event_data = {"endpoint": endpoint, "hash": hash, "source_path": source_path, "dir": dir } # todo: see if we can use a variable that holds the params data
             self.events_log.add_log('Starting File rebuild', event_data)
 
-            self.meta_service.set_original_file_extension(dir)
             self.meta_service.set_rebuild_server(dir, endpoint)
 
-            file_size = os.path.getsize(source_path)
-            self.meta_service.set_original_file_size(dir, file_size)
+            #file_size = os.path.getsize(source_path)
+            #self.meta_service.set_original_file_size(dir, file_size)
 
             encodedFile = FileService.base64encode(source_path)
             if not encodedFile:

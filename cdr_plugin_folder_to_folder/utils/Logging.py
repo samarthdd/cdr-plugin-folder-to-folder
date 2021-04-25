@@ -1,5 +1,4 @@
 import inspect
-import multiprocessing
 from datetime import datetime
 from multiprocessing import Queue, Value
 from osbot_utils.decorators.methods.cache_on_self import cache_on_self
@@ -29,8 +28,8 @@ class Logging:
             self.enabled = True
         return self
 
-    def get_logs(self):
-        return self.elastic().get_data()
+    # def get_logs(self):
+    #     return self.elastic().get_data()
 
     def set_refresh_index(self, value):
         self.refresh_index = value
@@ -40,9 +39,6 @@ class Logging:
     # main logging methods
 
     def log_message(self, level='INFO', message=None, data=None, duration='', from_method=None, from_class=None):
-        #stack       = inspect.stack()                                                               # todo: refactor into separate method/class
-        #from_class  = from_class  or stack[caller_depth][0].f_locals["self"].__class__.__name__     # todo: handle case when self doesn't exist
-        #from_method = from_method or stack[caller_depth][0].f_code.co_name
         if type(data) is str:
             data = {'str': data }                                   # so that elastic doesn't make this field a string
 
@@ -56,27 +52,13 @@ class Logging:
         if self.enabled:
             return self.elastic().add(data=log_data, refresh=self.refresh_index)
         # if elastic server is not available, log messages to console
-        pprint(data)
+        pprint(log_data)
 
     def critical(self, message, data=None, duration=''):  return self.log_message("CRITICAL", message ,data=data, duration=duration)
     def debug   (self, message, data=None, duration=''):  return self.log_message("DEBUG"   , message ,data=data, duration=duration)
     def error   (self, message, data=None, duration=''):  return self.log_message("ERROR"   , message ,data=data, duration=duration)
     def info    (self, message, data=None, duration=''):  return self.log_message("INFO"    , message ,data=data, duration=duration)
     def warning (self, message, data=None, duration=''):  return self.log_message("WARNING" , message ,data=data, duration=duration)
-
-
-# logging = Logging().setup()             # todo: refactor this so that the constructor is not invoked here
-
-
-
-
-# def log_message (*args, **kwargs):  return logging.log_message(*args, **kwargs)     # helper static logging classes
-#
-# def log_critical(*args, **kwargs):  return logging.critical (*args, **kwargs)
-# def log_debug   (*args, **kwargs):  return logging.debug    (*args, **kwargs)
-# def log_error   (*args, **kwargs):  return logging.error    (*args, **kwargs)
-# def log_info    (*args, **kwargs):  return logging.info     (*args, **kwargs)
-# def log_warning (*args, **kwargs):  return logging.warning  (*args, **kwargs)
 
 # helper static logging classes
 

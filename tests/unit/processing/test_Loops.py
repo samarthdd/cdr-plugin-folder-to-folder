@@ -30,8 +30,8 @@ class test_Loops(Temp_Config):
 
     def test_LoopHashDirectories(self):
         assert self.loops.LoopHashDirectories() is True
-        log_debug(message='stop_logging', data={'when': 'now'})
-        self.log_worker.join()
+        #log_debug(message='stop_logging', data={'when': 'now'})
+        #self.log_worker.join()
 
     def test_LoopHashDirectoriesAsync(self):
         loop = asyncio.new_event_loop()

@@ -34,5 +34,5 @@ class test_Logging_Process(TestCase):
         #log_message(level="self.level", message="self.message", duration="message_duration", from_class="self.from_class",
         #            from_method="self.from_method")
 
-        log_debug(message='stop_logging', data={'when': 'now'})
-        log_worker.join()
+        #log_debug(message='stop_logging', data={'when': 'now'})
+        #log_worker.join()

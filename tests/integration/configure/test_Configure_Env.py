@@ -12,13 +12,13 @@ class test_Configure_Env(TestCase):
         self.configure_env = Configure_Env()
 
     def test_get_valid_endpoints(self):
-        test_ips =[   '54.216.215.247',
-                      '3.250.105.142',
-                      '52.211.122.246',
-                      '34.244.186.10',
-                      '54.170.169.208',
-                      '63.32.93.141',
-                      '34.247.81.39']
+        test_ips =[   '3.250.55.150',
+                      '34.242.205.32',
+                      '3.250.152.58',
+                      '3.248.208.74',
+                      '54.195.161.214',
+                      '54.75.120.78',
+                      '3.250.212.118']
         endpoints = []
         for ip in test_ips:
             endpoints.append({'IP': ip, "Port": "8080"})
@@ -26,6 +26,6 @@ class test_Configure_Env(TestCase):
         valid_endpoints = {'Endpoints' : endpoints }
         endpoint_string = json_to_str(valid_endpoints)
         result = self.configure_env.get_valid_endpoints(endpoint_string)
-        pprint(json_parse(result))
+        assert json_parse(result).get('Endpoints') == endpoints
 
 

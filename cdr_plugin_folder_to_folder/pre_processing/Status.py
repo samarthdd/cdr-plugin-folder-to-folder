@@ -1,9 +1,10 @@
 import threading
 import logging as logger
 
-from osbot_utils.utils.Files                     import path_combine
-from osbot_utils.utils.Json                      import json_save_file_pretty, json_load_file
-from cdr_plugin_folder_to_folder.storage.Storage import Storage
+from osbot_utils.utils.Files                        import path_combine
+from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file
+from cdr_plugin_folder_to_folder.storage.Storage    import Storage
+from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 
 logger.basicConfig(level=logger.INFO)
 
@@ -14,6 +15,13 @@ class FileStatus:                                     # todo move to separate fi
     FAILED      = "Completed with errors"
     TO_PROCESS  = "To Process"
     NONE        = "None"
+
+
+class Processing_Status:
+    STOPPED = "Stopped"
+    Started = "Started"
+    PHASE_1 = "PHASE 1 - Copying Files"
+    PHASE_2 = "PHASE 1 - Rebuilding Files"
 
 class Status:
 
@@ -60,6 +68,11 @@ class Status:
             self.reset()
         return self
 
+    @log_duration
+    def reload_data_from_hd2(self):
+
+        return self.storage.hd2_metadatas()
+
     def reset(self):
         self._status_data = self.default_data()
         self.save()
@@ -71,6 +84,8 @@ class Status:
 
     def status_file_path(self):
         return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
+
+
 
     def update_counters(self, updated_status, count=0):
         Status.lock.acquire()

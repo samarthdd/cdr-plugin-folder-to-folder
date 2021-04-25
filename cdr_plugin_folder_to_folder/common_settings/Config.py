@@ -24,9 +24,10 @@ DEFAULT_ELASTIC_SCHEMA   = "http"
 DEFAULT_KIBANA_HOST      = "kib01"
 DEFAULT_KIBANA_PORT      = "5601"
 DEFAULT_THREAD_COUNT     = 10
-DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"34.244.186.10", "Port":"8080"}]}'
+DEFAULT_TEST_SDK         = '34.242.205.32'
+DEFAULT_ENDPOINTS        = f'{{"Endpoints":[{{"IP":"{DEFAULT_TEST_SDK}", "Port":"8080"}}]}}'
 DEFAULT_REQUEST_TIMEOUT  = 60
-API_VERSION              = "v0.5.51"
+API_VERSION              = "v0.5.52"
 
 
 
@@ -51,6 +52,7 @@ class Config:
             self.kibana_host         = None
             self.kibana_port         = None
             self.thread_count        = None
+            self.test_sdk            = None
             self.endpoints           = None
             self.endpoints_count     = None
             self.request_timeout     = None
@@ -59,16 +61,17 @@ class Config:
     def load_values(self):
         Setup_Testing().set_test_root_dir()                         # todo: fix test data so that we don't need to do this here
         load_dotenv(override=True)                                  # Load configuration from .env file that should exist in the root of the repo
-        self.root_folder         = os.getenv    ("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER    )
-        self.elastic_host        = os.getenv    ("ELASTIC_HOST"   , DEFAULT_ELASTIC_HOST   )
-        self.elastic_port        = os.getenv    ("ELASTIC_PORT"   , DEFAULT_ELASTIC_PORT   )
-        self.elastic_schema      = os.getenv    ("ELASTIC_SCHEMA" , DEFAULT_ELASTIC_SCHEMA )
-        self.kibana_host         = os.getenv    ("KIBANA_HOST"    , DEFAULT_KIBANA_HOST    )
-        self.kibana_port         = os.getenv    ("KIBANA_PORT"    , DEFAULT_KIBANA_PORT    )
-        self.thread_count        = os.getenv    ("THREAD_COUNT"   , DEFAULT_THREAD_COUNT   )
-        self.request_timeout     = os.getenv    ("REQUEST_TIMEOUT", DEFAULT_REQUEST_TIMEOUT)
+        self.root_folder         = os.getenv    ("ROOT_FOLDER"     , DEFAULT_ROOT_FOLDER    )
+        self.elastic_host        = os.getenv    ("ELASTIC_HOST"    , DEFAULT_ELASTIC_HOST   )
+        self.elastic_port        = os.getenv    ("ELASTIC_PORT"    , DEFAULT_ELASTIC_PORT   )
+        self.elastic_schema      = os.getenv    ("ELASTIC_SCHEMA"  , DEFAULT_ELASTIC_SCHEMA )
+        self.kibana_host         = os.getenv    ("KIBANA_HOST"     , DEFAULT_KIBANA_HOST    )
+        self.kibana_port         = os.getenv    ("KIBANA_PORT"     , DEFAULT_KIBANA_PORT    )
+        self.thread_count        = os.getenv    ("THREAD_COUNT"    , DEFAULT_THREAD_COUNT   )
+        self.request_timeout     = os.getenv    ("REQUEST_TIMEOUT" , DEFAULT_REQUEST_TIMEOUT)
+        self.test_sdk            = os.getenv    ("DEFAULT_TEST_SDK", DEFAULT_TEST_SDK       )
 
-        json_string          = os.getenv("ENDPOINTS"      , DEFAULT_ENDPOINTS      )
+        json_string          = os.getenv("ENDPOINTS", DEFAULT_ENDPOINTS)
         self.endpoints       = json.loads(json_string)
 
         self.endpoints_count = len(self.endpoints['Endpoints'])

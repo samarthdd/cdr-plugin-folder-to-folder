@@ -6,8 +6,10 @@ from osbot_utils.utils.Files import folder_exists, folder_delete_all, file_not_e
 from osbot_utils.utils.Misc import list_set
 
 from cdr_plugin_folder_to_folder.common_settings.Config import *
+from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 
-class test_Config(TestCase):
+
+class test_Config(Temp_Config):
 
     config = None
 

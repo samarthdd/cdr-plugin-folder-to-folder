@@ -1,5 +1,6 @@
 import os
 import json
+import pathlib
 
 from osbot_utils.utils.Files import file_name, folder_exists, file_sha256, file_exists, folder_create, path_combine, \
     folder_delete_all, file_copy, files_list
@@ -25,9 +26,14 @@ class Metadata:
         self.file_hash      = file_hash
         #self.time_field    =
 
-    def get_from_file(self):
+    def get_from_file(self):                # todo: refactor out this method
+        self.load()
+        return self.data
+
+    def load(self):
         with open(self.metadata_file_path()) as json_file:
             self.data = json.load(json_file)
+        return self
 
     def add_file(self, file_path):
         if file_exists(file_path):
@@ -55,7 +61,9 @@ class Metadata:
         if self.file_hash:
             folder_create(self.metadata_folder_path())
             file_copy    (file_path, self.source_file_path())
-            self.set_file_name(file_name(file_path))
+            self.set_original_file_size     (file_path)
+            self.set_original_file_extension(file_path)
+            self.set_original_file_name     (file_path)
 
     def default_data(self):
         return {   'file_name'              : None               ,
@@ -102,7 +110,7 @@ class Metadata:
         if self.exists():
             json_save_file_pretty(python_object=self.data, path=self.metadata_file_path())
 
-    def update_field(self, field, updated_value):
+    def update_field(self, field, updated_value):                       # todo: optimise this if we get performance hits due to multiple updates
         self.data[field] = updated_value
         self.data['last_update_time'] = datetime_now()
         self.save()
@@ -114,8 +122,17 @@ class Metadata:
         if not self.exists():
             self.save()
 
-    def set_file_name(self, file_name):
-        self.update_field('file_name', file_name)
+    def set_original_file_name(self, file_path):
+        original_file_name = file_name(file_path)
+        self.update_field('file_name', original_file_name)
+
+    def set_original_file_size(self, file_path):
+        file_size = os.path.getsize(file_path)
+        self.update_field('original_file_size', file_size)
+
+    def set_original_file_extension(self, file_path):
+        extension = pathlib.Path(file_path).suffix
+        self.update_field('original_file_extension', extension)
 
     def source_file_path(self):
         if self.file_hash:

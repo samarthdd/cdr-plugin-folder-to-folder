@@ -82,14 +82,6 @@ class Metadata_Service:
     def set_server_version(self, metadata_folder, server_version):
         self.set_metadata_field(metadata_folder, 'server_version', server_version)
 
-    def set_original_file_size(self, metadata_folder, file_size):
-        self.set_metadata_field(metadata_folder, 'original_file_size', file_size)
-
-    def set_original_file_extension(self, metadata_folder):
-        self.get_from_file(metadata_folder)
-        filename, file_extension = os.path.splitext(self.metadata.get_file_name())
-        self.set_metadata_field(metadata_folder, 'original_file_extension', file_extension)
-
     def set_rebuild_file_path(self, metadata_folder, rebuild_file_path):
         self.set_metadata_field(metadata_folder, 'rebuild_file_path', rebuild_file_path)
 

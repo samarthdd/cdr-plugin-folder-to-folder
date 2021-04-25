@@ -63,6 +63,14 @@ class FileService:
             raise error
 
     @staticmethod
+    def files_in_folder(folder_path):
+        files = []
+        for folderName, subfolders, filenames in os.walk(folder_path):
+            for filename in filenames:
+                files.append(os.path.join(folderName, filename))
+        return files
+
+    @staticmethod
     def file_exist(path):
         return os.path.isfile(path)
 

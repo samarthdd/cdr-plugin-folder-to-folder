@@ -1,7 +1,11 @@
 import inspect
-from osbot_utils.utils.Files import path_combine
-from osbot_utils.utils.Json  import json_load_file
 
+from osbot_utils.utils.Dev import pprint
+from osbot_utils.utils.Files import path_combine, temp_file
+from osbot_utils.utils.Json  import json_load_file
+from osbot_utils.utils.Misc import random_text
+
+from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus, Status
 from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 
@@ -50,9 +54,17 @@ class test_Status(Temp_Config):
 
         assert json_load_file(status.status_file_path()) == status.data()
 
+    def test_reload_data_from_hd2(self):
+        temp_file_1 = temp_file(contents=random_text())
+        temp_file_2 = temp_file(contents=random_text())
+        Pre_Processor().process_files()
+        result = self.status.reload_data_from_hd2()
+        pprint(result)
+
 
     def test_status_file_path(self):
         assert self.status.status_file_path() == path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
+
 
 
     # todo: add multi-threading test
