@@ -17,10 +17,10 @@ logger.basicConfig(level=logger.INFO)
 class Configure_Env:
     def __init__(self):
         self.config = Config()
-        dotenv_file = dotenv.find_dotenv()
-        if not dotenv_file:
-            with open("./.env", "w"):
-                pass
+        #dotenv_file = dotenv.find_dotenv()
+        #if not dotenv_file:
+        #    with open("./.env", "w"):
+        #        pass
 
     def configure(self, hd1_path=None, hd2_path=None, hd3_path=None):
         try:

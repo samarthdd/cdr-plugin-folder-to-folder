@@ -16,30 +16,34 @@ from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
+from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
 
-class test_File_Processing(TestCase):
+class test_File_Processing(Temp_Config):
 
     config    = None
     temp_root = None
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.test_file = Test_Data().create_test_pdf(text=random_text(prefix="some random text: "))
-        cls.test_file_name = file_name(cls.test_file)
-        cls.config    = Config()
-        cls.temp_root = folder_create('/tmp/temp_root') # temp_folder()
-        cls.config.set_root_folder(root_folder=cls.temp_root)
-        cls.meta_service = Metadata_Service()
-        cls.metadata  = cls.meta_service.create_metadata(cls.test_file)
+        super().setUpClass()
+        cls.test_file       = Test_Data().create_test_pdf(text=random_text(prefix="some random text: "))
+        cls.test_file_name  = file_name(cls.test_file)
+        #cls.config          = Config()
+        #cls.temp_root       = folder_create('/tmp/temp_root') # temp_folder()
+        #cls.config.set_root_folder(root_folder=cls.temp_root)
+        cls.meta_service    = Metadata_Service()
+        cls.metadata        = cls.meta_service.create_metadata(cls.test_file)
         cls.analysis_json = Analysis_Json()
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        cls.config.load_values()                    # reset config values
-        folder_delete_all(cls.temp_root)
+
+    # @classmethod
+    # def tearDownClass(cls) -> None:
+    #     super().tearDownClass()
+    #     cls.config.load_values()                    # reset config values
+    #     #folder_delete_all(cls.temp_root)
 
     def setUp(self) -> None:
         self.sdk_server      = '34.244.186.10'  # todo: use value from env variables

@@ -17,8 +17,8 @@ def start_logging():
     queue   = logging_queue
     enabled = logging_enabled
     count   = logging_counter
-    pprint(f'logging_enabled.value: {logging_enabled.value}')
-    if logging_enabled.value ==0:       # if it already enabled don't start a new process
+    #pprint(f'logging_enabled.value: {logging_enabled.value}')
+    if logging_worker is None and logging_enabled.value ==0:       # if it already enabled don't start a new process
         worker = multiprocessing.Process(target=start_logging_process, args=(queue, enabled, count), daemon=True)
         worker.start()
         logging_enabled.value = 1       # set enabled value
