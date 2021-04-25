@@ -44,35 +44,35 @@ class test_File_Distributor(TestCase):
         assert self.file_distributor.hd2_base_location  is   not None
         assert self.file_distributor.hd3_base_location  is   not None
 
-    def test_get_hd1_files(self):
-        response=self.file_distributor.get_hd1_files(1)
-        assert response  is not None
-        assert os.path.exists(response)
-
-    def test_get_hd3_files(self):
-        response = self.file_distributor.get_hd3_files(1)
-        assert response is not None
-        assert os.path.exists(response)
-
-    def test_get_hd2_metadata_files(self):
-        response = self.file_distributor.get_hd2_metadata_files(1)
-        assert response is not None
-        assert os.path.exists(response)
-
-    def test_get_hd2_source_files(self):
-        response = self.file_distributor.get_hd2_source_files(1)
-        assert response is not None
-        assert os.path.exists(response)
-
-    def test_get_hd2_hash_folder_list(self):
-        response = self.file_distributor.get_hd2_hash_folder_list(1)
-        assert response is not None
-        assert os.path.exists(response)
-
-    def test_get_hd2_report_file(self):
-        response = self.file_distributor.get_hd2_report_files(1)
-        assert response is not None
-        assert os.path.exists(response)
+    # def test_get_hd1_files(self):
+    #     response=self.file_distributor.get_hd1_files(1)
+    #     assert response  is not None
+    #     assert os.path.exists(response)
+    #
+    # def test_get_hd3_files(self):
+    #     response = self.file_distributor.get_hd3_files(1)
+    #     assert response is not None
+    #     assert os.path.exists(response)
+    #
+    # def test_get_hd2_metadata_files(self):
+    #     response = self.file_distributor.get_hd2_metadata_files(1)
+    #     assert response is not None
+    #     assert os.path.exists(response)
+    #
+    # def test_get_hd2_source_files(self):
+    #     response = self.file_distributor.get_hd2_source_files(1)
+    #     assert response is not None
+    #     assert os.path.exists(response)
+    #
+    # def test_get_hd2_hash_folder_list(self):
+    #     response = self.file_distributor.get_hd2_hash_folder_list(1)
+    #     assert response is not None
+    #     assert os.path.exists(response)
+    #
+    # def test_get_hd2_report_file(self):
+    #     response = self.file_distributor.get_hd2_report_files(1)
+    #     assert response is not None
+    #     assert os.path.exists(response)
 
     def test_get_hd2_status_hash_file(self):
         response = self.file_distributor.get_hd2_status_hash_file()

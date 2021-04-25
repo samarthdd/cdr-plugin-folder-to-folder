@@ -29,7 +29,6 @@ class test_Loops(Temp_Config):
         self.loops = Loops()
 
     def test_LoopHashDirectories(self):
-
         assert self.loops.LoopHashDirectories() is True
         log_debug(message='stop_logging', data={'when': 'now'})
         self.log_worker.join()

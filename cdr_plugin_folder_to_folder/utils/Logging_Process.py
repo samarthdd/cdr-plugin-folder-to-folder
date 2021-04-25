@@ -8,10 +8,12 @@ from osbot_utils.utils.Dev import pprint
 from cdr_plugin_folder_to_folder.utils.Logging import logging_queue, logging_enabled, Logging, logging_counter
 
 logging_process               = None
+logging_worker                = None
 delete_existing_elastic_index = False
 print_log_messages            = False
 
 def start_logging():
+    global logging_worker
     queue   = logging_queue
     enabled = logging_enabled
     count   = logging_counter
@@ -20,7 +22,8 @@ def start_logging():
         worker = multiprocessing.Process(target=start_logging_process, args=(queue, enabled, count), daemon=True)
         worker.start()
         logging_enabled.value = 1       # set enabled value
-        return worker
+        logging_worker = worker
+    return logging_worker
 
 
 def start_logging_process(queue: Queue, enabled: Value, count: Value):

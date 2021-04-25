@@ -19,113 +19,113 @@ class File_Distributor:
         folder_delete_all(self.zip_folder)
         create_folder(self.zip_folder)
 
-    def get_hd1_files(self,num_of_files):
-        try:
-            list=[]
-            count=0
-            for folderName, subfolders, filenames in os.walk(self.hd1_base_location):
-                for filename in filenames:
-                        self.hd1_path =  os.path.join(folderName, filename)
-                        if os.path.isfile(self.hd1_path):
-                            list.append(self.hd1_path)
-                            count=count+1
-                        if count == num_of_files :
-                            break
-                if count == num_of_files:
-                    break
-            target_file_path=self.prepare_zip(list,"hd1.zip")
-            return target_file_path
+    # def get_hd1_files(self,num_of_files):
+    #     try:
+    #         list=[]
+    #         count=0
+    #         for folderName, subfolders, filenames in os.walk(self.hd1_base_location):
+    #             for filename in filenames:
+    #                     self.hd1_path =  os.path.join(folderName, filename)
+    #                     if os.path.isfile(self.hd1_path):
+    #                         list.append(self.hd1_path)
+    #                         count=count+1
+    #                     if count == num_of_files :
+    #                         break
+    #             if count == num_of_files:
+    #                 break
+    #         target_file_path=self.prepare_zip(list,"hd1.zip")
+    #         return target_file_path
+    #
+    #     except Exception as error:
+    #         logger.error(f"File_Distributor: get_hd1_files : {error}")
+    #         raise error
 
-        except Exception as error:
-            logger.error(f"File_Distributor: get_hd1_files : {error}")
-            raise error
+    # def get_hd3_files(self, num_of_files):
+    #     try:
+    #         list = []
+    #         count = 0
+    #         for folderName, subfolders, filenames in os.walk(self.hd3_base_location):
+    #             for filename in filenames:
+    #                 self.hd3_path = os.path.join(folderName, filename)
+    #                 if os.path.isfile(self.hd3_path):
+    #                     list.append(self.hd3_path)
+    #                     count = count + 1
+    #                 if count == num_of_files:
+    #                     break
+    #             if count == num_of_files:
+    #                 break
+    #         target_file_path=self.prepare_zip(list,"hd3.zip")
+    #         return target_file_path
+    #
+    #     except Exception as error:
+    #         logger.error(f"File_Distributor: get_hd3_files : {error}")
+    #         raise error
 
-    def get_hd3_files(self, num_of_files):
-        try:
-            list = []
-            count = 0
-            for folderName, subfolders, filenames in os.walk(self.hd3_base_location):
-                for filename in filenames:
-                    self.hd3_path = os.path.join(folderName, filename)
-                    if os.path.isfile(self.hd3_path):
-                        list.append(self.hd3_path)
-                        count = count + 1
-                    if count == num_of_files:
-                        break
-                if count == num_of_files:
-                    break
-            target_file_path=self.prepare_zip(list,"hd3.zip")
-            return target_file_path
+    # def get_hd2_metadata_files(self, num_of_files):
+    #     try:
+    #         list = []
+    #         count = 0
+    #         base_path=os.path.join(self.hd2_base_location,"data")
+    #         for folder in os.listdir(base_path):
+    #             list.append(os.path.join(base_path,folder,"metadata.json"))
+    #             count=count+1
+    #             if count== num_of_files:
+    #                 break
+    #         target_file_path = self.prepare_zip(list,"hd2_metadata.zip")
+    #         return target_file_path
+    #
+    #     except Exception as error:
+    #         logger.error(f"File_Distributor: get_hd2_metadata_files : {error}")
+    #         raise error
 
-        except Exception as error:
-            logger.error(f"File_Distributor: get_hd3_files : {error}")
-            raise error
+    # def get_hd2_source_files(self, num_of_files):
+    #     try:
+    #         list = []
+    #         count = 0
+    #         base_path = os.path.join(self.hd2_base_location, "data")
+    #         for folder in os.listdir(base_path):
+    #             list.append(os.path.join(base_path,folder,"source"))
+    #             count=count+1
+    #             if count == num_of_files:
+    #                 break
+    #         target_file_path = self.prepare_zip(list,"hd2_source.zip")
+    #         return target_file_path
+    #     except Exception as error:
+    #         logger.error(f"File_Distributor: get_hd2_source_files : {error}")
+    #         raise error
 
-    def get_hd2_metadata_files(self, num_of_files):
-        try:
-            list = []
-            count = 0
-            base_path=os.path.join(self.hd2_base_location,"data")
-            for folder in os.listdir(base_path):
-                list.append(os.path.join(base_path,folder,"metadata.json"))
-                count=count+1
-                if count== num_of_files:
-                    break
-            target_file_path = self.prepare_zip(list,"hd2_metadata.zip")
-            return target_file_path
+    # def get_hd2_hash_folder_list(self,num_of_files):
+    #
+    #     try:
+    #         list = []
+    #         count = 0
+    #         base_path = os.path.join(self.hd2_base_location, "data")
+    #         for folder in os.listdir(base_path):
+    #             list.append(os.path.join(base_path,folder))
+    #             count=count+1
+    #             if count == num_of_files:
+    #                 break
+    #         target_file_path = self.prepare_zip(list,"hd2_hash_folder.zip")
+    #         return target_file_path
+    #     except Exception as error:
+    #         logger.error(f"File_Distributor: get_hd2_hash_folder_list : {error}")
+    #         raise error
 
-        except Exception as error:
-            logger.error(f"File_Distributor: get_hd2_metadata_files : {error}")
-            raise error
-
-    def get_hd2_source_files(self, num_of_files):
-        try:
-            list = []
-            count = 0
-            base_path = os.path.join(self.hd2_base_location, "data")
-            for folder in os.listdir(base_path):
-                list.append(os.path.join(base_path,folder,"source"))
-                count=count+1
-                if count == num_of_files:
-                    break
-            target_file_path = self.prepare_zip(list,"hd2_source.zip")
-            return target_file_path
-        except Exception as error:
-            logger.error(f"File_Distributor: get_hd2_source_files : {error}")
-            raise error
-
-    def get_hd2_hash_folder_list(self,num_of_files):
-
-        try:
-            list = []
-            count = 0
-            base_path = os.path.join(self.hd2_base_location, "data")
-            for folder in os.listdir(base_path):
-                list.append(os.path.join(base_path,folder))
-                count=count+1
-                if count == num_of_files:
-                    break
-            target_file_path = self.prepare_zip(list,"hd2_hash_folder.zip")
-            return target_file_path
-        except Exception as error:
-            logger.error(f"File_Distributor: get_hd2_hash_folder_list : {error}")
-            raise error
-
-    def get_hd2_report_files(self,num_of_files):
-        try:
-            list = []
-            count = 0
-            base_path = os.path.join(self.hd2_base_location, "data")
-            for folder in os.listdir(base_path):
-                list.append(os.path.join(base_path,folder,"report.json"))
-                count=count+1
-                if count == num_of_files:
-                    break
-            target_file_path = self.prepare_zip(list,"hd2_report_json.zip")
-            return target_file_path
-        except Exception as error:
-            logger.error(f"File_Distributor: get_hd2_report_files : {error}")
-            raise error
+    # def get_hd2_report_files(self,num_of_files):
+    #     try:
+    #         list = []
+    #         count = 0
+    #         base_path = os.path.join(self.hd2_base_location, "data")
+    #         for folder in os.listdir(base_path):
+    #             list.append(os.path.join(base_path,folder,"report.json"))
+    #             count=count+1
+    #             if count == num_of_files:
+    #                 break
+    #         target_file_path = self.prepare_zip(list,"hd2_report_json.zip")
+    #         return target_file_path
+    #     except Exception as error:
+    #         logger.error(f"File_Distributor: get_hd2_report_files : {error}")
+    #         raise error
 
     def get_hd2_status_hash_file(self):
         try:
@@ -135,25 +135,25 @@ class File_Distributor:
             logger.error(f"File_Distributor: get_hd2_status_hash_file : {error}")
             raise error
 
-    def prepare_zip(self,file_path_list,zip_name):
-        try:
-            self.temp_folder = temp_folder()
-            for src_path in file_path_list:
-                name = ntpath.basename(src_path)
-                if len(name.split("."))==1:
-                    name=name+".txt"
-                dst_path = os.path.join(self.temp_folder, name)
-                if os.path.isfile(src_path):
-                    file_copy(src_path, dst_path)
-                elif os.path.isdir(src_path):
-                    folder_copy(src_path, dst_path)
-
-            target_file_path = os.path.join(self.zip_folder, zip_name)
-            zip_files(self.temp_folder, file_pattern='*.*', target_file=target_file_path)
-            folder_delete_all(self.temp_folder)
-
-            return target_file_path
-
-        except Exception as error:
-            logger.error(f"File_Distributor: prepare_zip : {error}")
-            raise error
+    # def prepare_zip(self,file_path_list,zip_name):
+    #     try:
+    #         self.temp_folder = temp_folder()
+    #         for src_path in file_path_list:
+    #             name = ntpath.basename(src_path)
+    #             if len(name.split("."))==1:
+    #                 name=name+".txt"
+    #             dst_path = os.path.join(self.temp_folder, name)
+    #             if os.path.isfile(src_path):
+    #                 file_copy(src_path, dst_path)
+    #             elif os.path.isdir(src_path):
+    #                 folder_copy(src_path, dst_path)
+    #
+    #         target_file_path = os.path.join(self.zip_folder, zip_name)
+    #         zip_files(self.temp_folder, file_pattern='*.*', target_file=target_file_path)
+    #         folder_delete_all(self.temp_folder)
+    #
+    #         return target_file_path
+    #
+    #     except Exception as error:
+    #         logger.error(f"File_Distributor: prepare_zip : {error}")
+    #         raise error
