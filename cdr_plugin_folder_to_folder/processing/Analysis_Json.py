@@ -74,8 +74,8 @@ class Analysis_Json:
             self.analysis_data[index]["issue_item_list"]            = self.get_issue_item_details(report_json)
 
             self.write_to_file()
-        except Exception as e:
-            raise e
+        except Exception as error
+            log_error(message=f"Error in update_report from json data {index} : {error}")
 
     def get_remediated_item_details(self, report_json):
         total_remediate_count = 0

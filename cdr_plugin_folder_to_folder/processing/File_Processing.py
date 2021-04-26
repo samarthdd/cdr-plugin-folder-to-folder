@@ -86,7 +86,7 @@ class File_Processing:
             json_obj['original_hash'] = os.path.basename(dir)
             json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
-            self.report_elastic.add_report(json_obj)
+            #self.report_elastic.add_report(json_obj)
 
             self.analysis_json.update_report(os.path.basename(dir), json_obj)
         except Exception as error:
