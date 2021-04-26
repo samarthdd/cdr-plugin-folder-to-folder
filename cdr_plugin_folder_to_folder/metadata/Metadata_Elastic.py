@@ -68,6 +68,20 @@ class Metadata_Elastic:
         hash_json.write_to_file()
         return count
 
+    @log_duration
+    def reload_hash_json(self):
+        hash_json = Hash_Json().reset()
+        hash_data = hash_json.data
+        metadatas = self.storage.hd2_metadatas()
+        for metadata in metadatas:
+            file_hash = metadata.get('original_hash')
+            file_name = metadata.get('file_name')
+            file_status = metadata.get('rebuild_status')
+            hash_data[file_hash] = {"file_name": file_name,  # todo: refactor this so that it is not done here
+                                    "file_status": file_status}  # (which happened due to the performance hit of the current Hash_Json file)
+        hash_json.write_to_file()
+        return f'Hash_Json reloaded for {len(metadatas)} metadata items'
+
     def reload_elastic_data(self):
         self.delete_all_metadata()
         count = self.reload_metadatas()

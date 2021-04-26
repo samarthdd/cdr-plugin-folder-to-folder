@@ -58,6 +58,10 @@ def configure_multiple_gw_sdk_endpoints(item: ItemList):
 def reload_elastic_file_metadata():
     return Metadata_Elastic().reload_elastic_data()
 
+@router.put("/reload_hash_json/")
+def reload_elastic_file_metadata():
+    return Metadata_Elastic().reload_hash_json()
+
 @router.put("/reset_logging/")
 def reset_logging():
     process_all_log_entries_and_end_logging_process()
