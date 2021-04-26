@@ -6,8 +6,10 @@ from osbot_utils.utils.Files import folder_exists, folder_delete_all, file_not_e
 from osbot_utils.utils.Misc import list_set
 
 from cdr_plugin_folder_to_folder.common_settings.Config import *
+from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 
-class test_Config(TestCase):
+
+class test_Config(Temp_Config):
 
     config = None
 
@@ -26,7 +28,7 @@ class test_Config(TestCase):
         self.assertEqual(abspath(config.hd2_location)   , abspath(os.environ.get("HD2_LOCATION"   , DEFAULT_HD2_LOCATION)))
         self.assertEqual(abspath(config.hd3_location)   , abspath(os.environ.get("HD3_LOCATION"   , DEFAULT_HD3_LOCATION)))
         self.assertEqual(abspath(config.root_folder )   , abspath(os.environ.get("ROOT_FOLDER"    , DEFAULT_ROOT_FOLDER )))
-        self.assertEqual(config.endpoints      , json.loads(os.environ.get("ENDPOINTS"      , DEFAULT_ENDPOINTS)))
+        self.assertEqual(config.endpoints               , json.loads(os.environ.get("ENDPOINTS"   , DEFAULT_ENDPOINTS   )))
         assert config.endpoints['Endpoints'][0]['IP']
         assert config.endpoints['Endpoints'][0]['Port']
 
@@ -58,7 +60,7 @@ class test_Config(TestCase):
     def test_get_values(self):
         values = self.config.values()
         assert self.config.values().get('root_folder') == self.config.root_folder
-        assert list_set(values) == ['elastic_host', 'elastic_port', 'elastic_schema', 'endpoints', 'hd1_location', 'hd2_data_location', 'hd2_location', 'hd2_status_location', 'hd3_location', 'kibana_host', 'kibana_port', 'root_folder', 'thread_count']
+        assert list_set(values) == ['elastic_host', 'elastic_port', 'elastic_schema', 'endpoints', 'hd1_location', 'hd2_data_location', 'hd2_location', 'hd2_status_location', 'hd3_location', 'kibana_host', 'kibana_port', 'request_timeout', 'root_folder', 'thread_count']
 
     def test_set_root_folder(self):
         root_folder = temp_folder()
@@ -93,7 +95,7 @@ class test_Config(TestCase):
         assert self.config.hd1_location == hd1_location
         assert file_exists(hd1_location)
         self.config.load_values()
-        assert self.config.hd1_location == './test_data/scenario-1/hd1'
+        assert abspath(self.config.hd1_location) == abspath('./test_data/scenario-1/hd1')
         assert folder_delete_all(hd1_location)
 
     def test_set_hd2_location(self):
@@ -106,7 +108,7 @@ class test_Config(TestCase):
         assert file_exists(hd2_location)
 
         self.config.load_values()
-        assert self.config.hd2_location == './test_data/scenario-1/hd2'
+        assert abspath(self.config.hd2_location) == abspath('./test_data/scenario-1/hd2')
         assert folder_delete_all(hd2_location)
 
     def test_set_hd3_location(self):
@@ -116,5 +118,5 @@ class test_Config(TestCase):
         assert self.config.hd3_location == hd3_location
         assert file_exists(hd3_location)
         self.config.load_values()
-        assert self.config.hd3_location == './test_data/scenario-1/hd3'
+        assert abspath(self.config.hd3_location) == abspath('./test_data/scenario-1/hd3')
         assert folder_delete_all(hd3_location)

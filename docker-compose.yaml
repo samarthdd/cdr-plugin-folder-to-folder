@@ -26,6 +26,7 @@ services:
         dockerfile: ${PWD}/cdr_plugin_folder_to_folder/Dockerfile
         context: ${PWD}
       volumes:
+        - ${PWD}/cdr_plugin_folder_to_folder:/app/cdr_plugin_folder_to_folder     # needed during local development (to update code inside container on local code changes)
         - ${PWD}/test_data:/app/test_data
         - ${HOST_HD1_LOCATION}:${HD1_LOCATION}
         - ${HOST_HD2_LOCATION}:${HD2_LOCATION}

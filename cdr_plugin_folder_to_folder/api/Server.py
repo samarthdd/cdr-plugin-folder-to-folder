@@ -1,16 +1,34 @@
 import logging
+import os
 
 import uvicorn
 from fastapi_offline import FastAPIOffline as FastAPI
-
+from starlette.datastructures import Headers, URL
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 #from cdr_plugin_folder_to_folder.api.users import router
 from osbot_utils.utils.Misc import to_int
+from starlette.types import ASGIApp, Scope, Receive, Send
 
 from cdr_plugin_folder_to_folder.api.routes.Processing import router as router_processing
 from cdr_plugin_folder_to_folder.api.routes.Pre_Processor import router as router_pre_processing
 from cdr_plugin_folder_to_folder.api.routes.File_Distributor import router as router_file_distribution
 from cdr_plugin_folder_to_folder.api.routes.Health import router as router_health
 from cdr_plugin_folder_to_folder.api.routes.Configure import router as router_configure
+from cdr_plugin_folder_to_folder.utils.Logging import log_debug
+from cdr_plugin_folder_to_folder.utils.Logging_Process import start_logging
+
+
+class Logging_Middleware:
+    def __init__(self, app: ASGIApp, minimum_size: int = 500) -> None:
+        self.app = app
+        self.minimum_size = minimum_size
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        headers = Headers(scope=scope)
+        url     = URL(scope=scope)
+        log_debug(message=f'[API Server] {url}', data={'headers':f'{headers}'})
+        await self.app(scope, receive, send)
 
 class Server:
 
@@ -37,7 +55,14 @@ class Server:
         logging.getLogger().handlers.clear()                                # todo: see side effects of this
 
     def start(self):
+        log_debug(message=f"Starting API server on {self.host}:{self.port} with uvicorn log level {self.log_level}")
         uvicorn.run("cdr_plugin_folder_to_folder.api.Server:app", host=self.host, port=self.port, log_level=self.log_level, reload=self.reload)
+
+    def setup_logging(self):
+        start_logging()
+        self.app.add_middleware(Logging_Middleware)
+        log_debug(message="[API Server] logging process has started and FastAPI middleware setup")
+        return self
 
     def routes(self):
         routes = {}
@@ -61,6 +86,8 @@ tags_metadata = [
 app     = FastAPI(openapi_tags=tags_metadata)
 server  = Server(app)
 server.add_routes()
+if "PYTEST_CURRENT_TEST" not in os.environ:
+    server.setup_logging()
 
 def run_if_main():
     if __name__ == "__main__":

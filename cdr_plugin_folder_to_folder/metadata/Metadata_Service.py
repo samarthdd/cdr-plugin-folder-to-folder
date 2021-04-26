@@ -4,7 +4,7 @@ import os
 
 import logging as logger
 
-from osbot_utils.utils.Files import file_sha256, file_name
+from osbot_utils.utils.Files import file_sha256
 from osbot_utils.utils.Json import json_save_file_pretty
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata
@@ -13,6 +13,7 @@ from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 from enum import Enum
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
+from cdr_plugin_folder_to_folder.utils.Logging import log_info
 
 logger.basicConfig(level=logger.INFO)
 
@@ -30,7 +31,9 @@ class Metadata_Service:
     def create_metadata(self, file_path):
         self.metadata = Metadata()
         self.metadata.add_file(file_path)
+
         self.metadata_elastic.add_metadata(self.metadata.data)                            # save metadata to elastic
+        log_info(message=f"created metadata for: {self.metadata.get_file_name()}", data={"file_path": file_path, "metadata_file_path": self.metadata.metadata_file_path()})
         return self.metadata
 
     def get_from_file(self, metadata_folder):
@@ -54,10 +57,10 @@ class Metadata_Service:
         return self.metadata.get_rebuild_status()
 
     def is_initial_status(self, metadata_folder):
-        return (self.get_status(metadata_folder) == FileStatus.INITIAL.value)
+        return (self.get_status(metadata_folder) == FileStatus.INITIAL)
 
     def set_status_inprogress(self, metadata_folder):
-        self.set_status(metadata_folder, FileStatus.IN_PROGRESS.value)
+        self.set_status(metadata_folder, FileStatus.IN_PROGRESS)
 
     def set_metadata_field(self, metadata_folder, field_name, value):
         self.get_from_file(metadata_folder)
@@ -78,14 +81,6 @@ class Metadata_Service:
 
     def set_server_version(self, metadata_folder, server_version):
         self.set_metadata_field(metadata_folder, 'server_version', server_version)
-
-    def set_original_file_size(self, metadata_folder, file_size):
-        self.set_metadata_field(metadata_folder, 'original_file_size', file_size)
-
-    def set_original_file_extension(self, metadata_folder):
-        self.get_from_file(metadata_folder)
-        filename, file_extension = os.path.splitext(self.metadata.get_file_name())
-        self.set_metadata_field(metadata_folder, 'original_file_extension', file_extension)
 
     def set_rebuild_file_path(self, metadata_folder, rebuild_file_path):
         self.set_metadata_field(metadata_folder, 'rebuild_file_path', rebuild_file_path)

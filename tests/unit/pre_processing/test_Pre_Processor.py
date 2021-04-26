@@ -81,12 +81,17 @@ class test_Pre_Processor(TestCase):
         path_status = self.pre_processor.storage.hd2_status()
 
         assert len(files_list(path_data   )) == 0
-        assert len(files_list(path_status )) == 0
+        assert len(files_list(path_status )) == 1       # should have the status.json file
 
         self.pre_processor.process_files()
 
+        pprint('**********: DATA')
+        pprint(files_list(path_data  ))
+        pprint('**********: STATUS')
+        pprint(files_list(path_status))
+        pprint('------------------------')
         assert len(files_list(path_data  )) > 0
-        assert len(files_list(path_status)) == 3
+        assert len(files_list(path_status)) == 3            # should have: status.json, hash.json , events.json
 
     def test_process_file(self):
         metadata = Metadata(file_hash=self.file_hash)

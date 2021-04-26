@@ -68,10 +68,11 @@ class test_API_Client(TestCase):
         result = self.client.version()
         assert result['version'] == API_VERSION
 
+    @pytest.mark.skip("this is changing live data (this needs to run on a temp server path)")
     def test_configure_environment(self):
         data = { "hd1_path"  : "./test_data/scenario-1/hd1",
-                 "hd2_path"  : "./test_data/scenario-1/hd1",
-                 "hd3_path"  : "./test_data/scenario-1/hd1"}
+                 "hd2_path"  : "./test_data/scenario-1/hd2",
+                 "hd3_path"  : "./test_data/scenario-1/hd3"}
 
         response=self.client.configure_environment(data=data)
         assert response.status_code is 200

@@ -1,14 +1,12 @@
 import imp
 import inspect
-from multiprocessing.context import Process
-from unittest import TestCase, mock
+from unittest import TestCase
 from unittest.mock import patch, call
 
 from fastapi_offline import FastAPIOffline as FastAPI
-from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import list_set
 
-from cdr_plugin_folder_to_folder.api.Server import Server, run_if_main
+from cdr_plugin_folder_to_folder.api.Server import Server
 from cdr_plugin_folder_to_folder.utils.testing.Temp_API_Server import Temp_API_Server
 
 
@@ -45,10 +43,6 @@ class test_Server(TestCase):
 
     # lock the current rules mappings to that any new API changes also require an change to this test
     def test_routes(self):
-        #@app.exception_handler(StarletteHTTPException)
-        #async def http_exception_handler(request, exc):
-        #    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
-
         # routes before server.add_routes()
         assert [route.path for route in self.server.app.routes] == ['/openapi.json', '/static-offline-docs', '/docs', '/docs/oauth2-redirect', '/redoc']
         assert self.server.routes() == {}
@@ -57,13 +51,18 @@ class test_Server(TestCase):
                                           '/configuration/config/'                               : { 'methods': {'GET' }, 'name': 'config'                              , 'path_format': '/configuration/config/'                               },
                                           '/configuration/configure_env/'                        : { 'methods': {'POST'}, 'name': 'configure_environment'               , 'path_format': '/configuration/configure_env/'                        },
                                           '/configuration/configure_gw_sdk_endpoints/'           : { 'methods': {'POST'}, 'name': 'configure_multiple_gw_sdk_endpoints' , 'path_format': '/configuration/configure_gw_sdk_endpoints/'           },
-                                          '/file-distributor/hd1/{num_of_files}'                 : { 'methods': {'GET' }, 'name': 'get_hd1_files'                       , 'path_format': '/file-distributor/hd1/{num_of_files}'                 },
-                                          '/file-distributor/hd2/hash_folder_list/{num_of_files}': { 'methods': {'GET' }, 'name': 'get_hd2_hash_folders_files'          , 'path_format': '/file-distributor/hd2/hash_folder_list/{num_of_files}'},
-                                          '/file-distributor/hd2/metadata/{num_of_files}'        : { 'methods': {'GET' }, 'name': 'get_hd2_metadata_files'              , 'path_format': '/file-distributor/hd2/metadata/{num_of_files}'        },
-                                          '/file-distributor/hd2/report/{num_of_files}'          : { 'methods': {'GET' }, 'name': 'get_hd2_report_files'                , 'path_format': '/file-distributor/hd2/report/{num_of_files}'          },
-                                          '/file-distributor/hd2/source/{num_of_files}'          : { 'methods': {'GET' }, 'name': 'get_hd2_source_files'                , 'path_format': '/file-distributor/hd2/source/{num_of_files}'          },
+                                          '/configuration/reload_elastic_file_metadata/'         : { 'methods': {'PUT' }, 'name': 'reload_elastic_file_metadata'        , 'path_format': '/configuration/reload_elastic_file_metadata/'         },
+                                          '/configuration/reload_hash_json/'                     : { 'methods': {'PUT' }, 'name': 'reload_elastic_file_metadata'        , 'path_format': '/configuration/reload_hash_json/'                     },
+                                          '/configuration/reset_logging/'                        : { 'methods': {'PUT' }, 'name': 'reset_logging'                       , 'path_format': '/configuration/reset_logging/'
+
+                                                                                                     },
+                                          # '/file-distributor/hd1/{num_of_files}'                 : { 'methods': {'GET' }, 'name': 'get_hd1_files'                       , 'path_format': '/file-distributor/hd1/{num_of_files}'                 },
+                                          # '/file-distributor/hd2/hash_folder_list/{num_of_files}': { 'methods': {'GET' }, 'name': 'get_hd2_hash_folders_files'          , 'path_format': '/file-distributor/hd2/hash_folder_list/{num_of_files}'},
+                                          # '/file-distributor/hd2/metadata/{num_of_files}'        : { 'methods': {'GET' }, 'name': 'get_hd2_metadata_files'              , 'path_format': '/file-distributor/hd2/metadata/{num_of_files}'        },
+                                          # '/file-distributor/hd2/report/{num_of_files}'          : { 'methods': {'GET' }, 'name': 'get_hd2_report_files'                , 'path_format': '/file-distributor/hd2/report/{num_of_files}'          },
+                                          # '/file-distributor/hd2/source/{num_of_files}'          : { 'methods': {'GET' }, 'name': 'get_hd2_source_files'                , 'path_format': '/file-distributor/hd2/source/{num_of_files}'          },
                                           '/file-distributor/hd2/status'                         : { 'methods': {'GET' }, 'name': 'get_hd2_status_files'                , 'path_format': '/file-distributor/hd2/status'                         },
-                                          '/file-distributor/hd3/{num_of_files}'                 : { 'methods': {'GET' }, 'name': 'get_hd3_files'                       , 'path_format': '/file-distributor/hd3/{num_of_files}'                 },
+                                          #'/file-distributor/hd3/{num_of_files}'                 : { 'methods': {'GET' }, 'name': 'get_hd3_files'                       , 'path_format': '/file-distributor/hd3/{num_of_files}'                 },
                                           '/health'                                              : { 'methods': {'GET' }, 'name': 'health'                              , 'path_format': '/health'                                              },
                                           '/pre-processor/clear-data-and-status'                 : { 'methods': {'POST'}, 'name': 'clear_data_and_status_folders'       , 'path_format': '/pre-processor/clear-data-and-status'                 },
                                           '/pre-processor/pre-process'                           : { 'methods': {'POST'}, 'name': 'pre_process_hd1_data_to_hd2'         , 'path_format': '/pre-processor/pre-process'                           },
@@ -76,11 +75,19 @@ class test_Server(TestCase):
                                           '/status'                                              : { 'methods': {'GET' }, 'name': 'status'                              , 'path_format': '/status'                                              },
                                           '/version'                                             : { 'methods': {'GET' }, 'name': 'version'                             , 'path_format': '/version'                                             }}
 
+
+    # todo add global exception handler
+    #def test__exception_in_method
+    # @app.exception_handler(StarletteHTTPException)
+    # async def http_exception_handler(request, exc):
+    #    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
+
     # FastAPI allows multiple rules mappings (which should never happen)
     def test__detect_duplicate_routes(self):
         self.server.add_routes()
         paths_format = [route.path for route in self.server.app.routes]
         assert sorted(paths_format) == list_set(paths_format)
+
 
 
 

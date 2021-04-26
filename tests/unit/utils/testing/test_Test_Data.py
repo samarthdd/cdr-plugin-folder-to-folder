@@ -18,7 +18,7 @@ class test_Test_Data(TestCase):
         assert len(self.test_data.files()   ) > 7
 
     def test_images(self):
-        assert len(self.test_data.images()  ) == 3
+        assert len(self.test_data.images()  ) > 2
 
     def test_pdfs(self):
-        assert len(self.test_data.pdfs()    ) == 3
+        assert len(self.test_data.pdfs()    ) > 2

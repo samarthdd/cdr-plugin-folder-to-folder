@@ -7,6 +7,11 @@ from pydantic import BaseModel
 from typing import List
 from fastapi import FastAPI, HTTPException
 
+from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
+from cdr_plugin_folder_to_folder.utils.Logging import log_debug
+from cdr_plugin_folder_to_folder.utils.Logging_Process import process_all_log_entries_and_end_logging_process, \
+    start_logging
+
 configure_env=Configure_Env()
 router_params = { "prefix": "/configuration"  ,
                   "tags"  : ['Configuration'] }
@@ -49,3 +54,18 @@ def configure_multiple_gw_sdk_endpoints(item: ItemList):
         raise HTTPException(status_code=404, detail="GW_sdk_endpoints are not valid")
     return response
 
+@router.put("/reload_elastic_file_metadata/")
+def reload_elastic_file_metadata():
+    return Metadata_Elastic().reload_elastic_data()
+
+@router.put("/reload_hash_json/")
+def reload_elastic_file_metadata():
+    return Metadata_Elastic().reload_hash_json()
+
+@router.put("/reset_logging/")
+def reset_logging():
+    process_all_log_entries_and_end_logging_process()
+    start_logging()
+    message = 'Logging was reset via API call'
+    log_debug(message=message)
+    return message

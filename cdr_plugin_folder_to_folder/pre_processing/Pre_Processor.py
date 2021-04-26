@@ -87,18 +87,18 @@ class Pre_Processor:
     @log_duration
     def process_files(self):
         self.process_folder(self.storage.hd1())
-        self.status.write_to_file()
+        self.status.save()
 
+    @log_duration
     def process(self, file_path):
         metadata = self.meta_service.create_metadata(file_path=file_path)
-
         file_name      = metadata.get_file_name()
         original_hash  = metadata.get_original_hash()
         status         = metadata.get_rebuild_status()
         self.update_status(file_name, original_hash, status)
 
     def update_status(self, file_name, original_hash, status):
-        if status == FileStatus.INITIAL.value:
+        if status == FileStatus.INITIAL:
             self.hash_json.add_file(original_hash, file_name)
             self.hash_json.write_to_file()
 

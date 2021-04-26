@@ -1,3 +1,4 @@
+from datetime import datetime
 from os import environ
 
 import osbot_elastic.elastic.ES
@@ -77,8 +78,14 @@ class Elastic:
     # class methods
 
     def add(self, data, refresh=False):
+        add_time_field = self.time_field is not None and data.get(self.time_field) is None   # todo: see if there is a better way to do this, since elastic was not recognising str(datetime.utcnow())
         if self.enabled:
-            return self.elastic().add(data, id_key=self.id_key, refresh=refresh)
+            if add_time_field:
+                data[self.time_field] = datetime.utcnow()                                    # add timestamp if self.time_field exists and its value is not set
+            result = self.elastic().add(data, id_key=self.id_key, refresh=refresh)           # add data to elastic
+            if add_time_field:
+                del data[self.time_field]                                                    # delete timestamp from (if we added it)
+            return result
 
     def delete(self, record_id):
         if self.enabled:

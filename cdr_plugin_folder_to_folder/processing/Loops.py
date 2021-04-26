@@ -4,7 +4,9 @@ import sys
 import threading
 import asyncio
 import subprocess
+from multiprocessing.pool import ThreadPool
 
+from osbot_utils.testing.Duration import Duration
 from osbot_utils.utils.Files import create_folder, folder_exists
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config, API_VERSION
@@ -57,8 +59,8 @@ class Loops(object):
 
         return git_commit
 
-    @log_duration
     def ProcessDirectoryWithEndpoint(self, itempath, file_hash, endpoint_index):
+        log_info(message=f"Starting ProcessDirectoryWithEndpoint on endpoint # {endpoint_index} for file {file_hash}")
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_paths(itempath)
         events = Events_Log(itempath)
@@ -78,42 +80,47 @@ class Loops(object):
 
                 log_data = {
                         'file': original_file_path,
-                        'status': FileStatus.COMPLETED.value,
+                        'status': FileStatus.COMPLETED,
                         'error': 'none',
                         'timestamp': datetime.now(),
                     }
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
-                meta_service.set_error(itempath, "none")
-                meta_service.set_status(itempath, FileStatus.COMPLETED.value)
+                #meta_service.set_error(itempath, "none")
+                #meta_service.set_status(itempath, FileStatus.COMPLETED)
                 self.status.add_completed()
-                self.hash_json.update_status(file_hash, FileStatus.COMPLETED.value)
+                #self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
                 events.add_log("Has been processed")
                 return True
             except Exception as error:
                 log_data = {
                     'file': original_file_path,
-                    'status': FileStatus.FAILED.value,
+                    'status': FileStatus.FAILED,
                     'error': str(error),
                 }
-                log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
+                log_error(message='error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
-                meta_service.set_status(itempath, FileStatus.FAILED.value)
+                meta_service.set_status(itempath, FileStatus.FAILED)
                 self.status.add_failed()
-                self.hash_json.update_status(file_hash, FileStatus.FAILED.value)
+                self.hash_json.update_status(file_hash, FileStatus.FAILED)
                 events.add_log("ERROR:" + str(error))
                 return False
 
-    @log_duration
-    def ProcessDirectory(self, itempath, file_hash, process_index):
-        endpoint_index = process_index % self.config.endpoints_count
-        for idx in range(self.config.endpoints_count):
-            if self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index):
-                return
-            # The Endpoint failed to process the file
-            # Retry it with the next one
-            endpoint_index = (endpoint_index + 1) % self.config.endpoints_count
 
-    @log_duration
+    def ProcessDirectory(self, thread_data):
+        (itempath, file_hash, process_index) = thread_data
+        endpoint_index = process_index % self.config.endpoints_count
+        if not Loops.continue_processing:
+            return False
+        return self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
+
+        # note: removing retries from this method (it should not be handled like this
+        #for idx in range(self.config.endpoints_count):
+        #    if self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index):
+        #        return
+        #    # The Endpoint failed to process the file
+        #    # Retry it with the next one
+        #    endpoint_index = (endpoint_index + 1) % self.config.endpoints_count
+
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
         if not isinstance(thread_count,int):
@@ -122,9 +129,11 @@ class Loops(object):
         if not isinstance(do_single,bool):
             raise TypeError("thread_count must be a integer")
 
-        self.events.add_log("LoopHashDirectoriesAsync started")
+        log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
 
-        self.hash_json.get_from_file()
+        json_list = self.hash_json.get_from_file()
+
+        log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
 
         rootdir = os.path.join(self.config.hd2_location, "data")
 
@@ -134,43 +143,56 @@ class Loops(object):
 
         threads = list()
 
-        json_list       = self.hash_json.get_json_list()
         process_index   = 0
 
+        log_info(message=f'before Mapping thread_data for {len(json_list)} files')
+        thread_data = []
         for key in json_list:
             file_hash   =  key
 
             itempath = os.path.join(rootdir, key)
-            if (FileStatus.INITIAL.value != json_list[key]["file_status"]):
+            if (FileStatus.INITIAL != json_list[key]["file_status"]):
                 continue
 
             if not os.path.exists(itempath):
-                json_list[key]["file_status"] = FileStatus.FAILED.value
+                json_list[key]["file_status"] = FileStatus.FAILED
                 continue
 
-            # limit the number of parallel threads
-            if process_index % int(thread_count) == 0:
-                # Clean up the threads
-                for index, thread in enumerate(threads):
-                    thread.join()
-
             process_index += 1
-            x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_hash, process_index,))
-            threads.append(x)
-            x.start()
+            thread_data.append((itempath, file_hash, process_index,))
+            # # limit the number of parallel threads
+            #
+            # if process_index % int(thread_count) == 0:                      # todo: refactor this workflow to use multiprocess and queues
+            #     # Clean up the threads
+            #     for index, thread in enumerate(threads):                    # todo: since at the moment this will block allocating new threads until
+            #         thread.join()                                           #       all have finishing execution
+            #
+            # process_index += 1
+            # log_info(message=f"in LoopHashDirectoriesInternal process_index={process_index} , thread #{process_index % int(thread_count) }")
+            # x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_hash, process_index,))
+            # threads.append(x)
+            # x.start()
+            #
+            # if do_single:
+            #     break
+            #
+            # if not Loops.continue_processing:
+            #     break
 
-            if do_single:
-                break
+        # for index, thread in enumerate(threads):
+        #     thread.join()
 
-            if not Loops.continue_processing:
-                break
-
-        for index, thread in enumerate(threads):
-            thread.join()
+        log_info(message=f'after mapped thread_data, there are {len(thread_data)} mapped items')
+        #thread_data = thread_data[:500]
+        #log_info(message=f'to start with only processing {len(thread_data)} thread_data items')
+        pool = ThreadPool(thread_count)
+        results = pool.map(self.ProcessDirectory, thread_data)
+        pool.close()
+        pool.join()
 
         self.events.add_log("LoopHashDirectoriesAsync finished")
+        return results
 
-    @log_duration
     async def LoopHashDirectoriesAsync(self, thread_count, do_single = False):
         await Loops.lock.acquire()
         try:
@@ -181,18 +203,20 @@ class Loops(object):
         finally:
             Loops.processing_started = False
             Loops.lock.release()
-            self.status.write_to_file()
+            self.status.save()
 
     @log_duration
-    def LoopHashDirectories(self):
+    def LoopHashDirectories(self, thread_count=None):
         #Allow only a single loop to be run at a time
         if self.IsProcessing():
-            log_error("ERROR: Attempt to start processing while processing is in progress")
+            log_error(message="ERROR: Attempt to start processing while processing is in progress")
             return False
-
+        thread_count = thread_count or self.config.thread_count
+        log_info(message="in LoopHashDirectories, about to start main loop")
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.LoopHashDirectoriesAsync(self.config.thread_count))
+        loop.run_until_complete(self.LoopHashDirectoriesAsync(thread_count))
+        log_info(message="in LoopHashDirectories, Loop completed")
         return True
 
     @log_duration

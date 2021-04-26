@@ -1,29 +1,39 @@
-import os
-import json
-import asyncio
-
+import threading
 import logging as logger
 
-from osbot_utils.utils.Files import file_sha256, file_name, create_folder
-from osbot_utils.utils.Json import json_save_file_pretty
-from cdr_plugin_folder_to_folder.common_settings.Config import Config
-
-from enum import Enum
+from osbot_utils.utils.Files                        import path_combine
+from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file
+from cdr_plugin_folder_to_folder.storage.Storage    import Storage
+from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 
 logger.basicConfig(level=logger.INFO)
 
-class FileStatus(Enum):
-    NONE        = "None"
+class FileStatus:                                     # todo move to separate file (either per enum or with all enums)
     INITIAL     = "Initial"
     IN_PROGRESS = "In Progress"
     COMPLETED   = "Completed Successfully"
     FAILED      = "Completed with errors"
     TO_PROCESS  = "To Process"
+    NONE        = "None"
+
+
+class Processing_Status:
+    STOPPED = "Stopped"
+    Started = "Started"
+    PHASE_1 = "PHASE 1 - Copying Files"
+    PHASE_2 = "PHASE 1 - Rebuilding Files"
 
 class Status:
 
-    STATUS_FILE_NAME = "status.json"
-    lock = asyncio.Lock()
+    STATUS_FILE_NAME        = "status.json"
+    VAR_COMPLETED           = "completed"
+    VAR_CURRENT_STATUS      = "current_status"
+    VAR_FAILED              = "failed"
+    VAR_FILES_TO_PROCESS    = "files_to_process"
+    VAR_FILES_COUNT         = "files_count"
+    VAR_IN_PROGRESS         = "in_progress"
+
+    lock = threading.Lock()
 
     _instance = None
     def __new__(cls):                                               # singleton pattern
@@ -33,90 +43,99 @@ class Status:
 
     def __init__(self):
         if hasattr(self, 'folder') is False:                     # only set these values first time around
-            self.config = Config()
-            self.folder = os.path.join(self.config.hd2_location, "status")
-            if not self.get_from_file():
-                self.reset()
+            self.storage        = Storage()
+            #self._on_save      = []                             # todo: add support for firing up events when data is saved
+            self._status_data   = self.default_data()
+            self.load_data()
+
+    def data(self):
+        return self._status_data
+
+    def default_data(self):
+        return {    Status.VAR_CURRENT_STATUS   : FileStatus.NONE ,
+                    Status.VAR_FILES_COUNT      : 0               ,
+                    'files_copied'              : 0               ,
+                    'files_left_to_be_copied'   : 0               ,
+                    Status.VAR_FILES_TO_PROCESS : 0               ,
+                    'files_left_to_process'     : 0               ,
+                    Status.VAR_COMPLETED        : 0               ,
+                    Status.VAR_FAILED           : 0               ,
+                    Status.VAR_IN_PROGRESS      : 0               }
+
+    def load_data(self):
+        self._status_data = json_load_file(self.status_file_path())
+        if self.data() == {}:
+            self.reset()
+        return self
+
 
     def reset(self):
-        self.data = {   "files_count"               : 0     ,
-                        "files_copied"              : 0     ,
-                        "files_left_to_be_copied"   : 0     ,
-                        "files_to_process"          : 0     ,
-                        "files_left_to_process"     : 0     ,
-                        "completed"                 : 0     ,
-                        "failed"                    : 0     ,
-                        "in_progress"               : 0
-                    }
+        self._status_data = self.default_data()
+        self.save()
+        return self
 
-    def get_file_path(self):
-        return os.path.join(self.folder, Status.STATUS_FILE_NAME)
+    def save(self):
+        json_save_file_pretty(self.data(), self.status_file_path())
+        return self
 
-    def get_from_file(self):
-        if not os.path.isfile(self.get_file_path()):
-            return False
+    def status_file_path(self):
+        return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
+
+
+
+    def update_counters(self, updated_status, count=0):
+        Status.lock.acquire()
         try:
-            with open(self.get_file_path()) as json_file:
-                self.data = json.load(json_file)
-        except Exception as error:
-            logger.error("Failed to init status from file: {medadata_folder}")
-            logger.error("Failure details: {error}")
-            raise error
-        return True
+            data = self.data()
+            data[Status.VAR_CURRENT_STATUS] = updated_status
 
-    def write_to_file(self):
-        create_folder(self.folder)
-        json_save_file_pretty(self.data, self.get_file_path())
-
-    async def update_counters_async(self, updated_status, count):
-        await Status.lock.acquire()
-        try:
             if updated_status == FileStatus.NONE:
-                self.data["files_count"] += count
-                self.data["files_left_to_be_copied"] += count
+                data["files_count"] += count
+                data["files_left_to_be_copied"] += count
+                
             elif updated_status == FileStatus.INITIAL:
-                self.data["files_copied"] += 1
-                if self.data["files_left_to_be_copied"] > 0:
-                    self.data["files_left_to_be_copied"] -= 1
+                data["files_copied"] += 1
+                if data["files_left_to_be_copied"] > 0:
+                    data["files_left_to_be_copied"] -= 1
+
             elif updated_status == FileStatus.IN_PROGRESS:
-                self.data["in_progress"] += 1
+                data["in_progress"] += 1
+
             elif updated_status == FileStatus.COMPLETED:
-                self.data["completed"] += 1
-                if self.data["in_progress"] > 0:
-                    self.data["in_progress"] -= 1
-                if self.data["files_left_to_process"] > 0:
-                    self.data["files_left_to_process"] -= 1
+                data["completed"] += 1
+                if data["in_progress"] > 0:
+                    data["in_progress"] -= 1
+                if data["files_left_to_process"] > 0:
+                    data["files_left_to_process"] -= 1
             elif updated_status == FileStatus.FAILED:
-                self.data["failed"] += 1
-                if self.data["in_progress"] > 0:
-                    self.data["in_progress"] -= 1
-                if self.data["files_left_to_process"] > 0:
-                    self.data["files_left_to_process"] -= 1
+                data["failed"] += 1
+                if data["in_progress"] > 0:
+                    data["in_progress"] -= 1
+                if data["files_left_to_process"] > 0:
+                    data["files_left_to_process"] -= 1
+
             elif updated_status == FileStatus.TO_PROCESS:
-                self.data["files_to_process"] += 1
-                self.data["files_left_to_process"] += 1
+                data["files_to_process"] += 1
+                data["files_left_to_process"] += 1
+
+            if updated_status == FileStatus.INITIAL:
+                data[Status.VAR_FILES_COUNT] += 1
         finally:
             Status.lock.release()
+            self.save()
 
-    def update_counters(self, updated_status, count = 0):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.update_counters_async(updated_status, count))
+        return self
 
-    def add_files_count(self, count):
-        self.update_counters(FileStatus.NONE, count)
+    def add_completed       (self       ): return self.update_counters(FileStatus.COMPLETED          )
+    def add_failed          (self       ): return self.update_counters(FileStatus.FAILED             )
+    def add_file            (self       ): return self.update_counters(FileStatus.INITIAL            )
+    def add_files_count     (self, count): return self.update_counters(FileStatus.NONE        , count)
+    def add_in_progress     (self       ): return self.update_counters(FileStatus.IN_PROGRESS        )
+    def add_to_be_processed (self       ): return self.update_counters(FileStatus.TO_PROCESS         )
 
-    def add_file(self):
-        self.update_counters(FileStatus.INITIAL)
-
-    def add_completed(self):
-        self.update_counters(FileStatus.COMPLETED)
-
-    def add_failed(self):
-        self.update_counters(FileStatus.FAILED)
-
-    def add_in_progress(self):
-        self.update_counters(FileStatus.IN_PROGRESS)
-
-    def add_to_be_processed(self):
-        self.update_counters(FileStatus.TO_PROCESS)
+    def get_completed       (self): return self.data().get(Status.VAR_COMPLETED)
+    def get_current_status  (self): return self.data().get(Status.VAR_CURRENT_STATUS)
+    def get_failed          (self): return self.data().get(Status.VAR_FAILED)
+    def get_files_count     (self): return self.data().get(Status.VAR_FILES_COUNT)
+    def get_files_to_process(self): return self.data().get(Status.VAR_FILES_TO_PROCESS)
+    def get_in_progress     (self): return self.data().get(Status.VAR_IN_PROGRESS)

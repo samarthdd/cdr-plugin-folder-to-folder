@@ -32,7 +32,7 @@ class test_Hash_Json(TestCase):
     def test___init__(self):
         assert abspath(self.hash_json.folder) == self.storage.hd2_status()
 
-    @patch("cdr_plugin_folder_to_folder.utils.Logging.Logging.error")
+    @patch("multiprocessing.queues.Queue.put_nowait")
     def test_add_file(self, patch_log_error):
         hash_data = self.hash_json.get_from_file()
         if hash_data.get('self.test_file_hash'):
@@ -45,9 +45,9 @@ class test_Hash_Json(TestCase):
         assert self.hash_json.add_file(self.test_file_hash , None               ) is False
         assert self.hash_json.add_file(None                , None               ) is False
 
-        assert patch_log_error.mock_calls == [call(message='in Hash_Json.add_file bad data provided', data={'file_hash': 'AAAA'              , 'file_name': self.test_file_name }),
-                                              call(message='in Hash_Json.add_file bad data provided', data={'file_hash': self.test_file_hash , 'file_name': None                }),
-                                              call(message='in Hash_Json.add_file bad data provided', data={'file_hash': None                , 'file_name': None                })]
+        assert patch_log_error.mock_calls == [call({'level': 'ERROR', 'message': 'in Hash_Json.add_file bad data provided', 'data': {'file_hash': 'AAAA'             , 'file_name': self.test_file_name}, 'duration': 0, 'from_method': 'add_file', 'from_class': 'Hash_Json'}),
+                                              call({'level': 'ERROR', 'message': 'in Hash_Json.add_file bad data provided', 'data': {'file_hash': self.test_file_hash, 'file_name': None               }, 'duration': 0, 'from_method': 'add_file', 'from_class': 'Hash_Json'}),
+                                              call({'level': 'ERROR', 'message': 'in Hash_Json.add_file bad data provided', 'data': {'file_hash': None               , 'file_name': None               }, 'duration': 0, 'from_method': 'add_file', 'from_class': 'Hash_Json'})]
 
 
 
