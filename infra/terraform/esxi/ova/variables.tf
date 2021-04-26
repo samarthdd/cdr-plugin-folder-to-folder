@@ -72,3 +72,7 @@ variable "boot_disk_size" {
   description = "HDD size of GiB "
   default     = 0
 }
+
+variable "random_string" {
+  default = "dev"
+}

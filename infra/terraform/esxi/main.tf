@@ -10,6 +10,7 @@ module "sdk" {
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
   boot_disk_size = var.sdk_disk_size
+  random_string = random_string.random.result
 }
 
 module "offline_desktop" {
@@ -23,6 +24,7 @@ module "offline_desktop" {
   boot_disk_size = var.desktop_disk_size
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
+  random_string = random_string.random.result
 }
 
 module "workflow" {
@@ -36,6 +38,7 @@ module "workflow" {
   boot_disk_size = var.workflow_disk_size
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
+  random_string = random_string.random.result
 }
 
 # ESXI 02
@@ -50,6 +53,7 @@ module "sdk2" {
   boot_disk_size = var.sdk_disk_size
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
+  random_string = random_string.random.result
 }
 
 module "offline_desktop2" {
@@ -63,7 +67,7 @@ module "offline_desktop2" {
   boot_disk_size = var.desktop_disk_size
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
-
+  random_string = random_string.random.result
 }
 
 module "workflow2" {
@@ -77,5 +81,12 @@ module "workflow2" {
   boot_disk_size = var.workflow_disk_size
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
+  random_string = random_string.random.result
 }
 
+resource "random_string" "random" {
+  length           = 5
+  lower            = true
+  upper            = false
+  special          = false
+}
