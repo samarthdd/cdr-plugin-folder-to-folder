@@ -51,7 +51,7 @@ class test_Server(TestCase):
                                           '/configuration/config/'                               : { 'methods': {'GET' }, 'name': 'config'                              , 'path_format': '/configuration/config/'                               },
                                           '/configuration/configure_env/'                        : { 'methods': {'POST'}, 'name': 'configure_environment'               , 'path_format': '/configuration/configure_env/'                        },
                                           '/configuration/configure_gw_sdk_endpoints/'           : { 'methods': {'POST'}, 'name': 'configure_multiple_gw_sdk_endpoints' , 'path_format': '/configuration/configure_gw_sdk_endpoints/'           },
-                                          '/configuration/reset_elastic_file_metadata/'          : { 'methods': {'PUT' }, 'name': 'reset_elastic_file_metadata'         , 'path_format': '/configuration/reset_elastic_file_metadata/'          },
+                                          '/configuration/reload_elastic_file_metadata/'          : { 'methods': {'PUT' }, 'name': 'reload_elastic_file_metadata'         , 'path_format': '/configuration/reload_elastic_file_metadata/'          },
                                           '/configuration/reset_logging/'                        : { 'methods': {'PUT' }, 'name': 'reset_logging'                       , 'path_format': '/configuration/reset_logging/'
 
                                                                                                      },

@@ -1,5 +1,6 @@
 from osbot_utils.decorators.methods.cache_on_self  import cache_on_self
 
+from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.Elastic     import Elastic
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
@@ -49,15 +50,22 @@ class Metadata_Elastic:
 
     @log_duration
     def reload_metadatas(self):
+        hash_json = Hash_Json()
         metadatas = self.storage.hd2_metadatas()
         count     = len(metadatas)
         log_debug(message=f"Reloading {count} currently in hd2/data")
         for metadata in metadatas:
             self.add_metadata(metadata)
+            file_hash   = metadata.get('original_hash')
+            file_name   = metadata.get('file_name')
+            file_status = metadata.get('rebuild_status')
+            hash_json.add_file(file_hash=file_hash, file_name=file_name)
+            hash_json.update_status(index=file_hash, updated_status=file_status)
         return count
 
-    def reset_elastic_data(self):
+    def reload_elastic_data(self):
         self.delete_all_metadata()
         count = self.reload_metadatas()
-        return f'Elastic {self.index_name} has been reset and {count} metadata items loaded'
+
+        return f'Elastic {self.index_name} has been reset and {count} metadata items reloaded'
 

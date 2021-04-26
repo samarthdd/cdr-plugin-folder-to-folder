@@ -54,9 +54,9 @@ def configure_multiple_gw_sdk_endpoints(item: ItemList):
         raise HTTPException(status_code=404, detail="GW_sdk_endpoints are not valid")
     return response
 
-@router.put("/reset_elastic_file_metadata/")
-def reset_elastic_file_metadata():
-    return Metadata_Elastic().reset_elastic_data()
+@router.put("/reload_elastic_file_metadata/")
+def reload_elastic_file_metadata():
+    return Metadata_Elastic().reload_elastic_data()
 
 @router.put("/reset_logging/")
 def reset_logging():

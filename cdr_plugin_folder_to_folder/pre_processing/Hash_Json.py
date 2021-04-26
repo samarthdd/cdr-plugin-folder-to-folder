@@ -56,6 +56,11 @@ class Hash_Json:
     def is_hash(self, value):
         return is_regex_full_match(Hash_Json.REGEX_HASH, value)
 
+    def reset(self):
+        self.data = {}
+        self.write_to_file()
+        return self
+
     def write_to_file(self):
         create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())

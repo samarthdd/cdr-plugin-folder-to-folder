@@ -9,6 +9,7 @@ from osbot_utils.utils.Json import json_load_file
 from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata
 from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
+from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 from cdr_plugin_folder_to_folder.utils.Logging_Process import process_all_log_entries_and_end_logging_process
@@ -74,11 +75,14 @@ class test_Metadata_Elastic(Temp_Config):
         assert self.metadata_elastic.reload_metadatas() == count
 
     def test_reset_elastic_data(self):
+        hash_json = Hash_Json()
         count     = 10              # use 1000
         text_size = 500             # use 50000
         self.add_test_files(count=count, text_size=text_size, execute_stage_1=True)
-        message = self.metadata_elastic.reset_elastic_data()
-        assert message == f'Elastic files_metadata has been reset and {count} metadata items loaded'
+        message = self.metadata_elastic.reload_elastic_data()
+        assert message == f'Elastic files_metadata has been reset and {count} metadata items reloaded'
+        assert len(hash_json.get_from_file()) == 10
+
 
 
 

@@ -42,3 +42,6 @@ class test_Storage(Temp_Config):
         metadatas = self.storage.hd2_metadatas()
         assert list_set(metadatas[0]) == [ 'error', 'f2f_plugin_git_commit', 'f2f_plugin_version', 'file_name', 'last_update_time', 'original_file_extension', 'original_file_paths', 'original_file_size', 'original_hash', 'rebuild_file_duration', 'rebuild_file_extension', 'rebuild_file_path', 'rebuild_file_size', 'rebuild_hash', 'rebuild_server', 'rebuild_status', 'server_version', 'xml_report_status']
 
+    def test_hd3_files(self):
+        new_files = self.add_test_files(count=2)
+        result = self.storage.hd1_files()
