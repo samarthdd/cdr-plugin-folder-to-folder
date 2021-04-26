@@ -1,0 +1,39 @@
+{
+  "events": [
+    {
+      "timestamp": "2021-04-26 12:06:27.966789",
+      "message": "Processing with: http://34.240.183.4:8080",
+      "data": {},
+      "uuid": "780663ba-7873-4984-9109-a7e9fb4fcbe1"
+    },
+    {
+      "timestamp": "2021-04-26 12:06:27.989103",
+      "message": "Processing Directory: ./test_data/scenario-2/hd2/data/86df34018436a99e1e98ff51346591e189cd76c8518f7288bb1ea8336396259b",
+      "data": {},
+      "uuid": "780663ba-7873-4984-9109-a7e9fb4fcbe1"
+    },
+    {
+      "timestamp": "2021-04-26 12:06:27.996141",
+      "message": "Sending to rebuild",
+      "data": {},
+      "uuid": "780663ba-7873-4984-9109-a7e9fb4fcbe1"
+    },
+    {
+      "timestamp": "2021-04-26 12:06:27.996928",
+      "message": "Starting File rebuild",
+      "data": {
+        "endpoint": "http://34.240.183.4:8080",
+        "hash": "86df34018436a99e1e98ff51346591e189cd76c8518f7288bb1ea8336396259b",
+        "source_path": "./test_data/scenario-2/hd2/data/86df34018436a99e1e98ff51346591e189cd76c8518f7288bb1ea8336396259b/source",
+        "dir": "./test_data/scenario-2/hd2/data/86df34018436a99e1e98ff51346591e189cd76c8518f7288bb1ea8336396259b"
+      },
+      "uuid": "780663ba-7873-4984-9109-a7e9fb4fcbe1"
+    },
+    {
+      "timestamp": "2021-04-26 12:07:28.118812",
+      "message": "ERROR:HTTPConnectionPool(host='34.240.183.4', port=8080): Max retries exceeded with url: /api/rebuild/base64 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7fc2918357f0>, 'Connection to 34.240.183.4 timed out. (connect timeout=60)'))",
+      "data": {},
+      "uuid": "780663ba-7873-4984-9109-a7e9fb4fcbe1"
+    }
+  ]
+}

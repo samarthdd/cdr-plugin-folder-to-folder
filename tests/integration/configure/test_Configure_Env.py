@@ -26,6 +26,9 @@ class test_Configure_Env(TestCase):
         valid_endpoints = {'Endpoints' : endpoints }
         endpoint_string = json_to_str(valid_endpoints)
         result = self.configure_env.get_valid_endpoints(endpoint_string)
-        assert json_parse(result).get('Endpoints') == endpoints
+        responsive_endpoints = json_parse(result).get('Endpoints')
+        assert len(responsive_endpoints) > 0
+        for enpoint in responsive_endpoints:
+            assert enpoint in endpoints
 
 

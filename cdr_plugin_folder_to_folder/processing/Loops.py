@@ -11,6 +11,7 @@ from osbot_utils.utils.Files import create_folder, folder_exists
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config, API_VERSION
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
+from cdr_plugin_folder_to_folder.processing.Events_Log_Elastic import Events_Log_Elastic
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
@@ -37,6 +38,7 @@ class Loops(object):
         self.hash_json = Hash_Json()
         self.hash_json.get_from_file()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
+        self.events_elastic = Events_Log_Elastic()
         self.hash=None
         self.report_elastic = Report_Elastic()
         self.report_elastic.setup()
@@ -73,9 +75,10 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                file_processing = File_Processing(events, self.report_elastic, meta_service)
+                file_processing = File_Processing(events, self.events_elastic, self.report_elastic, meta_service)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
+                    self.status.add_failed()
                     return False
 
                 log_data = {
