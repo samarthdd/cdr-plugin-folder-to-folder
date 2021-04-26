@@ -37,4 +37,10 @@ resource "esxi_guest" "this" {
   network_interfaces {
     virtual_network = var.network
   }
+  
+  guestinfo = {
+    "userdata.encoding" = "gzip+base64"
+    "userdata"          = base64gzip(data.template_file.default.rendered)
+  }
+
 }

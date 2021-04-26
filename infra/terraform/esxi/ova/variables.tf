@@ -76,3 +76,13 @@ variable "boot_disk_size" {
 variable "random_string" {
   default = "dev"
 }
+
+variable "ip_address" {
+  type = string
+  description = "IP address to be applied to the instance"
+  default = ""
+}
+
+variable "gateway_ip" {
+  default = "192.168.30.1"
+}
