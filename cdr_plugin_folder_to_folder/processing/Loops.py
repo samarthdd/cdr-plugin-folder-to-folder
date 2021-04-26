@@ -183,8 +183,8 @@ class Loops(object):
         #     thread.join()
 
         log_info(message=f'after mapped thread_data, there are {len(thread_data)} mapped items')
-        thread_data = thread_data[:500]
-        log_info(message=f'to start with only processing {len(thread_data)} thread_data items')
+        #thread_data = thread_data[:500]
+        #log_info(message=f'to start with only processing {len(thread_data)} thread_data items')
         pool = ThreadPool(thread_count)
         results = pool.map(self.ProcessDirectory, thread_data)
         pool.close()
