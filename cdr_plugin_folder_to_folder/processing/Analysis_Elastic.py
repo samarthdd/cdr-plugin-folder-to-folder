@@ -4,7 +4,7 @@ from osbot_utils.utils.Json import json_load_file
 from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
-from cdr_plugin_folder_to_folder.utils.Logging import log_info
+from cdr_plugin_folder_to_folder.utils.Logging import log_info, log_error
 
 
 class Analysis_Elastic:
@@ -45,14 +45,18 @@ class Analysis_Elastic:
     def reload_all_analysis(self):
         self.analysis_json.reset()
         metadatas = self.storage.hd2_metadatas(return_data=False)
-        log_info(message=f"in reload_all_analysis there are {len(metadatas)}")
+        log_info(message=f"in reload_all_analysis there are {len(metadatas)} metadatas")
         for metadata in metadatas:
             file_hash = metadata.get_file_hash()
             file_name = metadata.get_file_name()
-            report_json = json_load_file(metadata.report_file_path())
-            if report_json:
-                self.analysis_json.add_file(file_hash=file_hash, file_name=file_name)
-                self.analysis_json.update_report(index=file_hash, report_json=report_json)
+            try:
+                #log_info("Processing file file {file_name} with hash {file_hash}")
+                report_json = json_load_file(metadata.report_file_path())
+                if report_json:
+                    self.analysis_json.add_file(file_hash=file_hash, file_name=file_name)
+                    self.analysis_json.update_report(index=file_hash, report_json=report_json)
+            except Exception as error:
+                log_error(f"in reload_all_analysis for file {file_name} with hash {file_hash}")
         self.analysis_json.write_to_file()
         message = f"in reload_all_analysis created analysis file with {len(self.analysis_json.analysis_data)} analysis"
         log_info(message)
