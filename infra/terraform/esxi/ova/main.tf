@@ -5,6 +5,10 @@ terraform {
       source  = "registry.terraform.io/josenk/esxi"
       version = "~> 1.8.1"
     }
+    random = {
+      source = "hashicorp/random"
+      version = "3.1.0"
+    }
   }
 }
 
@@ -17,7 +21,7 @@ provider "esxi" {
 
 resource "esxi_guest" "this" {
   count      = var.instance_count
-  guest_name = "${var.name_prefix}-${count.index}"
+  guest_name = "${var.name_prefix}-${var.random_string}-${count.index}"
 
   disk_store = var.datastore
   ovf_source = var.ovf_source
