@@ -1,9 +1,12 @@
 import asyncio
 from unittest import TestCase
+from unittest.mock import patch
 
 from osbot_utils.utils.Dev import pprint
+from osbot_utils.utils.Files import file_contents_as_bytes
 
-
+from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
+from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.processing.Loops import Loops
 from cdr_plugin_folder_to_folder.utils.Logging import log_info, log_debug
 from cdr_plugin_folder_to_folder.utils.Logging_Process import start_logging
@@ -17,11 +20,11 @@ class test_Loops(Temp_Config):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls.test_data = Test_Data()
-        cls.test_file = cls.test_data.image()
-        cls.pre_processor = Pre_Processor()
-        cls.pre_processor.clear_data_and_status_folders()
-        cls.stage_1 = cls.pre_processor.process(cls.test_file)
+        #cls.test_data = Test_Data()
+        #cls.test_file = cls.test_data.image()
+        #cls.pre_processor = Pre_Processor()
+        #cls.pre_processor.clear_data_and_status_folders()
+        #cls.stage_1 = cls.pre_processor.process(cls.test_file)
         pass
 
     def setUp(self) -> None:
@@ -39,5 +42,28 @@ class test_Loops(Temp_Config):
         loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=1))
 
     def test_LoopHashDirectoriesInternal(self):
-        self.loops.LoopHashDirectoriesInternal(thread_count=1, do_single=False)
+        Loops.continue_processing = True
+        count = 40
+        self.add_test_files(count=count, execute_stage_1=True)
+
+        with patch.object(File_Processing, 'do_rebuild', return_value=True):
+            self.loops.LoopHashDirectoriesInternal(thread_count=30, do_single=False)
+
+        metadatas = self.storage.hd2_metadatas()
+
+        Loops.continue_processing = False
+        for metadata in metadatas:
+            assert metadata.get('rebuild_status') ==  'Completed Successfully'
+
+
+        #metadata = metadatas[0]
+        #hd3_file = hd3_files[0]
+
+        #assert result is True
+        #assert len(hd3_files) == count
+        #assert len(metadatas) == count
+        #assert b'Glasswall Processed' in file_contents_as_bytes(hd3_file)
+        #assert metadata.get('rebuild_status') == 'Completed Successfully'
+
+
 

@@ -74,6 +74,8 @@ class Storage:
     def hd3(self, path=''):
         return path_combine(self.config.hd3_location, path        )  # add path and convert to absolute paths
 
+    def hd3_files(self):
+        return FileService.files_in_folder(self.hd3())
 
 
 

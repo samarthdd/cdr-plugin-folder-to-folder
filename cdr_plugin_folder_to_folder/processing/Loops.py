@@ -4,6 +4,7 @@ import sys
 import threading
 import asyncio
 import subprocess
+from multiprocessing.pool import ThreadPool
 
 from osbot_utils.testing.Duration import Duration
 from osbot_utils.utils.Files import create_folder, folder_exists
@@ -105,8 +106,11 @@ class Loops(object):
                 return False
 
 
-    def ProcessDirectory(self, itempath, file_hash, process_index):
+    def ProcessDirectory(self, thread_data):
+        (itempath, file_hash, process_index) = thread_data
         endpoint_index = process_index % self.config.endpoints_count
+        if not Loops.continue_processing:
+            return False
         return self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
 
         # note: removing retries from this method (it should not be handled like this
@@ -141,6 +145,8 @@ class Loops(object):
 
         process_index   = 0
 
+        log_info(message=f'before Mapping thread_data for {len(json_list)} files')
+        thread_data = []
         for key in json_list:
             file_hash   =  key
 
@@ -152,28 +158,40 @@ class Loops(object):
                 json_list[key]["file_status"] = FileStatus.FAILED
                 continue
 
-            # limit the number of parallel threads
-            if process_index % int(thread_count) == 0:                      # todo: refactor this workflow to use multiprocess and queues
-                # Clean up the threads
-                for index, thread in enumerate(threads):                    # todo: since at the moment this will block allocating new threads until
-                    thread.join()                                           #       all have finishing execution
-
             process_index += 1
-            log_info(message=f"in LoopHashDirectoriesInternal process_index={process_index} , thread #{process_index % int(thread_count) }")
-            x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_hash, process_index,))
-            threads.append(x)
-            x.start()
+            thread_data.append((itempath, file_hash, process_index,))
+            # # limit the number of parallel threads
+            #
+            # if process_index % int(thread_count) == 0:                      # todo: refactor this workflow to use multiprocess and queues
+            #     # Clean up the threads
+            #     for index, thread in enumerate(threads):                    # todo: since at the moment this will block allocating new threads until
+            #         thread.join()                                           #       all have finishing execution
+            #
+            # process_index += 1
+            # log_info(message=f"in LoopHashDirectoriesInternal process_index={process_index} , thread #{process_index % int(thread_count) }")
+            # x = threading.Thread(target=self.ProcessDirectory, args=(itempath, file_hash, process_index,))
+            # threads.append(x)
+            # x.start()
+            #
+            # if do_single:
+            #     break
+            #
+            # if not Loops.continue_processing:
+            #     break
 
-            if do_single:
-                break
+        # for index, thread in enumerate(threads):
+        #     thread.join()
 
-            if not Loops.continue_processing:
-                break
-
-        for index, thread in enumerate(threads):
-            thread.join()
+        log_info(message=f'after mapped thread_data, there are {len(thread_data)} mapped items')
+        thread_data = thread_data[:50]
+        log_info(message=f'to start with only processing {len(thread_data)} thread_data items')
+        pool = ThreadPool(thread_count)
+        results = pool.map(self.ProcessDirectory, thread_data)
+        pool.close()
+        pool.join()
 
         self.events.add_log("LoopHashDirectoriesAsync finished")
+        return results
 
     async def LoopHashDirectoriesAsync(self, thread_count, do_single = False):
         await Loops.lock.acquire()
