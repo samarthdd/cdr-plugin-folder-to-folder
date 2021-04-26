@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import temp_folder, folder_files, folder_delete_all, folder_create, file_create_bytes, \
-    file_contents_as_bytes, file_contents, file_name
+    file_contents_as_bytes, file_contents, file_name, temp_file, file_sha256
 from osbot_utils.utils.Http import POST, POST_json
 from osbot_utils.utils.Json import json_to_str
 from osbot_utils.utils.Misc import base64_to_str, base64_to_bytes, str_to_bytes, random_string, random_text, \
@@ -66,11 +66,32 @@ class test_File_Processing(Temp_Config):
         hash        = Metadata_Utils().file_hash(self.test_file)
         assert self.analysis_json.add_file(hash, self.test_file_name) is True
         dir         = self.metadata.metadata_folder_path()
-        self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, source_path=self.test_file, dir=dir)
+        result = self.file_processing.do_rebuild(endpoint=endpoint, hash=hash, source_path=self.test_file, dir=dir)
+        assert result is True
         assert self.metadata.metadata_file_exists()
         assert self.metadata.report_file_exists()
 
+    def test_do_rebuild_bad_file(self):  # refactor
+        bad_file      = temp_file(contents=random_text())
+        file_hash     = file_sha256(bad_file)
+        metadata      = self.meta_service.create_metadata(bad_file)
+        endpoint    = f'http://{self.sdk_server}:{self.sdk_port}'
+        dir         = metadata.metadata_folder_path()
+        result      = self.file_processing.do_rebuild(endpoint=endpoint, hash=file_hash, source_path=bad_file, dir=dir)
+        assert result == False
+        metadata.load()
+        assert metadata.data.get('error') ==  'Engine response could not be decoded'
 
+    def test_processDirectory__bad_file(self):
+        bad_file = temp_file(contents=random_text())
+        metadata = self.meta_service.create_metadata(bad_file)
+        endpoint = f'http://{self.sdk_server}:{self.sdk_port}'
+        dir = metadata.metadata_folder_path()
+        result = self.file_processing.processDirectory(endpoint=endpoint, dir=dir)
+        assert result == False
+        metadata.load()
+        assert metadata.data.get('rebuild_status') == 'Completed with errors'
+        assert metadata.data.get('error')          == 'Engine response could not be decoded'
 
     def test_pdf_rebuild(self,):            # refactor into separate test file
         #server          = "192.168.0.249"   # local

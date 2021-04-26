@@ -84,10 +84,10 @@ class Loops(object):
                         'timestamp': datetime.now(),
                     }
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
-                meta_service.set_error(itempath, "none")
-                meta_service.set_status(itempath, FileStatus.COMPLETED)
+                #meta_service.set_error(itempath, "none")
+                #meta_service.set_status(itempath, FileStatus.COMPLETED)
                 self.status.add_completed()
-                self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
+                #self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
                 events.add_log("Has been processed")
                 return True
             except Exception as error:

@@ -17,7 +17,7 @@ from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
-from cdr_plugin_folder_to_folder.pre_processing.Status import Status
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
 
@@ -89,8 +89,10 @@ class File_Processing:
             #self.report_elastic.add_report(json_obj)
 
             self.analysis_json.update_report(os.path.basename(dir), json_obj)
+            return True
         except Exception as error:
             log_error(message=f"Error in parsing xmlreport for {fileId} : {error}")
+            return False
 
     # Save to HD3
     def save_file(self, result, processed_path):
@@ -120,19 +122,22 @@ class File_Processing:
 
             self.meta_service.set_rebuild_server(dir, endpoint)
 
-            #file_size = os.path.getsize(source_path)
-            #self.meta_service.set_original_file_size(dir, file_size)
-
             encodedFile = FileService.base64encode(source_path)
             if not encodedFile:
-                self.events_log.add_log("Failed to encode the file")
-                raise ValueError("Failed to encode the file")
+                message = f"Failed to encode the file: {hash}"
+                log_error(message=message)
+                self.events_log.add_log(message)
+                self.meta_service.set_error(dir,message)
+                return False
 
             response = self.rebuild(endpoint, encodedFile)
             result = response.text
             if not result:
-                self.events_log.add_log('Failed to rebuild the file')
-                raise ValueError('Failed to rebuild the file')
+                message = f"Failed to rebuild the file : {hash}"
+                log_error(message=message)
+                self.events_log.add_log(message)
+                self.meta_service.set_error(dir, message)
+                return False
 
             try:
                 for path in self.meta_service.get_original_file_paths(dir):
@@ -153,23 +158,38 @@ class File_Processing:
                     self.meta_service.set_rebuild_file_size(dir, file_size)
                     self.meta_service.set_rebuild_file_path(dir, final_rebuild_file_path)   # capture final_rebuild_file_path
                     self.meta_service.set_rebuild_hash(dir, rebuild_hash)                   # capture it
+                if not FileService.base64decode(result):
+                    message = f"Engine response could not be decoded"
+                    log_error(message=message, data=f"{result}")
+                    self.meta_service.set_error(dir,message)
+                    return False
             except Exception as error:
-                log_error(message=f"Error Saving file for {hash} : {error}")
+                message=f"Error Saving file for {hash} : {error}"
+                log_error(message=message)
+                self.meta_service.set_xml_report_status(dir, "No Report")
+                self.meta_service.set_error(dir,message)
+                return False
 
             headers = response.headers
             fileIdKey = "X-Adaptation-File-Id"
 
             # get XML report
             if fileIdKey in headers:
-                self.get_xmlreport(endpoint, headers[fileIdKey], dir)
-                self.events_log.add_log('The XML report has been saved')
-                self.meta_service.set_xml_report_status(dir, "Obtained")
+                if self.get_xmlreport(endpoint, headers[fileIdKey], dir):
+                    self.events_log.add_log('The XML report has been saved')
+                    self.meta_service.set_xml_report_status(dir, "Obtained")
+                else:
+                    self.meta_service.set_xml_report_status(dir, "No XML Report")
             else:
                 self.meta_service.set_xml_report_status(dir, "Failed to obtain")
-                self.events_log.add_log('No X-Adaptation-File-Id header found in the response')
-                raise ValueError("No X-Adaptation-File-Id header found in the response")
+                message = f'No X-Adaptation-File-Id header found in the response for {hash}'
+                log_error(message)
+                self.events_log.add_log(message)
+                self.meta_service.set_error(dir, message)
+                return False
+                #raise ValueError("No X-Adaptation-File-Id header found in the response")
 
-
+            # todo: add when server side supports this
             # SDKEngineVersionKey = "X-SDK-Engine-Version"
             # SDKAPIVersionKey = "X-SDK-Api-Version"
             #
@@ -180,6 +200,7 @@ class File_Processing:
             #
             # self.meta_service.set_server_version(dir, "Engine:" + self.sdk_engine_version + " API:" + self.sdk_api_version )
         log_info(message=f"rebuild ok for file {hash} on endpoint {endpoint} took {duration.seconds()} seconds")
+        return True
 
     @log_duration
     def processDirectory (self, endpoint, dir):
@@ -187,12 +208,14 @@ class File_Processing:
         hash = ntpath.basename(dir)
         if len(hash) != 64:
             self.events_log.add_log("Unexpected hash length")
-            raise ValueError("Unexpected hash length")
+            #raise ValueError("Unexpected hash length")
+            return False
 
         metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
         if not (FileService.file_exist(metadata_file_path)):
             self.events_log.add_log("The metadate.json file does not exist")
-            raise ValueError("The metadate.json file does not exist")
+            #raise ValueError("The metadate.json file does not exist")
+            return False
 
         if not self.meta_service.is_initial_status(dir):
             self.events_log.add_log("Metadata not in the INITIAL state")
@@ -204,13 +227,19 @@ class File_Processing:
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
             self.events_log.add_log("File does not exist")
-            raise ValueError("File does not exist")
+            #raise ValueError("File does not exist")
+            return False
 
         self.events_log.add_log("Sending to rebuild")
         tik = datetime.now()
-        self.do_rebuild(endpoint, hash, source_path, dir)
+        status = self.do_rebuild(endpoint, hash, source_path, dir)
+        if status:
+            self.meta_service.set_status(dir, FileStatus.COMPLETED)
+            self.meta_service.set_error(dir, "none")
+        else:
+            self.meta_service.set_status(dir, FileStatus.FAILED)
         tok = datetime.now()
         delta = tok - tik
         self.meta_service.set_rebuild_file_duration(dir, str(delta))
 
-        return True
+        return status
