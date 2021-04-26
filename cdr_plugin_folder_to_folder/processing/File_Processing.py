@@ -37,6 +37,10 @@ class File_Processing:
 
         self.analysis_json  = Analysis_Json()
 
+    def add_event_log(self, message, event_data = {}):
+        json_data = self.events_log.add_log(message, event_data)
+        self.events_elastic.add_event_log(json_data)
+
     def base64request(self, endpoint, api_route, base64enc_file):
         try:
             url = endpoint + "/" + api_route
@@ -98,7 +102,7 @@ class File_Processing:
 
     # Save to HD3
     def save_file(self, result, processed_path):
-        self.events_log.add_log('Saving to: ' + processed_path)
+        self.add_event_log('Saving to: ' + processed_path)
 
         dirname = ntpath.dirname(processed_path)
         basename = ntpath.basename(processed_path)
@@ -108,11 +112,11 @@ class File_Processing:
 
         if decoded:
             FileService.wrtie_binary_file(dirname, basename, decoded)
-            self.events_log.add_log('The decoded file has been saved')
+            self.add_event_log('The decoded file has been saved')
             return processed_path
         else:
             FileService.wrtie_file(dirname, basename + ".html", result)                     # todo: capture better this workflow
-            self.events_log.add_log('Decoding FAILED. The HTML file has been saved')
+            self.add_event_log('Decoding FAILED. The HTML file has been saved')
             return processed_path + '.html'                                                 # todo: refactor this workflow and how this is calculated
 
     @log_duration
@@ -120,7 +124,7 @@ class File_Processing:
         log_info(message=f"Starting rebuild for file {hash} on endpoint {endpoint}")
         with Duration() as duration:
             event_data = {"endpoint": endpoint, "hash": hash, "source_path": source_path, "dir": dir } # todo: see if we can use a variable that holds the params data
-            self.events_log.add_log('Starting File rebuild', event_data)
+            self.add_event_log('Starting File rebuild', event_data)
 
             self.meta_service.set_rebuild_server(dir, endpoint)
 
@@ -128,7 +132,7 @@ class File_Processing:
             if not encodedFile:
                 message = f"Failed to encode the file: {hash}"
                 log_error(message=message)
-                self.events_log.add_log(message)
+                self.add_event_log(message)
                 self.meta_service.set_error(dir,message)
                 return False
 
@@ -137,7 +141,7 @@ class File_Processing:
             if not result:
                 message = f"Failed to rebuild the file : {hash}"
                 log_error(message=message)
-                self.events_log.add_log(message)
+                self.add_event_log(message)
                 self.meta_service.set_error(dir, message)
                 return False
 
@@ -178,7 +182,7 @@ class File_Processing:
             # get XML report
             if fileIdKey in headers:
                 if self.get_xmlreport(endpoint, headers[fileIdKey], dir):
-                    self.events_log.add_log('The XML report has been saved')
+                    self.add_event_log('The XML report has been saved')
                     self.meta_service.set_xml_report_status(dir, "Obtained")
                 else:
                     self.meta_service.set_xml_report_status(dir, "No XML Report")
@@ -186,7 +190,7 @@ class File_Processing:
                 self.meta_service.set_xml_report_status(dir, "Failed to obtain")
                 message = f'No X-Adaptation-File-Id header found in the response for {hash}'
                 log_error(message)
-                self.events_log.add_log(message)
+                self.add_event_log(message)
                 self.meta_service.set_error(dir, message)
                 return False
                 #raise ValueError("No X-Adaptation-File-Id header found in the response")
@@ -206,21 +210,21 @@ class File_Processing:
 
     @log_duration
     def processDirectory (self, endpoint, dir):
-        self.events_log.add_log("Processing Directory: " + dir)
+        self.add_event_log("Processing Directory: " + dir)
         hash = ntpath.basename(dir)
         if len(hash) != 64:
-            self.events_log.add_log("Unexpected hash length")
+            self.add_event_log("Unexpected hash length")
             #raise ValueError("Unexpected hash length")
             return False
 
         metadata_file_path = os.path.join(dir, Metadata_Service.METADATA_FILE_NAME)
         if not (FileService.file_exist(metadata_file_path)):
-            self.events_log.add_log("The metadate.json file does not exist")
+            self.add_event_log("The metadate.json file does not exist")
             #raise ValueError("The metadate.json file does not exist")
             return False
 
         if not self.meta_service.is_initial_status(dir):
-            self.events_log.add_log("Metadata not in the INITIAL state")
+            self.add_event_log("Metadata not in the INITIAL state")
             return False
 
         self.meta_service.set_status_inprogress(dir)
@@ -228,11 +232,11 @@ class File_Processing:
 
         source_path = os.path.join(dir, "source")
         if not (FileService.file_exist(source_path)):
-            self.events_log.add_log("File does not exist")
+            self.add_event_log("File does not exist")
             #raise ValueError("File does not exist")
             return False
 
-        self.events_log.add_log("Sending to rebuild")
+        self.add_event_log("Sending to rebuild")
         tik = datetime.now()
         status = self.do_rebuild(endpoint, hash, source_path, dir)
         if status:

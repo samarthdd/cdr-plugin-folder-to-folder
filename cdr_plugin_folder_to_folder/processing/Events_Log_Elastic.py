@@ -23,8 +23,8 @@ class Events_Log_Elastic:
 
     # class methods
 
-    def add_event_log(self, events_log):
-        return self.elastic().add(events_log)
+    def add_event_log(self, event_log):
+        return self.elastic().add(event_log)
 
     def delete_event_log(self,timestamp):
         return self.elastic().delete(record_id=timestamp)

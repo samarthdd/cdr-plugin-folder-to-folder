@@ -78,6 +78,7 @@ class Loops(object):
                 file_processing = File_Processing(events, self.events_elastic, self.report_elastic, meta_service)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
+                    self.status.add_failed()
                     return False
 
                 log_data = {

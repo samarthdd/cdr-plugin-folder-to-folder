@@ -58,6 +58,7 @@ class Events_Log:
 
         self.data["events"].append(json_data)
         self.write_to_file()
+        return json_data
 
 
 
