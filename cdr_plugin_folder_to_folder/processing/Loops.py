@@ -206,15 +206,16 @@ class Loops(object):
             self.status.save()
 
     @log_duration
-    def LoopHashDirectories(self):
+    def LoopHashDirectories(self, thread_count=None):
         #Allow only a single loop to be run at a time
         if self.IsProcessing():
             log_error(message="ERROR: Attempt to start processing while processing is in progress")
             return False
+        thread_count = thread_count or self.config.thread_count
         log_info(message="in LoopHashDirectories, about to start main loop")
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.LoopHashDirectoriesAsync(self.config.thread_count))
+        loop.run_until_complete(self.LoopHashDirectoriesAsync(thread_count))
         log_info(message="in LoopHashDirectories, Loop completed")
         return True
 
