@@ -27,7 +27,7 @@ DEFAULT_THREAD_COUNT     = 20
 DEFAULT_TEST_SDK         = '34.242.205.32'
 DEFAULT_ENDPOINTS        = '{"Endpoints":[{"IP":"' + DEFAULT_TEST_SDK + '", "Port":"8080"}]}'
 DEFAULT_REQUEST_TIMEOUT  = 60
-API_VERSION              = "v0.5.55"
+API_VERSION              = "v0.5.56"
 
 
 
