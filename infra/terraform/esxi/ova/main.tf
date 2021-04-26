@@ -28,7 +28,7 @@ resource "esxi_guest" "this" {
 
   numvcpus       = var.vcpu_count
   memsize        = var.memory_mib
-  boot_disk_size = var.boot_disk_size > 0 ? var.boot_disk_size : null
+  # boot_disk_size = var.boot_disk_size > 0 ? var.boot_disk_size : null
 
   power = var.auto_power_on ? "on" : "off"
 
