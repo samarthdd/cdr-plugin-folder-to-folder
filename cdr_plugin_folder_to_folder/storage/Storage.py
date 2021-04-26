@@ -58,13 +58,16 @@ class Storage:
 
     @index_by
     @group_by
-    def hd2_metadatas(self):
+    def hd2_metadatas(self, return_data=True):
         from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata
         metadatas = []
         for file_hash in self.hd2_file_hashes():
             metadata = Metadata(file_hash=file_hash).load()
             if metadata.exists():
-                metadatas.append(metadata.data)
+                if return_data:
+                    metadatas.append(metadata.data)
+                else:
+                    metadatas.append(metadata)
         return metadatas
 
 

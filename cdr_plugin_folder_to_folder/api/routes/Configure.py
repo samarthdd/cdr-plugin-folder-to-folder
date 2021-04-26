@@ -8,6 +8,7 @@ from typing import List
 from fastapi import FastAPI, HTTPException
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Elastic import Metadata_Elastic
+from cdr_plugin_folder_to_folder.processing.Analysis_Elastic import Analysis_Elastic
 from cdr_plugin_folder_to_folder.utils.Logging import log_debug
 from cdr_plugin_folder_to_folder.utils.Logging_Process import process_all_log_entries_and_end_logging_process, \
     start_logging
@@ -62,10 +63,17 @@ def reload_elastic_file_metadata():
 def reload_elastic_file_metadata():
     return Metadata_Elastic().reload_hash_json()
 
-@router.put("/reset_logging/")
+@router.post("/reset_logging/")
 def reset_logging():
     process_all_log_entries_and_end_logging_process()
     start_logging()
     message = 'Logging was reset via API call'
     log_debug(message=message)
     return message
+
+
+@router.put("/reload_all_analysis")
+def reset_logging():
+    return Analysis_Elastic().reload_all_analysis()
+
+

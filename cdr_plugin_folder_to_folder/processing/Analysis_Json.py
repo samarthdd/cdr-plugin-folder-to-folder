@@ -129,3 +129,8 @@ class Analysis_Json:
                         issue_items_list.append(issue_item["gw:TechnicalDescription"])
 
         return total_issue_count, issue_items_list
+
+    def reset(self):
+        self.analysis_data = {}
+        self.write_to_file()
+        return self
