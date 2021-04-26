@@ -5,7 +5,8 @@ from time import sleep
 
 from osbot_utils.utils.Dev import pprint
 
-from cdr_plugin_folder_to_folder.utils.Logging import logging_queue, logging_enabled, Logging, log_info, log_debug
+from cdr_plugin_folder_to_folder.utils.Logging import Logging, log_info, log_debug, \
+    reset_queue, get_logging_queue, get_logging_enabled
 
 logging_process               = None
 logging_worker                = None
@@ -14,12 +15,13 @@ print_log_messages            = False
 
 def start_logging():
     global logging_worker
-    queue   = logging_queue
-    enabled = logging_enabled
-    if logging_worker is None and logging_enabled.value ==0:       # if it already enabled don't start a new process
+    queue   = get_logging_queue()
+    enabled = get_logging_enabled()
+
+    if logging_worker is None and enabled.value ==0:       # if it already enabled don't start a new process
         worker = multiprocessing.Process(target=start_logging_process, args=(queue, enabled), daemon=True)
         worker.start()
-        logging_enabled.value = 1       # set enabled value
+        enabled.value = 1       # set enabled value
         logging_worker = worker
         log_info(message="Logging Process started")
     return logging_worker
@@ -34,8 +36,10 @@ def start_logging_process(queue: Queue, enabled: Value):
 # use this method during development to wait for log entries to be sent to elastic (with it the tests will end before the logs have been captured)
 def process_all_log_entries_and_end_logging_process():
     global logging_worker
+    get_logging_enabled().value = 0
     log_debug(message='stop_logging', data={'when': 'now'})
     logging_worker.join()
+    reset_queue()
 
 # def log_process(queue,record):
 #

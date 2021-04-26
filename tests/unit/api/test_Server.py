@@ -52,6 +52,9 @@ class test_Server(TestCase):
                                           '/configuration/configure_env/'                        : { 'methods': {'POST'}, 'name': 'configure_environment'               , 'path_format': '/configuration/configure_env/'                        },
                                           '/configuration/configure_gw_sdk_endpoints/'           : { 'methods': {'POST'}, 'name': 'configure_multiple_gw_sdk_endpoints' , 'path_format': '/configuration/configure_gw_sdk_endpoints/'           },
                                           '/configuration/reset_elastic_file_metadata/'          : { 'methods': {'PUT' }, 'name': 'reset_elastic_file_metadata'         , 'path_format': '/configuration/reset_elastic_file_metadata/'          },
+                                          '/configuration/reset_logging/'                        : { 'methods': {'PUT' }, 'name': 'reset_logging'                       , 'path_format': '/configuration/reset_logging/'
+
+                                                                                                     },
                                           # '/file-distributor/hd1/{num_of_files}'                 : { 'methods': {'GET' }, 'name': 'get_hd1_files'                       , 'path_format': '/file-distributor/hd1/{num_of_files}'                 },
                                           # '/file-distributor/hd2/hash_folder_list/{num_of_files}': { 'methods': {'GET' }, 'name': 'get_hd2_hash_folders_files'          , 'path_format': '/file-distributor/hd2/hash_folder_list/{num_of_files}'},
                                           # '/file-distributor/hd2/metadata/{num_of_files}'        : { 'methods': {'GET' }, 'name': 'get_hd2_metadata_files'              , 'path_format': '/file-distributor/hd2/metadata/{num_of_files}'        },

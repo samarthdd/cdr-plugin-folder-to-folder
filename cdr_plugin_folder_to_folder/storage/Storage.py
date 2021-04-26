@@ -4,7 +4,7 @@ from os.path import abspath
 
 from osbot_utils.decorators.lists.group_by import group_by
 from osbot_utils.decorators.lists.index_by import index_by
-from osbot_utils.utils.Files import temp_folder, path_combine, file_exists, file_copy
+from osbot_utils.utils.Files import temp_folder, path_combine, file_exists, file_copy, folder_delete_all, folder_create
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.utils import file_utils
@@ -26,6 +26,10 @@ class Storage:
         if file_exists(path):
             return file_copy(path, self.hd1())
 
+    def hd1_delete_all_files(self):
+        folder_delete_all(self.hd1())
+        folder_create(self.hd1())
+
     def hd1_files(self):
         return FileService.files_in_folder(self.hd1())
 
@@ -39,6 +43,12 @@ class Storage:
 
     def hd2_data(self, path=''):
         return path_combine(self.config.hd2_data_location, path   )   # add path and convert to absolute paths
+
+    def hd2_delete_all_files(self):
+        folder_delete_all(self.hd2_data())
+        folder_delete_all(self.hd2_status())
+        folder_create(self.hd2_data())
+        folder_create(self.hd2_status())
 
     def hd2_file_hashes(self):
         hashes = []

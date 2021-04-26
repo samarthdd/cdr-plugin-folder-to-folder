@@ -37,6 +37,8 @@ class test_Metadata_Elastic(Temp_Config):
         file_delete(cls.test_file)
 
     def setUp(self) -> None:
+        self.storage.hd1_delete_all_files()
+        self.storage.hd2_delete_all_files()
         # assert cls.test_metadata.exists()
 
         #self.test_metadata_folder = self.test_metadata.metadata_folder_path()
@@ -62,7 +64,7 @@ class test_Metadata_Elastic(Temp_Config):
         assert self.metadata_elastic.delete_metadata(original_hash=original_hash).get('result') == 'deleted'
         assert self.metadata_elastic.get_metadata   (original_hash=original_hash)               == {}
 
-    def test_clear_all_metadata(self):
+    def test_delete_all_metadata(self):
         self.metadata_elastic.delete_all_metadata()
         assert len(self.metadata_elastic.get_all_metadata()) == 0
 
@@ -76,7 +78,7 @@ class test_Metadata_Elastic(Temp_Config):
         text_size = 500             # use 50000
         self.add_test_files(count=count, text_size=text_size, execute_stage_1=True)
         message = self.metadata_elastic.reset_elastic_data()
-        assert message == f'Elastic files_metadata has been reset and {count + 2} metadata items loaded'
+        assert message == f'Elastic files_metadata has been reset and {count} metadata items loaded'
 
 
 

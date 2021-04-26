@@ -65,9 +65,23 @@ class Logging:
 logging_queue   = Queue()
 logging_enabled = Value('i', 0)
 
+def get_logging_queue():
+    global  logging_queue
+    return logging_queue
+
+def get_logging_enabled():
+    global  logging_enabled
+    return logging_enabled
+
 def set_logging_queue(queue):           # use to enabled multiple process to send logging messages to a particular queue
     global logging_queue
     logging_queue = queue
+
+def reset_queue():
+    global logging_queue
+    global logging_enabled
+    logging_queue   = Queue()
+    logging_enabled = Value('i', 0)
 
 def calculate_from_method(from_method,caller_depth=2):
 
