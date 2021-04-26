@@ -4,7 +4,7 @@ from cdr_plugin_folder_to_folder.utils.Elastic import Elastic
 
 class Events_Log_Elastic:
     def __init__(self):
-        self.index_name = 'files_events_log_json'
+        self.index_name = 'event_logs'
         self.id_key     = 'timestamp'
         self.enabled    = False
 

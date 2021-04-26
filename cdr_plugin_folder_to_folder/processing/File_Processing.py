@@ -16,6 +16,7 @@ from cdr_plugin_folder_to_folder.utils.Logging import log_error, log_info
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
+from cdr_plugin_folder_to_folder.processing.Events_Log_Elastic import Events_Log_Elastic
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
@@ -23,9 +24,10 @@ from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
 
 class File_Processing:
 
-    def __init__(self, events_log, report_elastic, meta_service):
+    def __init__(self, events_log, events_elastic, report_elastic, meta_service):
         self.meta_service   = meta_service
         self.events_log     = events_log
+        self.events_elastic = events_elastic
         self.storage        = Storage()
         self.config         = Config()
         self.status         = Status()

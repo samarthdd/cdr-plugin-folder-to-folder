@@ -13,6 +13,7 @@ from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Servi
 from cdr_plugin_folder_to_folder.metadata.Metadata_Utils import Metadata_Utils
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
+from cdr_plugin_folder_to_folder.processing.Events_Log_Elastic import Events_Log_Elastic
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.file_utils import FileService
@@ -51,8 +52,9 @@ class test_File_Processing(Temp_Config):
         self.sdk_port        = '8080'
         self.temp_folder     = temp_folder()
         self.events_log      = Events_Log(self.temp_folder)
+        self.events_elastic  = Events_Log_Elastic()
         self.report_elastic  = Report_Elastic()
-        self.file_processing = File_Processing(events_log=self.events_log, report_elastic=self.report_elastic, meta_service=self.meta_service )
+        self.file_processing = File_Processing(events_log=self.events_log, events_elastic = self.events_elastic, report_elastic=self.report_elastic, meta_service=self.meta_service )
         self.storage         = Storage()
 
     def test_get_xmlreport(self):
