@@ -90,7 +90,7 @@ class Status:
             data[Status.VAR_CURRENT_STATUS] = updated_status
 
             if updated_status == FileStatus.NONE:
-                data["files_count"] += count
+                data[Status.VAR_FILES_COUNT] += count
                 data["files_left_to_be_copied"] += count
                 
             elif updated_status == FileStatus.INITIAL:
@@ -99,27 +99,26 @@ class Status:
                     data["files_left_to_be_copied"] -= 1
 
             elif updated_status == FileStatus.IN_PROGRESS:
-                data["in_progress"] += 1
+                data[Status.VAR_IN_PROGRESS] += 1
 
             elif updated_status == FileStatus.COMPLETED:
-                data["completed"] += 1
-                if data["in_progress"] > 0:
-                    data["in_progress"] -= 1
+                data[Status.VAR_COMPLETED] += 1
+                if data[Status.VAR_IN_PROGRESS] > 0:
+                    data[Status.VAR_IN_PROGRESS] -= 1
                 if data["files_left_to_process"] > 0:
                     data["files_left_to_process"] -= 1
+
             elif updated_status == FileStatus.FAILED:
-                data["failed"] += 1
-                if data["in_progress"] > 0:
-                    data["in_progress"] -= 1
+                data[Status.VAR_FAILED] += 1
+                if data[Status.VAR_IN_PROGRESS] > 0:
+                    data[Status.VAR_IN_PROGRESS] -= 1
                 if data["files_left_to_process"] > 0:
                     data["files_left_to_process"] -= 1
 
             elif updated_status == FileStatus.TO_PROCESS:
-                data["files_to_process"] += 1
+                data[Status.VAR_FILES_TO_PROCESS] += 1
                 data["files_left_to_process"] += 1
 
-            if updated_status == FileStatus.INITIAL:
-                data[Status.VAR_FILES_COUNT] += 1
         finally:
             Status.lock.release()
             self.save()
