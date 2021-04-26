@@ -72,20 +72,25 @@ class File_Processing:
         return self.base64request(endpoint, "api/rebuild/base64", base64enc_file)
 
     def get_xmlreport(self, endpoint, fileId, dir):
+        log_info(message=f"getting XML Report for {fileId} at {endpoint}")
+
         xmlreport = self.xmlreport_request(endpoint, fileId)
         if not xmlreport:
             raise ValueError('Failed to obtain the XML report')
 
-        json_obj = xmltodict.parse(xmlreport)
+        try:
+            json_obj = xmltodict.parse(xmlreport)
 
-        file_extension = json_obj["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
-        self.meta_service.set_rebuild_file_extension(dir, file_extension)
-        json_obj['original_hash'] = os.path.basename(dir)
-        json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
+            file_extension = json_obj["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
+            self.meta_service.set_rebuild_file_extension(dir, file_extension)
+            json_obj['original_hash'] = os.path.basename(dir)
+            json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
-        self.report_elastic.add_report(json_obj)
+            self.report_elastic.add_report(json_obj)
 
-        self.analysis_json.update_report(os.path.basename(dir), json_obj)
+            self.analysis_json.update_report(os.path.basename(dir), json_obj)
+        except Exception as error:
+            log_error(message=f"Error in parsing xmlreport for {fileId} : {error}")
 
     # Save to HD3
     def save_file(self, result, processed_path):
@@ -129,24 +134,27 @@ class File_Processing:
                 self.events_log.add_log('Failed to rebuild the file')
                 raise ValueError('Failed to rebuild the file')
 
-            for path in self.meta_service.get_original_file_paths(dir):
-                #rebuild_file_path = path
-                if path.startswith(self.config.hd1_location):
-                    rebuild_file_path = path.replace(self.config.hd1_location, self.config.hd3_location)
-                else:
-                    rebuild_file_path = os.path.join(self.config.hd3_location, path)
+            try:
+                for path in self.meta_service.get_original_file_paths(dir):
+                    #rebuild_file_path = path
+                    if path.startswith(self.config.hd1_location):
+                        rebuild_file_path = path.replace(self.config.hd1_location, self.config.hd3_location)
+                    else:
+                        rebuild_file_path = os.path.join(self.config.hd3_location, path)
 
-                folder_create(parent_folder(rebuild_file_path))                         # make sure parent folder exists
+                    folder_create(parent_folder(rebuild_file_path))                         # make sure parent folder exists
 
-                final_rebuild_file_path = self.save_file(result, rebuild_file_path)     # returns actual file saved (which could be .html)
+                    final_rebuild_file_path = self.save_file(result, rebuild_file_path)     # returns actual file saved (which could be .html)
 
-                # todo: improve the performance of these update since each will trigger a save
-                file_size    = os.path.getsize(final_rebuild_file_path)                 # calculate rebuilt file fize
-                rebuild_hash = self.meta_service.file_hash(final_rebuild_file_path)     # calculate hash of final_rebuild_file_path
+                    # todo: improve the performance of these update since each will trigger a save
+                    file_size    = os.path.getsize(final_rebuild_file_path)                 # calculate rebuilt file fize
+                    rebuild_hash = self.meta_service.file_hash(final_rebuild_file_path)     # calculate hash of final_rebuild_file_path
 
-                self.meta_service.set_rebuild_file_size(dir, file_size)
-                self.meta_service.set_rebuild_file_path(dir, final_rebuild_file_path)   # capture final_rebuild_file_path
-                self.meta_service.set_rebuild_hash(dir, rebuild_hash)                   # capture it
+                    self.meta_service.set_rebuild_file_size(dir, file_size)
+                    self.meta_service.set_rebuild_file_path(dir, final_rebuild_file_path)   # capture final_rebuild_file_path
+                    self.meta_service.set_rebuild_hash(dir, rebuild_hash)                   # capture it
+            except Exception as error:
+                log_error(message=f"Error Saving file for {hash} : {error}")
 
             headers = response.headers
             fileIdKey = "X-Adaptation-File-Id"
@@ -162,18 +170,18 @@ class File_Processing:
                 raise ValueError("No X-Adaptation-File-Id header found in the response")
 
 
-            SDKEngineVersionKey = "X-SDK-Engine-Version"
-            SDKAPIVersionKey = "X-SDK-Api-Version"
-
-            if SDKEngineVersionKey in headers:
-                self.sdk_engine_version = headers[SDKEngineVersionKey]
-            if SDKAPIVersionKey in headers:
-                self.sdk_api_version = headers[SDKAPIVersionKey]
-
-            self.meta_service.set_server_version(dir, "Engine:" + self.sdk_engine_version + " API:" + self.sdk_api_version )
+            # SDKEngineVersionKey = "X-SDK-Engine-Version"
+            # SDKAPIVersionKey = "X-SDK-Api-Version"
+            #
+            # if SDKEngineVersionKey in headers:
+            #     self.sdk_engine_version = headers[SDKEngineVersionKey]
+            # if SDKAPIVersionKey in headers:
+            #     self.sdk_api_version = headers[SDKAPIVersionKey]
+            #
+            # self.meta_service.set_server_version(dir, "Engine:" + self.sdk_engine_version + " API:" + self.sdk_api_version )
         log_info(message=f"rebuild ok for file {hash} on endpoint {endpoint} took {duration.seconds()} seconds")
 
-    #@log_duration
+    @log_duration
     def processDirectory (self, endpoint, dir):
         self.events_log.add_log("Processing Directory: " + dir)
         hash = ntpath.basename(dir)

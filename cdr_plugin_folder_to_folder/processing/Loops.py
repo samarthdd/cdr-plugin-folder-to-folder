@@ -96,7 +96,7 @@ class Loops(object):
                     'status': FileStatus.FAILED,
                     'error': str(error),
                 }
-                log_error('error in ProcessDirectoryWithEndpoint', data=log_data)
+                log_error(message='error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED)
                 self.status.add_failed()
