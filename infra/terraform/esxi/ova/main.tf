@@ -32,10 +32,7 @@ resource "esxi_guest" "this" {
 
   power = var.auto_power_on ? "on" : "off"
 
-  notes = <<-EOF
-    Instance #: ${count.index}
-    Source OVA/OVF URL: ${var.ovf_source}
-  EOF
+  notes = "Instance #: ${count.index}|0ASource OVA/OVF URL: ${var.ovf_source}"
 
   network_interfaces {
     virtual_network = var.network
