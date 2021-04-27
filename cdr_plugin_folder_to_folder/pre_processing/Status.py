@@ -87,7 +87,7 @@ class Status:
         Status.lock.acquire()
         try:
             data = self.data()
-            #data[Status.VAR_CURRENT_STATUS] = updated_status
+            data[Status.VAR_CURRENT_STATUS] = updated_status
 
             if updated_status == FileStatus.NONE:
                 data[Status.VAR_FILES_COUNT] += count
