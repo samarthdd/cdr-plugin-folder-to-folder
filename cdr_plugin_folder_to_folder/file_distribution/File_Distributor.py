@@ -3,7 +3,7 @@ from cdr_plugin_folder_to_folder.common_settings.Config import Config
 import ntpath
 import logging as logger
 from os import environ
-from osbot_utils.utils.Files import folder_exists, zip_files,temp_folder, file_exists, folder_temp, folder_delete_all, temp_file, \
+from osbot_utils.utils.Files import folder_exists, zip_files,temp_folder, file_exists, folder_temp,file_delete, folder_delete_all, temp_file, \
     file_copy,file_contents,folder_copy,create_folder
 
 logger.basicConfig(level=logger.INFO)
@@ -135,6 +135,49 @@ class File_Distributor:
             logger.error(f"File_Distributor: get_hd2_status_hash_file : {error}")
             raise error
 
+    def get_hd2_data(self,num_of_files):
+        try:
+            list = []
+            count = 0
+            base_path=os.path.join(self.hd2_base_location,"data")
+            for folder in os.listdir(base_path):
+                list.append(os.path.join(base_path,folder))
+                count=count+1
+                if count == num_of_files:
+                    break
+
+            target_file_path = self.prepare_hd2_zip(list,"hd2_files.zip")
+            return target_file_path
+
+        except Exception as error:
+            logger.error(f"File_Distributor: get_hd2_events_file : {error}")
+            raise error
+
+    def prepare_hd2_zip(self,path_list , zip_name):
+        try:
+            self.temp_folder = temp_folder()
+
+            for hash_folder_path in path_list:
+                name = ntpath.basename(hash_folder_path)
+                dst_path = os.path.join(self.temp_folder, name)
+
+                if os.path.isdir(hash_folder_path):
+                    folder_copy(hash_folder_path, dst_path)
+
+                    hd2_source_file = os.path.join(dst_path, "source")
+                    if os.path.isfile(hd2_source_file):
+                        file_delete(hd2_source_file)
+
+            target_file_path = os.path.join(self.zip_folder, zip_name)
+            zip_files(self.temp_folder, file_pattern='*.*', target_file = target_file_path)
+            folder_delete_all(self.temp_folder)
+
+            return target_file_path
+
+        except Exception as error:
+            logger.error(f"File_Distributor: prepare_zip : {error}")
+            raise error
+
     # def prepare_zip(self,file_path_list,zip_name):
     #     try:
     #         self.temp_folder = temp_folder()
@@ -157,3 +200,4 @@ class File_Distributor:
     #     except Exception as error:
     #         logger.error(f"File_Distributor: prepare_zip : {error}")
     #         raise error
+
