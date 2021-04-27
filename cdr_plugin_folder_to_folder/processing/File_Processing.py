@@ -246,6 +246,6 @@ class File_Processing:
             self.meta_service.set_status(dir, FileStatus.FAILED)
         tok = datetime.now()
         delta = tok - tik
-        self.meta_service.set_rebuild_file_duration(dir, str(delta))
+        self.meta_service.set_rebuild_file_duration(dir, delta.total_seconds())
 
         return status

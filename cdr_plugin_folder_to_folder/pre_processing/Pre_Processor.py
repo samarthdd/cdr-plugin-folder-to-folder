@@ -86,8 +86,9 @@ class Pre_Processor:
 
     @log_duration
     def process_files(self):
+        self.status.set_phase_1()
         self.process_folder(self.storage.hd1())
-        self.status.save()
+        self.status.set_phase_2()
 
     @log_duration
     def process(self, file_path):

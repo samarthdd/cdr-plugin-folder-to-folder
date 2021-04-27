@@ -19,9 +19,9 @@ class FileStatus:                                     # todo move to separate fi
 
 class Processing_Status:
     STOPPED = "Stopped"
-    Started = "Started"
+    STARTED = "Started"
     PHASE_1 = "PHASE 1 - Copying Files"
-    PHASE_2 = "PHASE 1 - Rebuilding Files"
+    PHASE_2 = "PHASE 2 - Rebuilding Files"
 
 class Status:
 
@@ -82,13 +82,27 @@ class Status:
     def status_file_path(self):
         return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
 
+    def set_processing_status(self, processing_status):
+        Status.lock.acquire()
+        try:
+            data = self.data()
+            data[Status.VAR_CURRENT_STATUS] = processing_status
+        finally:
+            Status.lock.release()
+            self.save()
 
+        return self
+
+    def set_started      (self       ): return self.set_processing_status(Processing_Status.STARTED  )
+    def set_stopped      (self       ): return self.set_processing_status(Processing_Status.STOPPED  )
+    def set_phase_1      (self       ): return self.set_processing_status(Processing_Status.PHASE_1  )
+    def set_phase_2      (self       ): return self.set_processing_status(Processing_Status.PHASE_2  )
 
     def update_counters(self, updated_status, count=0):
         Status.lock.acquire()
         try:
             data = self.data()
-            data[Status.VAR_CURRENT_STATUS] = updated_status
+            #data[Status.VAR_CURRENT_STATUS] = updated_status
 
             if updated_status == FileStatus.NONE:
                 data[Status.VAR_FILES_COUNT] += count

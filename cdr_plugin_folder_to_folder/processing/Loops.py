@@ -204,12 +204,12 @@ class Loops(object):
         try:
             Loops.continue_processing = True
             Loops.processing_started = True
-
+            self.status.set_started()
             self.LoopHashDirectoriesInternal(thread_count, do_single)
         finally:
             Loops.processing_started = False
             Loops.lock.release()
-            self.status.save()
+            self.status.set_stopped()
 
     @log_duration
     def LoopHashDirectories(self, thread_count=None):
