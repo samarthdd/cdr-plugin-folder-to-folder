@@ -1,0 +1,111 @@
+{
+  "087a783915875b069c89d517491dd42b9e1b3619464a750e72a7ab44c06fa645": {
+    "file_name": "image3.jpg"
+  },
+  "279e9fa3aab749eb2286a106aec5eac5526f67ce50e4e2c4762133c96fb6141f": {
+    "file_name": "sample2_duplicate.pdf",
+    "original_hash": "279e9fa3aab749eb2286a106aec5eac5526f67ce50e4e2c4762133c96fb6141f",
+    "file_type": "pdf",
+    "file_size": "91636",
+    "remediated_item_count": 0,
+    "remediate_items_list": [],
+    "sanitised_item_count": 0,
+    "sanitised_items_list": [],
+    "issue_item_count": 0,
+    "issue_item_list": []
+  },
+  "2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f": {
+    "file_name": "sample3.pdf",
+    "original_hash": "2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f",
+    "file_type": "pdf",
+    "file_size": "45655",
+    "remediated_item_count": 0,
+    "remediate_items_list": [],
+    "sanitised_item_count": 0,
+    "sanitised_items_list": [],
+    "issue_item_count": 0,
+    "issue_item_list": []
+  },
+  "5e1b25d49373c4aa0007dfb52a9e7a1b91b9ac95b35936950551667f63cf9381": {
+    "file_name": "test.json"
+  },
+  "458d2ceb57b1bac2866c43e16cc9392b017aa48f0689876df25399d0f7ad198c": {
+    "file_name": "tab-code-of-practice.pdf",
+    "original_hash": "458d2ceb57b1bac2866c43e16cc9392b017aa48f0689876df25399d0f7ad198c",
+    "file_type": "pdf",
+    "file_size": "164185",
+    "remediated_item_count": 21,
+    "remediate_items_list": [
+      "Pdf Object Instances Not Regenerated.",
+      "Recreate standard PDF section remedies.",
+      "Recreate standard PDF token remedies.",
+      "Removed PDF token instances",
+      "Token tree instances removed.",
+      "Marked content tag /Artifact not supported.",
+      "Marked content tag /P not supported.",
+      "Marked content tag /Shape not supported.",
+      "Marked content tag /Span not supported.",
+      "Content stream operator BDC has at least one invalid operand.",
+      "Content stream operator BMC has at least one invalid operand.",
+      "Destination of link annotation object forbidden by content management policy - annotation removed.",
+      "Cleaning: Repairing value of /Last key (34, 0) inconsistent with last node (39, 0) in outline tree list.",
+      "Invalid outline tree node removed.",
+      "Value of /Last key (31, 0) is inconsistent with last node (42, 0) in outline tree list.",
+      "/Catalog dictionary contained an unexpected key (/LastModified).",
+      "/Catalog dictionary contained an unexpected key (/PieceInfo).",
+      "/MarkInfo dictionary contained an unexpected key (/LetterspaceFlags).",
+      "Trailer attribute /Size (360) should be the same as the Cross Reference Table maximum object number plus one (380).",
+      "/StructTreeRoot detected in a document catalog dictionary.",
+      "Value of /OpenAction key in a document catalog dictionary must be a valid action allowed by content management policy."
+    ],
+    "sanitised_item_count": 3,
+    "sanitised_items_list": [
+      "Internal hyperlink in outline tree forbidden by content management policy.",
+      "Document contains metadata: Document information dictionary detected in a document trailer dictionary.",
+      "Document contains metadata: XML Metadata detected in a document catalog dictionary."
+    ],
+    "issue_item_count": 0,
+    "issue_item_list": []
+  },
+  "450e7cbdf7bf47230b6d1b82a76afcfdcfbc3ce3c56568c56158a2aba9c5b6fc": {
+    "file_name": "tab-terms-of-reference.pdf",
+    "original_hash": "450e7cbdf7bf47230b6d1b82a76afcfdcfbc3ce3c56568c56158a2aba9c5b6fc",
+    "file_type": "pdf",
+    "file_size": "236820",
+    "remediated_item_count": 23,
+    "remediate_items_list": [
+      "Pdf Object Instances Not Regenerated.",
+      "Recreate standard PDF section remedies.",
+      "Recreate standard PDF token remedies.",
+      "Remedy additional Cross Reference Table entries.",
+      "Removed PDF token instances",
+      "Token tree instances removed.",
+      "Unreferenced Data Instances Removed",
+      "Marked content tag /Artifact not supported.",
+      "Marked content tag /P not supported.",
+      "Marked content tag /Shape not supported.",
+      "Marked content tag /Span not supported.",
+      "Content stream operator BDC has at least one invalid operand.",
+      "Content stream operator BMC has at least one invalid operand.",
+      "Action associated with a link annotation was removed by content management.",
+      "Cleaning: Repairing value of /Last key (34, 0) inconsistent with last node (35, 0) in outline tree list.",
+      "Cleaning: Repairing value of /Last key (37, 0) inconsistent with last node (34, 0) in outline tree list.",
+      "Invalid outline tree node removed.",
+      "Value of /Last key (31, 0) is inconsistent with last node (39, 0) in outline tree list.",
+      "/Catalog dictionary contained an unexpected key (/LastModified).",
+      "/Catalog dictionary contained an unexpected key (/PieceInfo).",
+      "/MarkInfo dictionary contained an unexpected key (/LetterspaceFlags).",
+      "/StructTreeRoot detected in a document catalog dictionary.",
+      "Value of /OpenAction key in a document catalog dictionary must be a valid action allowed by content management policy."
+    ],
+    "sanitised_item_count": 4,
+    "sanitised_items_list": [
+      "Action of type /URI removed by content management policy.",
+      "Internal hyperlink in outline tree forbidden by content management policy.",
+      "Document contains metadata: Document information dictionary detected in a document trailer dictionary.",
+      "Document contains metadata: XML Metadata detected in a document catalog dictionary."
+    ],
+    "issue_item_count": 0,
+    "issue_item_list": []
+  }
+}
