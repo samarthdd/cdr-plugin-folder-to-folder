@@ -56,7 +56,7 @@ class test_Hash_Json(TestCase):
         assert file_exists(file_path)
         assert file_path == path_combine(self.storage.hd2_status(), Hash_Json.HASH_FILE_NAME)
 
-    def test_get_from_file(self):
+    def test_load(self):
         data = self.hash_json.load()
         assert type(data) is dict
         assert self.hash_json.data == data
@@ -83,12 +83,12 @@ class test_Hash_Json(TestCase):
 
         file_delete(test_file)
 
-    def test_write_to_file(self):
+    def test_save(self):
         target_file = temp_file()                                                   # temp file to save data
         assert file_not_exists(target_file)                                         # confirm it doesn't exist
         with patch.object(Hash_Json, 'get_file_path', return_value=target_file):    # patch get_file_path to return temp file path
             assert self.hash_json.get_file_path() == target_file                    # confirm patch is in place
-            self.hash_json.write_to_file()                                          # call write_to_file
+            self.hash_json.save()                                          # call write_to_file
             assert file_exists(target_file)                                         # confirm temp file now exists
             assert self.hash_json.load() == self.hash_json.data                     # confirm reloaded data is correct
             assert json_load_file(target_file)    == self.hash_json.data            # also confirm using direct json load of temp file

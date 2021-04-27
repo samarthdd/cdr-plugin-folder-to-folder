@@ -31,6 +31,7 @@ class Status:
     VAR_FAILED              = "failed"
     VAR_FILES_TO_PROCESS    = "files_to_process"
     VAR_FILES_COUNT         = "files_count"
+    VAR_FILES_COPIED        = "files_copied"
     VAR_IN_PROGRESS         = "in_progress"
 
     lock = threading.Lock()
@@ -54,7 +55,7 @@ class Status:
     def default_data(self):
         return {    Status.VAR_CURRENT_STATUS   : FileStatus.NONE ,
                     Status.VAR_FILES_COUNT      : 0               ,
-                    'files_copied'              : 0               ,
+                    Status.VAR_FILES_COPIED     : 0               ,
                     'files_left_to_be_copied'   : 0               ,
                     Status.VAR_FILES_TO_PROCESS : 0               ,
                     'files_left_to_process'     : 0               ,
@@ -94,7 +95,7 @@ class Status:
                 data["files_left_to_be_copied"] += count
                 
             elif updated_status == FileStatus.INITIAL:
-                data["files_copied"] += 1
+                data[Status.VAR_FILES_COPIED] += 1
                 if data["files_left_to_be_copied"] > 0:
                     data["files_left_to_be_copied"] -= 1
 
@@ -136,5 +137,6 @@ class Status:
     def get_current_status  (self): return self.data().get(Status.VAR_CURRENT_STATUS)
     def get_failed          (self): return self.data().get(Status.VAR_FAILED)
     def get_files_count     (self): return self.data().get(Status.VAR_FILES_COUNT)
+    def get_files_copied    (self): return self.data().get(Status.VAR_FILES_COPIED)
     def get_files_to_process(self): return self.data().get(Status.VAR_FILES_TO_PROCESS)
     def get_in_progress     (self): return self.data().get(Status.VAR_IN_PROGRESS)

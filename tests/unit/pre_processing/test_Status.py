@@ -43,7 +43,7 @@ class test_Status(Temp_Config):
 
             assert status.add_file()
             assert status.get_current_status() == FileStatus.INITIAL
-            assert status.get_files_count() == i
+            assert status.get_files_copied() == i
 
             assert status.add_in_progress()
             assert status.get_current_status() == FileStatus.IN_PROGRESS
