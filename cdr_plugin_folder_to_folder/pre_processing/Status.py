@@ -1,6 +1,5 @@
 import threading
 import logging as logger
-import asyncio
 
 from osbot_utils.utils.Files                        import path_combine
 from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file
@@ -34,8 +33,7 @@ class Status:
     VAR_FILES_COUNT         = "files_count"
     VAR_IN_PROGRESS         = "in_progress"
 
-    #lock = threading.Lock()
-    lock = asyncio.Lock()
+    lock = threading.Lock()
 
     _instance = None
     def __new__(cls):                                               # singleton pattern
@@ -44,7 +42,7 @@ class Status:
         return cls._instance
 
     def __init__(self):
-        if hasattr(self, 'folder') is False:                     # only set these values first time around
+        if hasattr(self, '_status_data') is False:                     # only set these values first time around
             self.storage        = Storage()
             #self._on_save      = []                             # todo: add support for firing up events when data is saved
             self._status_data   = self.default_data()
@@ -85,8 +83,8 @@ class Status:
 
 
 
-    async def update_counters_async(self, updated_status, count=0):
-        await Status.lock.acquire()
+    def update_counters(self, updated_status, count=0):
+        Status.lock.acquire()
         try:
             data = self.data()
             #data[Status.VAR_CURRENT_STATUS] = updated_status
@@ -126,11 +124,6 @@ class Status:
             self.save()
 
         return self
-
-    def update_counters(self, updated_status, count = 0):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.update_counters_async(updated_status, count))
 
     def add_completed       (self       ): return self.update_counters(FileStatus.COMPLETED          )
     def add_failed          (self       ): return self.update_counters(FileStatus.FAILED             )
