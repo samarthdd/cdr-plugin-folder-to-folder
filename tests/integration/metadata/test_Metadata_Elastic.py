@@ -81,7 +81,7 @@ class test_Metadata_Elastic(Temp_Config):
         self.add_test_files(count=count, text_size=text_size, execute_stage_1=True)
         message = self.metadata_elastic.reload_elastic_data()
         assert message == f'Elastic files_metadata has been reset and {count} metadata items reloaded'
-        assert len(hash_json.get_from_file()) == count
+        assert len(hash_json.load()) == count
 
 
 
