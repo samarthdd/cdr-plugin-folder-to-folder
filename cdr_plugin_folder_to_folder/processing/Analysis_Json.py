@@ -14,7 +14,7 @@ from enum import Enum
 from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.Logging import log_error
 from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Utils.Misc import is_regex_full_match
-
+from cdr_plugin_folder_to_folder.processing.Analysis_Elastic import Analysis_Elastic
 logger.basicConfig(level=logger.INFO)
 
 
@@ -30,6 +30,7 @@ class Analysis_Json:
         self.analysis_data    = {}
         self.id      = 0
         self.get_from_file()
+        self.analysis_elastic = Analysis_Elastic().setup()
 
     def is_hash(self, value):
         return is_regex_full_match(Analysis_Json.REGEX_HASH, value)
@@ -60,6 +61,7 @@ class Analysis_Json:
     def update_report(self, index, report_json):
         try:
             self.get_from_file()
+            self.analysis_data[index]["original_hash"]              = index
 
             self.analysis_data[index]["file_type"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
             self.analysis_data[index]["file_size"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:TotalSizeInBytes"]
@@ -72,6 +74,8 @@ class Analysis_Json:
 
             self.analysis_data[index]["issue_item_count"],\
             self.analysis_data[index]["issue_item_list"]            = self.get_issue_item_details(report_json)
+
+            self.analysis_elastic.add_analysis(self.analysis_data[index])
 
             self.write_to_file()
         except Exception as error:
@@ -129,3 +133,4 @@ class Analysis_Json:
                         issue_items_list.append(issue_item["gw:TechnicalDescription"])
 
         return total_issue_count, issue_items_list
+
