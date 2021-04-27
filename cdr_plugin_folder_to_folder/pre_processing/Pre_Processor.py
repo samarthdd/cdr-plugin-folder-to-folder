@@ -86,8 +86,9 @@ class Pre_Processor:
 
     @log_duration
     def process_files(self):
+        self.status.set_phase_1()
         self.process_folder(self.storage.hd1())
-        self.status.save()
+        self.status.set_phase_2()
 
     @log_duration
     def process(self, file_path):
@@ -100,7 +101,7 @@ class Pre_Processor:
     def update_status(self, file_name, original_hash, status):
         if status == FileStatus.INITIAL:
             self.hash_json.add_file(original_hash, file_name)
-            self.hash_json.write_to_file()
+            self.hash_json.save()
 
             self.analysis_json.add_file(original_hash, file_name)
             self.analysis_json.write_to_file()

@@ -27,8 +27,7 @@ class Hash_Json:
         self.storage = Storage()
         self.folder  = os.path.join(self.config.hd2_location, "status")
         self.data    = {}
-        self.id      = 0
-        self.get_from_file()
+        self.load()
 
     def add_file(self, file_hash, file_name):
         if self.is_hash(file_hash) and file_name:
@@ -38,7 +37,7 @@ class Hash_Json:
             json_data   = {file_hash: json_value}
 
             self.data.update(json_data)
-            self.write_to_file()
+            self.save()
             return True
         log_error(message='in Hash_Json.add_file bad data provided', data = {'file_hash': file_hash, 'file_name': file_name})
         return False
@@ -46,7 +45,7 @@ class Hash_Json:
     def get_file_path(self):
         return os.path.join(self.folder, Hash_Json.HASH_FILE_NAME)
 
-    def get_from_file(self):
+    def load(self):
         self.data = json_load_file(self.get_file_path())
         return self.data
 
@@ -58,16 +57,16 @@ class Hash_Json:
 
     def reset(self):
         self.data = {}
-        self.write_to_file()
+        self.save()
         return self
 
-    def write_to_file(self):
+    def save(self):
         create_folder(self.folder)
         json_save_file_pretty(self.data, self.get_file_path())
 
     def update_status(self, index, updated_status):
         self.data[index]["file_status"] = updated_status
-        self.write_to_file()
+        self.save()
 
 
 

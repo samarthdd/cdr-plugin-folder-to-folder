@@ -36,7 +36,7 @@ class Loops(object):
         self.config = Config()
         self.status = Status()
         self.hash_json = Hash_Json()
-        self.hash_json.get_from_file()
+        self.hash_json.load()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
         self.events_elastic = Events_Log_Elastic()
         self.hash=None
@@ -137,7 +137,7 @@ class Loops(object):
 
         log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
 
-        json_list = self.hash_json.get_from_file()
+        json_list = self.hash_json.load()
 
         log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
 
@@ -204,12 +204,12 @@ class Loops(object):
         try:
             Loops.continue_processing = True
             Loops.processing_started = True
-
+            self.status.set_started()
             self.LoopHashDirectoriesInternal(thread_count, do_single)
         finally:
             Loops.processing_started = False
             Loops.lock.release()
-            self.status.save()
+            self.status.set_stopped()
 
     @log_duration
     def LoopHashDirectories(self, thread_count=None):

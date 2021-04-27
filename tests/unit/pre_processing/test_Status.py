@@ -6,7 +6,7 @@ from osbot_utils.utils.Json  import json_load_file
 from osbot_utils.utils.Misc import random_text
 
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
-from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus, Status
+from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus, Processing_Status, Status
 from cdr_plugin_folder_to_folder.utils.Logging import log_info, log_debug
 from cdr_plugin_folder_to_folder.utils.Logging_Process import process_all_log_entries_and_end_logging_process
 from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
@@ -34,25 +34,31 @@ class test_Status(Temp_Config):
         assert status.get_files_count()  == 0
         for i in range(1,100):
             assert status.add_completed()
-            assert status.get_current_status() == FileStatus.COMPLETED
             assert status.get_completed() == i
 
             assert status.add_failed()
-            assert status.get_current_status() == FileStatus.FAILED
             assert status.get_failed() == i
 
             assert status.add_file()
-            assert status.get_current_status() == FileStatus.INITIAL
-            assert status.get_files_count() == i
+            assert status.get_files_copied() == i
 
             assert status.add_in_progress()
-            assert status.get_current_status() == FileStatus.IN_PROGRESS
             assert status.get_in_progress() == 1
 
             assert status.add_to_be_processed()
-            assert status.get_current_status() == FileStatus.TO_PROCESS
             assert status.get_files_to_process() == i
 
+            assert status.set_stopped()
+            assert status.get_current_status() == Processing_Status.STOPPED
+
+            assert status.set_started()
+            assert status.get_current_status() == Processing_Status.STARTED
+
+            assert status.set_phase_1()
+            assert status.get_current_status() == Processing_Status.PHASE_1
+
+            assert status.set_phase_2()
+            assert status.get_current_status() == Processing_Status.PHASE_2
 
         assert json_load_file(status.status_file_path()) == status.data()
 
