@@ -78,7 +78,6 @@ class Loops(object):
                 file_processing = File_Processing(events, self.events_elastic, self.report_elastic, meta_service)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
-                    self.status.add_failed()
                     return False
 
                 log_data = {
@@ -90,7 +89,6 @@ class Loops(object):
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
                 #meta_service.set_error(itempath, "none")
                 #meta_service.set_status(itempath, FileStatus.COMPLETED)
-                self.status.add_completed()
                 #self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
                 events.add_log("Has been processed")
                 return True
@@ -103,7 +101,6 @@ class Loops(object):
                 log_error(message='error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED)
-                self.status.add_failed()
                 self.hash_json.update_status(file_hash, FileStatus.FAILED)
                 events.add_log("ERROR:" + str(error))
                 return False
@@ -114,7 +111,13 @@ class Loops(object):
         endpoint_index = process_index % self.config.endpoints_count
         if not Loops.continue_processing:
             return False
-        return self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
+        process_result = self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
+        if process_result:
+            self.status.add_completed()
+        else:
+            self.status.add_failed()
+
+        return process_result
 
         # note: removing retries from this method (it should not be handled like this
         #for idx in range(self.config.endpoints_count):
