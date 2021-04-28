@@ -1,12 +1,12 @@
 import json
 
-from cdr_plugin_folder_to_folder.common_settings.Config import Config
+from cdr_plugin_folder_to_folder.common_settings.Config import Config, DEFAULT_HD2_DATA_NAME, DEFAULT_HD2_STATUS_NAME
 
 from os import environ,path
 import dotenv
 
 import logging as logger
-
+from osbot_utils.utils.Files import folder_create, path_combine
 from cdr_plugin_folder_to_folder.utils.Logging import log_error
 from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testing
 from urllib.parse import urljoin
@@ -32,20 +32,23 @@ class Configure_Env:
                 else:
                     log_error(message=f"hd1_path did not exist",data={"path": hd1_path})
                     return -1
+
             if hd2_path:
-                if path.exists(hd2_path):
-                    environ['HD2_LOCATION'] = hd2_path
-                    dotenv.set_key(dotenv_file, "HD2_LOCATION", environ["HD2_LOCATION"])
-                else:
-                    log_error(message=f"hd2_path did not exist", data={"path": hd2_path})
-                    return -1
+                if not path.exists(hd2_path):
+                    folder_create( hd2_path )
+                    folder_create( path_combine( hd2_path , DEFAULT_HD2_DATA_NAME  ))
+                    folder_create( path_combine( hd2_path , DEFAULT_HD2_STATUS_NAME ))
+
+                environ['HD2_LOCATION'] = hd2_path
+                dotenv.set_key(dotenv_file, "HD2_LOCATION", environ["HD2_LOCATION"])
+
             if hd3_path:
-                if path.exists(hd3_path):
-                    environ['HD3_LOCATION'] = hd3_path
-                    dotenv.set_key(dotenv_file, "HD3_LOCATION", environ["HD3_LOCATION"])
-                else:
-                    log_error(message=f"hd3_path did not exist", data={"path": hd3_path})
-                    return -1
+                if not path.exists(hd3_path):
+                    folder_create( hd3_path )
+
+                environ['HD3_LOCATION'] = hd3_path
+                dotenv.set_key(dotenv_file, "HD3_LOCATION", environ["HD3_LOCATION"])
+
             self.config.load_values()
             return self.env_details()
 
@@ -118,7 +121,3 @@ class Configure_Env:
         except Exception as e:
             logger.error(f'Configure_Env : gw_sdk_healthcheck : {e}')
             return None
-
-
-
-
