@@ -18,7 +18,6 @@ from cdr_plugin_folder_to_folder.processing.Analysis_Elastic import Analysis_Ela
 from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 logger.basicConfig(level=logger.INFO)
 
-
 class Analysis_Json:
 
     ANALYSIS_FILE_NAME = "analysis.json"
@@ -86,9 +85,14 @@ class Analysis_Json:
     def get_file_analysis(self, dir, report_json):
         try:
             index=os.path.basename(dir)
-            self.file_analysis_data={index: {}}
+            meta_service   = Metadata_Service()
 
+            metadata=meta_service.get_from_file(index)
+
+            self.file_analysis_data={index: {}}
+            self.file_analysis_data[index]["file_name"]                  = metadata.data.get('file_name')
             self.file_analysis_data[index]["original_hash"]              = index
+            self.file_analysis_data[index]["rebuild_hash"]               = metadata.data.get('rebuild_hash')
 
 
             self.file_analysis_data[index]["file_type"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
