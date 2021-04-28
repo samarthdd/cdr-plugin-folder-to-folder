@@ -44,19 +44,18 @@ class Hash_Json:
 
     def add_file(self, file_hash, file_name):
         if self.is_hash(file_hash) and file_name:
-#            Hash_Json.lock.acquire()
-#            try:
-#                pass
-#            finally:
-#                Hash_Json.lock.release()
+            Hash_Json.lock.acquire()
+            try:
+                json_value  = {"file_name"  : file_name,
+                            "file_status": FileStatus.INITIAL}
 
-            json_value  = {"file_name"  : file_name,
-                        "file_status": FileStatus.INITIAL}
+                json_data   = {file_hash: json_value}
 
-            json_data   = {file_hash: json_value}
+                self.data().update(json_data)
+                self.save()
+            finally:
+                Hash_Json.lock.release()
 
-            self.data().update(json_data)
-            self.save()
             return True
 
         log_error(message='in Hash_Json.add_file bad data provided', data = {'file_hash': file_hash, 'file_name': file_name})
@@ -73,23 +72,25 @@ class Hash_Json:
         return is_regex_full_match(Hash_Json.REGEX_HASH, value)
 
     def reset(self):
-#        Hash_Json.lock.acquire()
-#        try:
-#            pass
-#        finally:
-#            Hash_Json.lock.release()
-
-        self._hash_json_data = {}
-        self.save()
+        Hash_Json.lock.acquire()
+        try:
+            self._hash_json_data = {}
+            self.save()
+        finally:
+            Hash_Json.lock.release()
         return self
 
     def save(self):
         create_folder(self.folder)
         json_save_file_pretty(self.data(), self.get_file_path())
 
-    def update_status(self, index, updated_status):
-        self.data()[index]["file_status"] = updated_status
-        self.save()
+    def update_status(self, file_hash, updated_status):
+        Hash_Json.lock.acquire()
+        try:
+            self.data()[file_hash]["file_status"] = updated_status
+            self.save()
+        finally:
+            Hash_Json.lock.release()
 
 
 
