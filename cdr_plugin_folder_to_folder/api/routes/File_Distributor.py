@@ -44,7 +44,7 @@ def get_hd2_status_files():
     return FileResponse(file_path, media_type='application/octet-stream', filename=ntpath.basename(file_path))
 
 @router.get("/hd2/data")
-def get_hd2_data(num_of_files: int):
+def get_hd2_data_files(num_of_files: int):
     file_distributor = File_Distributor()
     file_path=file_distributor.get_hd2_data(num_of_files=num_of_files)
     return FileResponse(file_path, media_type='application/octet-stream', filename=ntpath.basename(file_path))

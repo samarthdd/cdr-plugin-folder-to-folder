@@ -135,7 +135,7 @@ class File_Distributor:
             logger.error(f"File_Distributor: get_hd2_status_hash_file : {error}")
             raise error
 
-    def get_hd2_data(self,num_of_files):
+    def get_hd2_data(self, num_of_files):
         try:
             list = []
             count = 0
