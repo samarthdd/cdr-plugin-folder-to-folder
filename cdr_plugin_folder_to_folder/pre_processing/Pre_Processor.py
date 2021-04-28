@@ -82,6 +82,8 @@ class Pre_Processor:
                 if os.path.isfile(file_path):
                     self.process(file_path)
 
+        self.hash_json.save()
+
         return True
 
     @log_duration
@@ -101,7 +103,6 @@ class Pre_Processor:
     def update_status(self, file_name, original_hash, status):
         if status == FileStatus.INITIAL:
             self.hash_json.add_file(original_hash, file_name)
-            self.hash_json.save()
 
             # self.analysis_json.add_file(original_hash, file_name)
             # self.analysis_json.write_to_file()
