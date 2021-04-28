@@ -104,7 +104,6 @@ class Pre_Processor:
 
     def update_status(self, file_name, original_hash, status):
         if status == FileStatus.INITIAL:
-            #self.hash_json.add_file(original_hash, file_name)
 
             # self.analysis_json.add_file(original_hash, file_name)
             # self.analysis_json.write_to_file()
