@@ -89,6 +89,8 @@ class Hash_Json:
         Hash_Json.lock.acquire()
         try:
             self.data()[file_hash]["file_status"] = updated_status
+        except:
+            pass
         finally:
             Hash_Json.lock.release()
 
