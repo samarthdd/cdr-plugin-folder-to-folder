@@ -53,7 +53,7 @@ class File_Processing:
               'Content-Type': 'application/json'
             }
 
-            return requests.request("POST", url, headers=headers, data=payload, timeout=self.config.request_timeout)
+            return requests.request("POST", url, headers=headers, data=payload, timeout=int(self.config.request_timeout))
      
         except Exception as e:
             log_error(str(e))
@@ -68,7 +68,7 @@ class File_Processing:
                 'Content-Type': 'application/octet-stream'
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload, timeout=self.config.request_timeout)
+            response = requests.request("GET", url, headers=headers, data=payload, timeout=int(self.config.request_timeout))
             return response.text
 
         except Exception as e:
