@@ -41,6 +41,7 @@ class Loops(object):
         self.hash=None
         self.report_elastic = Report_Elastic()
         self.report_elastic.setup()
+        self.rootdir = os.path.join(self.config.hd2_location, "data")
 
     def IsProcessing(self):
         return Loops.processing_started
@@ -126,6 +127,27 @@ class Loops(object):
         #    # Retry it with the next one
         #    endpoint_index = (endpoint_index + 1) % self.config.endpoints_count
 
+    def updateHashJson(self):
+        self.hash_json.reset()
+        meta_service = Metadata_Service()
+
+        for hash_folder in os.listdir(self.rootdir):
+
+            metadata_folder = os.path.join(self.rootdir, hash_folder)
+
+            if not os.path.isdir(metadata_folder):
+                continue
+
+            metadata       = meta_service.get_from_file(metadata_folder)
+            file_name      = metadata.get_file_name()
+            original_hash  = metadata.get_original_hash()
+            status         = metadata.get_rebuild_status()
+
+            if status == FileStatus.INITIAL:
+                self.hash_json.add_file(original_hash, file_name)
+
+        self.hash_json.save()
+
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
         if not isinstance(thread_count,int):
@@ -136,14 +158,13 @@ class Loops(object):
 
         log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
 
+        self.updateHashJson()
         json_list = self.hash_json.data()
 
         log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
 
-        rootdir = os.path.join(self.config.hd2_location, "data")
-
-        if folder_exists(rootdir) is False:
-            log_error("ERROR: rootdir does not exist: " + rootdir)
+        if folder_exists(self.rootdir) is False:
+            log_error("ERROR: rootdir does not exist: " + self.rootdir)
             return
 
         threads = list()
@@ -155,7 +176,7 @@ class Loops(object):
         for key in json_list:
             file_hash   =  key
 
-            itempath = os.path.join(rootdir, key)
+            itempath = os.path.join(self.rootdir, key)
             if (FileStatus.INITIAL != json_list[key]["file_status"]):
                 continue
 
