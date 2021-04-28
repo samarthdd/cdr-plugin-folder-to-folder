@@ -41,6 +41,13 @@ class test_Loops(Temp_Config):
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=1))
 
+    def test_updateHashJson(self):
+        Loops.continue_processing = True
+        count = 40
+        self.add_test_files(count=count, execute_stage_1=True)
+
+        self.loops.updateHashJson()
+
     def test_LoopHashDirectoriesInternal(self):
         Loops.continue_processing = True
         count = 40
