@@ -94,9 +94,12 @@ class File_Processing:
             json_obj['original_hash'] = os.path.basename(dir)
             json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
+
             #self.report_elastic.add_report(json_obj)
 
-            self.analysis_json.update_report(os.path.basename(dir), json_obj)
+            analysis_obj=self.analysis_json.get_file_analysis(dir, json_obj)
+            json_save_file_pretty(analysis_obj, os.path.join(dir, "analysis.json"))
+
             return True
         except Exception as error:
             log_error(message=f"Error in parsing xmlreport for {fileId} : {error}")

@@ -15,8 +15,8 @@ from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.Logging import log_error
 from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Utils.Misc import is_regex_full_match
 from cdr_plugin_folder_to_folder.processing.Analysis_Elastic import Analysis_Elastic
+from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Service
 logger.basicConfig(level=logger.INFO)
-
 
 class Analysis_Json:
 
@@ -31,6 +31,7 @@ class Analysis_Json:
         self.id      = 0
         self.get_from_file()
         self.analysis_elastic = Analysis_Elastic().setup()
+
 
     def is_hash(self, value):
         return is_regex_full_match(Analysis_Json.REGEX_HASH, value)
@@ -80,6 +81,37 @@ class Analysis_Json:
             self.write_to_file()
         except Exception as error:
             log_error(message=f"Error in update_report from json data {index} : {error}")
+
+    def get_file_analysis(self, dir, report_json):
+        try:
+            index=os.path.basename(dir)
+            meta_service   = Metadata_Service()
+
+            metadata=meta_service.get_from_file(index)
+
+            self.file_analysis_data={index: {}}
+            self.file_analysis_data[index]["file_name"]                  = metadata.data.get('file_name')
+            self.file_analysis_data[index]["original_hash"]              = index
+            self.file_analysis_data[index]["rebuild_hash"]               = metadata.data.get('rebuild_hash')
+
+
+            self.file_analysis_data[index]["file_type"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:FileType"]
+            self.file_analysis_data[index]["file_size"]                  = report_json["gw:GWallInfo"]["gw:DocumentStatistics"]["gw:DocumentSummary"]["gw:TotalSizeInBytes"]
+
+            self.file_analysis_data[index]["remediated_item_count"], \
+            self.file_analysis_data[index]["remediate_items_list"]       = self.get_remediated_item_details(report_json)
+
+            self.file_analysis_data[index]["sanitised_item_count"], \
+            self.file_analysis_data[index]["sanitised_items_list"]       = self.get_sanitisation_item_details(report_json)
+
+            self.file_analysis_data[index]["issue_item_count"],\
+            self.file_analysis_data[index]["issue_item_list"]            = self.get_issue_item_details(report_json)
+
+            self.analysis_elastic.add_analysis(self.file_analysis_data)
+            return self.file_analysis_data
+
+        except Exception as error:
+            log_error(message=f"Error in get_file_analysis from json data {index} : {error}")
 
     def get_remediated_item_details(self, report_json):
         total_remediate_count = 0

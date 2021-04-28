@@ -37,6 +37,13 @@ class test_File_Distributor(TestCase):
     #     response = self.client.GET_FILE(path)
     #     assert response.status_code is 200
     #     assert response.content is not None
+
+    # def test_hd1(self):
+    #     num_of_files = 1
+    #     path = f"{self.prefix}/hd1/{num_of_files}"
+    #     response = self.client.GET_FILE(path)
+    #     assert response.status_code is 200
+    #     assert response.content is not None
     #
     # def test_hd2_metatada(self):
     #     num_of_files = 1
@@ -68,6 +75,13 @@ class test_File_Distributor(TestCase):
 
     def test_hd2_status(self):
         path         = f"{self.prefix}/hd2/status"
+        response = self.client.GET_FILE(path)
+        assert response.status_code is 200
+        assert response.content is not None
+
+    def test_get_hd2_data(self):
+        num_of_files = 2
+        path = f"{self.prefix}/hd2/data?num_of_files={num_of_files}"
         response = self.client.GET_FILE(path)
         assert response.status_code is 200
         assert response.content is not None

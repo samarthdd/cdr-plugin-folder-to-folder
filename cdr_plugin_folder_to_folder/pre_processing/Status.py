@@ -1,8 +1,8 @@
 import threading
 import logging as logger
 
-from osbot_utils.utils.Files                        import path_combine
-from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file
+from osbot_utils.utils.Files                        import path_combine, folder_create, file_create
+from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file, file_exists
 from cdr_plugin_folder_to_folder.storage.Storage    import Storage
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 
@@ -76,6 +76,10 @@ class Status:
         return self
 
     def save(self):
+        if not file_exists(self.status_file_path()):
+            folder_create(  self.storage.hd2_status() )
+            file_create  (  self.status_file_path()   )
+
         json_save_file_pretty(self.data(), self.status_file_path())
         return self
 
