@@ -59,10 +59,10 @@ class test_Hash_Json(TestCase):
     def test_load(self):
         data = self.hash_json.load()
         assert type(data) is dict
-        assert self.hash_json.data == data
+        assert self.hash_json.data() == data
 
-    def test_get_json_list(self):
-        assert self.hash_json.get_json_list() == self.hash_json.data
+    def test_data(self):
+        assert self.hash_json.data() == self.hash_json._hash_json_data
 
     def test_is_hash(self):
         test_file   = temp_file(contents='aaaa')
@@ -90,8 +90,8 @@ class test_Hash_Json(TestCase):
             assert self.hash_json.get_file_path() == target_file                    # confirm patch is in place
             self.hash_json.save()                                          # call write_to_file
             assert file_exists(target_file)                                         # confirm temp file now exists
-            assert self.hash_json.load() == self.hash_json.data                     # confirm reloaded data is correct
-            assert json_load_file(target_file)    == self.hash_json.data            # also confirm using direct json load of temp file
+            assert self.hash_json.load() == self.hash_json.data()                     # confirm reloaded data is correct
+            assert json_load_file(target_file)    == self.hash_json.data()            # also confirm using direct json load of temp file
         assert self.hash_json.get_file_path()     != target_file                    # confirm pathc is not there (after 'with' ends)
         file_delete(target_file)                                                    # delete temp file
 
@@ -99,15 +99,15 @@ class test_Hash_Json(TestCase):
         temp_data_file = temp_file()
         with patch.object(Hash_Json, 'get_file_path', return_value=temp_data_file):
             self.hash_json.add_file(self.test_file_hash, self.test_file_name)
-            assert self.hash_json.data[self.test_file_hash]['file_status'] == 'Initial'
+            assert self.hash_json.data()[self.test_file_hash]['file_status'] == 'Initial'
             self.hash_json.update_status(self.test_file_hash, 'BBBB')
-            assert self.hash_json.data[self.test_file_hash]['file_status'] == 'BBBB'
+            assert self.hash_json.data()[self.test_file_hash]['file_status'] == 'BBBB'
             assert json_load_file(temp_data_file)[self.test_file_hash]['file_status'] == 'BBBB'
         pprint(self.hash_json.load())
 
-    def test_get_json_list__bug(self):                                  # this test confirms the bug
-        hashes = self.hash_json.get_json_list()
-        for hash in self.hash_json.get_json_list():
+    def test_data_bug(self):                                            # this test confirms the bug
+        hashes = self.hash_json.data()
+        for hash in self.hash_json.data():
             if len(hash) == 64:                                         # all keys in this object should be a hash
                 assert len(hash) == 64
                 assert type(hashes[hash]) == dict                       # with all items being a dictionary

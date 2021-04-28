@@ -51,7 +51,7 @@ class Metadata_Elastic:
     @log_duration
     def reload_metadatas(self):
         hash_json = Hash_Json().reset()
-        hash_data = hash_json.data
+        hash_data = hash_json.data()
         metadatas = self.storage.hd2_metadatas()
         count     = len(metadatas)
         log_debug(message=f"Reloading {count} currently in hd2/data")
@@ -71,7 +71,7 @@ class Metadata_Elastic:
     @log_duration
     def reload_hash_json(self):
         hash_json = Hash_Json().reset()
-        hash_data = hash_json.data
+        hash_data = hash_json.data()
         metadatas = self.storage.hd2_metadatas()
         for metadata in metadatas:
             file_hash = metadata.get('original_hash')
