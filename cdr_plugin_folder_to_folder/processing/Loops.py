@@ -36,7 +36,6 @@ class Loops(object):
         self.config = Config()
         self.status = Status()
         self.hash_json = Hash_Json()
-        self.hash_json.load()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
         self.events_elastic = Events_Log_Elastic()
         self.hash=None
@@ -137,7 +136,7 @@ class Loops(object):
 
         log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
 
-        json_list = self.hash_json.load()
+        json_list = self.hash_json.data()
 
         log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
 
