@@ -25,22 +25,24 @@ class Hash_Json:
 
     lock = threading.Lock()
 
-#    _instance = None
-#    def __new__(cls):                                               # singleton pattern
-#        if cls._instance is None:
-#            cls._instance = super(Hash_Json, cls).__new__(cls)
-#        return cls._instance
+    _instance = None
+    def __new__(cls):                                               # singleton pattern
+        if cls._instance is None:
+            cls._instance = super(Hash_Json, cls).__new__(cls)
+        return cls._instance
 
     def __init__(self):
-#        if hasattr(self, '_hash_json_data') is False:                     # only set these values first time around
+        if hasattr(self, '_hash_json_data') is False:               # only set these values first time around
             self.config  = Config()
             self.storage = Storage()
-            self.folder  = os.path.join(self.config.hd2_location, "status")
             self._hash_json_data    = {}
             self.load()
 
     def data(self):
         return self._hash_json_data
+
+    def folder(self):
+        return os.path.join(self.config.hd2_location, "status")
 
     def add_file(self, file_hash, file_name):
         if self.is_hash(file_hash) and file_name:
@@ -62,7 +64,7 @@ class Hash_Json:
         return False
 
     def get_file_path(self):
-        return os.path.join(self.folder, Hash_Json.HASH_FILE_NAME)
+        return os.path.join(self.folder(), Hash_Json.HASH_FILE_NAME)
 
     def load(self):
         self._hash_json_data = json_load_file(self.get_file_path())
@@ -81,7 +83,7 @@ class Hash_Json:
         return self
 
     def save(self):
-        create_folder(self.folder)
+        create_folder(self.folder())
         json_save_file_pretty(self.data(), self.get_file_path())
 
     def update_status(self, file_hash, updated_status):

@@ -30,7 +30,7 @@ class test_Hash_Json(TestCase):
         self.storage   = self.hash_json.storage
 
     def test___init__(self):
-        assert abspath(self.hash_json.folder) == self.storage.hd2_status()
+        assert abspath(self.hash_json.folder()) == self.storage.hd2_status()
 
     @patch("multiprocessing.queues.Queue.put_nowait")
     def test_add_file(self, patch_log_error):
