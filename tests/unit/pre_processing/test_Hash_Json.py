@@ -39,6 +39,7 @@ class test_Hash_Json(TestCase):
             del hash_data[self.test_file_hash]
 
         assert self.hash_json.add_file(self.test_file_hash, self.test_file_name) is True
+        self.hash_json.save()
         assert hash_data.get(self.test_file_hash) == {'file_name': self.test_file_name, 'file_status': 'Initial'}
 
         assert self.hash_json.add_file('AAAA'              , self.test_file_name) is False
@@ -101,6 +102,7 @@ class test_Hash_Json(TestCase):
             self.hash_json.add_file(self.test_file_hash, self.test_file_name)
             assert self.hash_json.data()[self.test_file_hash]['file_status'] == 'Initial'
             self.hash_json.update_status(self.test_file_hash, 'BBBB')
+            self.hash_json.save()
             assert self.hash_json.data()[self.test_file_hash]['file_status'] == 'BBBB'
             assert json_load_file(temp_data_file)[self.test_file_hash]['file_status'] == 'BBBB'
         pprint(self.hash_json.load())

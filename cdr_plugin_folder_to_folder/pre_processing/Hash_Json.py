@@ -54,7 +54,6 @@ class Hash_Json:
                 json_data   = {file_hash: json_value}
 
                 self.data().update(json_data)
-                self.save()
             finally:
                 Hash_Json.lock.release()
 
@@ -90,7 +89,6 @@ class Hash_Json:
         Hash_Json.lock.acquire()
         try:
             self.data()[file_hash]["file_status"] = updated_status
-            self.save()
         finally:
             Hash_Json.lock.release()
 

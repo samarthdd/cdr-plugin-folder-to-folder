@@ -239,11 +239,11 @@ class File_Processing:
         self.add_event_log("Sending to rebuild")
         tik = datetime.now()
         status = self.do_rebuild(endpoint, hash, source_path, dir)
-        if status:
-            self.meta_service.set_status(dir, FileStatus.COMPLETED)
-            self.meta_service.set_error(dir, "none")
-        else:
-            self.meta_service.set_status(dir, FileStatus.FAILED)
+        #if status:
+        #    self.meta_service.set_status(dir, FileStatus.COMPLETED)
+        #    self.meta_service.set_error(dir, "none")
+        #else:
+        #    self.meta_service.set_status(dir, FileStatus.FAILED)
         tok = datetime.now()
         delta = tok - tik
         self.meta_service.set_rebuild_file_duration(dir, delta.total_seconds())

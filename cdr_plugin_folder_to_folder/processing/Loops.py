@@ -210,6 +210,7 @@ class Loops(object):
             Loops.processing_started = False
             Loops.lock.release()
             self.status.set_stopped()
+            self.hash_json.save()
 
     @log_duration
     def LoopHashDirectories(self, thread_count=None):
