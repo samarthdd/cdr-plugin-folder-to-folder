@@ -1,5 +1,6 @@
 import os
 import json
+import threading
 
 import logging as logger
 import re
@@ -22,52 +23,76 @@ class Hash_Json:
     HASH_FILE_NAME = "hash.json"
     REGEX_HASH     = '[A-Fa-f0-9]{64}$'
 
+    lock = threading.Lock()
+
+    _instance = None
+    def __new__(cls):                                               # singleton pattern
+        if cls._instance is None:
+            cls._instance = super(Hash_Json, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
-        self.config  = Config()
-        self.storage = Storage()
-        self.folder  = os.path.join(self.config.hd2_location, "status")
-        self.data    = {}
-        self.id      = 0
-        self.get_from_file()
+        if hasattr(self, '_hash_json_data') is False:               # only set these values first time around
+            self.config  = Config()
+            self.storage = Storage()
+            self._hash_json_data    = {}
+            self.load()
+
+    def data(self):
+        return self._hash_json_data
+
+    def folder(self):
+        return os.path.join(self.config.hd2_location, "status")
 
     def add_file(self, file_hash, file_name):
         if self.is_hash(file_hash) and file_name:
-            json_value  = {"file_name"  : file_name,
-                           "file_status": FileStatus.INITIAL}
+            Hash_Json.lock.acquire()
+            try:
+                json_value  = {"file_name"  : file_name,
+                            "file_status": FileStatus.INITIAL}
 
-            json_data   = {file_hash: json_value}
+                json_data   = {file_hash: json_value}
 
-            self.data.update(json_data)
-            self.write_to_file()
+                self.data().update(json_data)
+            finally:
+                Hash_Json.lock.release()
+
             return True
+
         log_error(message='in Hash_Json.add_file bad data provided', data = {'file_hash': file_hash, 'file_name': file_name})
         return False
 
     def get_file_path(self):
-        return os.path.join(self.folder, Hash_Json.HASH_FILE_NAME)
+        return os.path.join(self.folder(), Hash_Json.HASH_FILE_NAME)
 
-    def get_from_file(self):
-        self.data = json_load_file(self.get_file_path())
-        return self.data
-
-    def get_json_list(self):
-        return self.data
+    def load(self):
+        self._hash_json_data = json_load_file(self.get_file_path())
+        return self.data()
 
     def is_hash(self, value):
         return is_regex_full_match(Hash_Json.REGEX_HASH, value)
 
     def reset(self):
-        self.data = {}
-        self.write_to_file()
+        Hash_Json.lock.acquire()
+        try:
+            self._hash_json_data = {}
+            self.save()
+        finally:
+            Hash_Json.lock.release()
         return self
 
-    def write_to_file(self):
-        create_folder(self.folder)
-        json_save_file_pretty(self.data, self.get_file_path())
+    def save(self):
+        create_folder(self.folder())
+        json_save_file_pretty(self.data(), self.get_file_path())
 
-    def update_status(self, index, updated_status):
-        self.data[index]["file_status"] = updated_status
-        self.write_to_file()
+    def update_status(self, file_hash, updated_status):
+        Hash_Json.lock.acquire()
+        try:
+            self.data()[file_hash]["file_status"] = updated_status
+        except:
+            pass
+        finally:
+            Hash_Json.lock.release()
 
 
 

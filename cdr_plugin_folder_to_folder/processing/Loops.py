@@ -36,7 +36,6 @@ class Loops(object):
         self.config = Config()
         self.status = Status()
         self.hash_json = Hash_Json()
-        self.hash_json.get_from_file()
         self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
         self.events_elastic = Events_Log_Elastic()
         self.hash=None
@@ -78,7 +77,6 @@ class Loops(object):
                 file_processing = File_Processing(events, self.events_elastic, self.report_elastic, meta_service)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
-                    self.status.add_failed()
                     return False
 
                 log_data = {
@@ -88,10 +86,9 @@ class Loops(object):
                         'timestamp': datetime.now(),
                     }
                 log_info('ProcessDirectoryWithEndpoint', data=log_data)
-                #meta_service.set_error(itempath, "none")
-                #meta_service.set_status(itempath, FileStatus.COMPLETED)
-                self.status.add_completed()
-                #self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
+                meta_service.set_error(itempath, "none")
+                meta_service.set_status(itempath, FileStatus.COMPLETED)
+                self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
                 events.add_log("Has been processed")
                 return True
             except Exception as error:
@@ -103,7 +100,6 @@ class Loops(object):
                 log_error(message='error in ProcessDirectoryWithEndpoint', data=log_data)
                 meta_service.set_error(itempath, str(error))
                 meta_service.set_status(itempath, FileStatus.FAILED)
-                self.status.add_failed()
                 self.hash_json.update_status(file_hash, FileStatus.FAILED)
                 events.add_log("ERROR:" + str(error))
                 return False
@@ -114,7 +110,13 @@ class Loops(object):
         endpoint_index = process_index % self.config.endpoints_count
         if not Loops.continue_processing:
             return False
-        return self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
+        process_result = self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
+        if process_result:
+            self.status.add_completed()
+        else:
+            self.status.add_failed()
+
+        return process_result
 
         # note: removing retries from this method (it should not be handled like this
         #for idx in range(self.config.endpoints_count):
@@ -134,7 +136,7 @@ class Loops(object):
 
         log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
 
-        json_list = self.hash_json.get_from_file()
+        json_list = self.hash_json.data()
 
         log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
 
@@ -201,12 +203,13 @@ class Loops(object):
         try:
             Loops.continue_processing = True
             Loops.processing_started = True
-
+            self.status.set_started()
             self.LoopHashDirectoriesInternal(thread_count, do_single)
         finally:
             Loops.processing_started = False
             Loops.lock.release()
-            self.status.save()
+            self.status.set_stopped()
+            self.hash_json.save()
 
     @log_duration
     def LoopHashDirectories(self, thread_count=None):

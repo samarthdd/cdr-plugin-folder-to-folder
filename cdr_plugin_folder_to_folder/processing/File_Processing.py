@@ -21,6 +21,7 @@ from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
+from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
 class File_Processing:
 
@@ -31,6 +32,7 @@ class File_Processing:
         self.storage        = Storage()
         self.config         = Config()
         self.status         = Status()
+        self.hash_json      = Hash_Json()
         self.report_elastic = report_elastic
         self.sdk_api_version    = "Not available"
         self.sdk_engine_version = "Not available"
@@ -53,7 +55,7 @@ class File_Processing:
               'Content-Type': 'application/json'
             }
 
-            return requests.request("POST", url, headers=headers, data=payload, timeout=self.config.request_timeout)
+            return requests.request("POST", url, headers=headers, data=payload, timeout=int(self.config.request_timeout))
      
         except Exception as e:
             log_error(str(e))
@@ -68,7 +70,7 @@ class File_Processing:
                 'Content-Type': 'application/octet-stream'
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload, timeout=self.config.request_timeout)
+            response = requests.request("GET", url, headers=headers, data=payload, timeout=int(self.config.request_timeout))
             return response.text
 
         except Exception as e:
@@ -92,9 +94,12 @@ class File_Processing:
             json_obj['original_hash'] = os.path.basename(dir)
             json_save_file_pretty(json_obj, os.path.join(dir, "report.json"))
 
+
             #self.report_elastic.add_report(json_obj)
 
-            self.analysis_json.update_report(os.path.basename(dir), json_obj)
+            analysis_obj=self.analysis_json.get_file_analysis(dir, json_obj)
+            json_save_file_pretty(analysis_obj, os.path.join(dir, "analysis.json"))
+
             return True
         except Exception as error:
             log_error(message=f"Error in parsing xmlreport for {fileId} : {error}")
@@ -239,13 +244,16 @@ class File_Processing:
         self.add_event_log("Sending to rebuild")
         tik = datetime.now()
         status = self.do_rebuild(endpoint, hash, source_path, dir)
-        if status:
-            self.meta_service.set_status(dir, FileStatus.COMPLETED)
-            self.meta_service.set_error(dir, "none")
-        else:
+#        if status:
+#            self.meta_service.set_status(dir, FileStatus.COMPLETED)
+#            self.meta_service.set_error(dir, "none")
+#        else:
+        if not status:
             self.meta_service.set_status(dir, FileStatus.FAILED)
+            self.hash_json.update_status(hash, FileStatus.FAILED)
+
         tok = datetime.now()
         delta = tok - tik
-        self.meta_service.set_rebuild_file_duration(dir, str(delta))
+        self.meta_service.set_rebuild_file_duration(dir, delta.total_seconds())
 
         return status

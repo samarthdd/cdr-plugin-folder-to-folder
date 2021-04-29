@@ -32,7 +32,7 @@ class Pre_Processor:
         self.status = Status()
         self.status.reset()
 
-        self.analysis_json = Analysis_Json()
+        #self.analysis_json = Analysis_Json()
 
     @log_duration
     def clear_data_and_status_folders(self):
@@ -82,12 +82,15 @@ class Pre_Processor:
                 if os.path.isfile(file_path):
                     self.process(file_path)
 
+        self.hash_json.save()
+
         return True
 
     @log_duration
     def process_files(self):
+        self.status.set_phase_1()
         self.process_folder(self.storage.hd1())
-        self.status.save()
+        self.status.set_phase_2()
 
     @log_duration
     def process(self, file_path):
@@ -100,9 +103,8 @@ class Pre_Processor:
     def update_status(self, file_name, original_hash, status):
         if status == FileStatus.INITIAL:
             self.hash_json.add_file(original_hash, file_name)
-            self.hash_json.write_to_file()
 
-            self.analysis_json.add_file(original_hash, file_name)
-            self.analysis_json.write_to_file()
+            # self.analysis_json.add_file(original_hash, file_name)
+            # self.analysis_json.write_to_file()
 
             self.status.add_file()

@@ -14,6 +14,7 @@ from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processi
 from cdr_plugin_folder_to_folder.processing.Loops import Loops
 from cdr_plugin_folder_to_folder.utils.testing.Direct_API_Server import Direct_API_Server
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
+from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
@@ -27,11 +28,13 @@ class test_File_Distributor(Temp_Config):
     def setUpClass(cls) -> None:
         cls.client = Direct_API_Server().setup()
 
+        cls.hash_json      = Hash_Json()
         cls.test_data      = Test_Data()
         cls.test_file      = cls.test_data.image()
         cls.pre_processor = Pre_Processor()
         #cls.pre_processor.clear_data_and_status_folders()
         cls.stage_1       = cls.pre_processor.process(cls.test_file)
+        cls.hash_json.save()
         cls.stage_2       = Loops().LoopHashDirectories()
 
     @classmethod
@@ -77,6 +80,11 @@ class test_File_Distributor(Temp_Config):
 
     def test_get_hd2_status_hash_file(self):
         response = self.file_distributor.get_hd2_status_hash_file()
+        assert response is not None
+        assert os.path.exists(response)
+
+    def test_get_hd2_files(self):
+        response = self.file_distributor.get_hd2_data(1)
         assert response is not None
         assert os.path.exists(response)
 

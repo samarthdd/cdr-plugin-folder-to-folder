@@ -1,8 +1,8 @@
 import threading
 import logging as logger
 
-from osbot_utils.utils.Files                        import path_combine
-from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file
+from osbot_utils.utils.Files                        import path_combine, folder_create, file_create
+from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file, file_exists
 from cdr_plugin_folder_to_folder.storage.Storage    import Storage
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 
@@ -19,9 +19,9 @@ class FileStatus:                                     # todo move to separate fi
 
 class Processing_Status:
     STOPPED = "Stopped"
-    Started = "Started"
+    STARTED = "Started"
     PHASE_1 = "PHASE 1 - Copying Files"
-    PHASE_2 = "PHASE 1 - Rebuilding Files"
+    PHASE_2 = "PHASE 2 - Rebuilding Files"
 
 class Status:
 
@@ -31,6 +31,7 @@ class Status:
     VAR_FAILED              = "failed"
     VAR_FILES_TO_PROCESS    = "files_to_process"
     VAR_FILES_COUNT         = "files_count"
+    VAR_FILES_COPIED        = "files_copied"
     VAR_IN_PROGRESS         = "in_progress"
 
     lock = threading.Lock()
@@ -42,7 +43,7 @@ class Status:
         return cls._instance
 
     def __init__(self):
-        if hasattr(self, 'folder') is False:                     # only set these values first time around
+        if hasattr(self, '_status_data') is False:                     # only set these values first time around
             self.storage        = Storage()
             #self._on_save      = []                             # todo: add support for firing up events when data is saved
             self._status_data   = self.default_data()
@@ -54,7 +55,7 @@ class Status:
     def default_data(self):
         return {    Status.VAR_CURRENT_STATUS   : FileStatus.NONE ,
                     Status.VAR_FILES_COUNT      : 0               ,
-                    'files_copied'              : 0               ,
+                    Status.VAR_FILES_COPIED     : 0               ,
                     'files_left_to_be_copied'   : 0               ,
                     Status.VAR_FILES_TO_PROCESS : 0               ,
                     'files_left_to_process'     : 0               ,
@@ -75,51 +76,68 @@ class Status:
         return self
 
     def save(self):
+        if not file_exists(self.status_file_path()):
+            folder_create(  self.storage.hd2_status() )
+            file_create  (  self.status_file_path()   )
+
         json_save_file_pretty(self.data(), self.status_file_path())
         return self
 
     def status_file_path(self):
         return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
 
+    def set_processing_status(self, processing_status):
+        Status.lock.acquire()
+        try:
+            data = self.data()
+            data[Status.VAR_CURRENT_STATUS] = processing_status
+        finally:
+            Status.lock.release()
+            self.save()
 
+        return self
+
+    def set_started      (self       ): return self.set_processing_status(Processing_Status.STARTED  )
+    def set_stopped      (self       ): return self.set_processing_status(Processing_Status.STOPPED  )
+    def set_phase_1      (self       ): return self.set_processing_status(Processing_Status.PHASE_1  )
+    def set_phase_2      (self       ): return self.set_processing_status(Processing_Status.PHASE_2  )
 
     def update_counters(self, updated_status, count=0):
         Status.lock.acquire()
         try:
             data = self.data()
-            data[Status.VAR_CURRENT_STATUS] = updated_status
+            #data[Status.VAR_CURRENT_STATUS] = updated_status
 
             if updated_status == FileStatus.NONE:
-                data["files_count"] += count
+                data[Status.VAR_FILES_COUNT] += count
                 data["files_left_to_be_copied"] += count
                 
             elif updated_status == FileStatus.INITIAL:
-                data["files_copied"] += 1
+                data[Status.VAR_FILES_COPIED] += 1
                 if data["files_left_to_be_copied"] > 0:
                     data["files_left_to_be_copied"] -= 1
 
             elif updated_status == FileStatus.IN_PROGRESS:
-                data["in_progress"] += 1
+                data[Status.VAR_IN_PROGRESS] += 1
 
             elif updated_status == FileStatus.COMPLETED:
-                data["completed"] += 1
-                if data["in_progress"] > 0:
-                    data["in_progress"] -= 1
+                data[Status.VAR_COMPLETED] += 1
+                if data[Status.VAR_IN_PROGRESS] > 0:
+                    data[Status.VAR_IN_PROGRESS] -= 1
                 if data["files_left_to_process"] > 0:
                     data["files_left_to_process"] -= 1
+
             elif updated_status == FileStatus.FAILED:
-                data["failed"] += 1
-                if data["in_progress"] > 0:
-                    data["in_progress"] -= 1
+                data[Status.VAR_FAILED] += 1
+                if data[Status.VAR_IN_PROGRESS] > 0:
+                    data[Status.VAR_IN_PROGRESS] -= 1
                 if data["files_left_to_process"] > 0:
                     data["files_left_to_process"] -= 1
 
             elif updated_status == FileStatus.TO_PROCESS:
-                data["files_to_process"] += 1
+                data[Status.VAR_FILES_TO_PROCESS] += 1
                 data["files_left_to_process"] += 1
 
-            if updated_status == FileStatus.INITIAL:
-                data[Status.VAR_FILES_COUNT] += 1
         finally:
             Status.lock.release()
             self.save()
@@ -137,5 +155,6 @@ class Status:
     def get_current_status  (self): return self.data().get(Status.VAR_CURRENT_STATUS)
     def get_failed          (self): return self.data().get(Status.VAR_FAILED)
     def get_files_count     (self): return self.data().get(Status.VAR_FILES_COUNT)
+    def get_files_copied    (self): return self.data().get(Status.VAR_FILES_COPIED)
     def get_files_to_process(self): return self.data().get(Status.VAR_FILES_TO_PROCESS)
     def get_in_progress     (self): return self.data().get(Status.VAR_IN_PROGRESS)
