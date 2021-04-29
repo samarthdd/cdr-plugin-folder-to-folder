@@ -21,6 +21,7 @@ from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
 from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
+from cdr_plugin_folder_to_folder.processing.Analysis_Elastic import Analysis_Elastic
 
 class test_File_Processing(Temp_Config):
 
@@ -54,7 +55,8 @@ class test_File_Processing(Temp_Config):
         self.events_log      = Events_Log(self.temp_folder)
         self.events_elastic  = Events_Log_Elastic()
         self.report_elastic  = Report_Elastic()
-        self.file_processing = File_Processing(events_log=self.events_log, events_elastic = self.events_elastic, report_elastic=self.report_elastic, meta_service=self.meta_service )
+        self.analysis_elastic = Analysis_Elastic()
+        self.file_processing = File_Processing(events_log=self.events_log, events_elastic = self.events_elastic, report_elastic=self.report_elastic, analysis_elastic= self.analysis_elastic, meta_service=self.meta_service )
         self.storage         = Storage()
 
     def test_get_xmlreport(self):

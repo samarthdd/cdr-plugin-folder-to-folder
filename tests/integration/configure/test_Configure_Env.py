@@ -20,6 +20,7 @@ class test_Configure_Env(TestCase):
 #                      '54.75.120.78',
 #                      '3.250.212.118']
 
+
         test_ips =[   '84.16.229.232' ]
 
         endpoints = []
