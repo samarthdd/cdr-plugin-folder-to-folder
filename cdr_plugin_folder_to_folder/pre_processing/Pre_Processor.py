@@ -1,6 +1,6 @@
 import os
 import logging as logger
-
+from datetime import datetime
 from osbot_utils.utils.Files import folder_create, folder_delete_all, folder_copy
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
@@ -96,16 +96,20 @@ class Pre_Processor:
 
     @log_duration
     def process(self, file_path):
+        tik  = datetime.now()
+
         metadata = self.meta_service.create_metadata(file_path=file_path)
         file_name      = metadata.get_file_name()
         original_hash  = metadata.get_original_hash()
         status         = metadata.get_rebuild_status()
         self.update_status(file_name, original_hash, status)
 
+        tok   = datetime.now()
+        delta = tok - tik
+
+        hash_folder_path = os.path.join(self.storage.hd2_data(), original_hash)
+        self.meta_service.set_hd1_to_hd2_copy_time(hash_folder_path, delta.total_seconds())
+
     def update_status(self, file_name, original_hash, status):
         if status == FileStatus.INITIAL:
-
-            # self.analysis_json.add_file(original_hash, file_name)
-            # self.analysis_json.write_to_file()
-
             self.status.add_file()

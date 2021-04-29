@@ -117,7 +117,15 @@ class Loops(object):
         endpoint_index = process_index % self.config.endpoints_count
         if not Loops.continue_processing:
             return False
+        tik = datetime.now()
         process_result = self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
+
+        tok = datetime.now()
+        delta= tok - tik
+
+        meta_service = Metadata_Service()
+        meta_service.set_hd2_to_hd3_copy_time(itempath, delta.total_seconds())
+
         if process_result:
             self.status.add_completed()
         else:

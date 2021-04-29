@@ -28,7 +28,8 @@ class test_Metadata_Service(TestCase):
                                     'error'                  : None                             ,
                                     'original_file_paths'    : [self.test_file]                 ,
                                     'original_hash'          : file_sha256(self.test_file)      ,
-                                    'original_file_extension': '.jpg'                            ,
+                                    'original_hash_calculation_time': metadata.data.get('original_hash_calculation_time') ,
+                                    'original_file_extension': '.jpg'                           ,
                                     'original_file_size'     : 97610                            ,
                                     'rebuild_file_path'      : None                             ,
                                     'rebuild_hash'           : None                             ,
@@ -37,7 +38,9 @@ class test_Metadata_Service(TestCase):
                                     'rebuild_file_size'      : None                             ,
                                     'rebuild_file_duration'  : None                             ,
                                     'f2f_plugin_version'     : None                             ,
-                                    'f2f_plugin_git_commit'  : None
+                                    'f2f_plugin_git_commit'  : None                             ,
+                                    'hd1_to_hd2_copy_time'   : None                             ,
+                                    'hd2_to_hd3_copy_time'   : None
                                 }
         assert metadata.delete() is True
 

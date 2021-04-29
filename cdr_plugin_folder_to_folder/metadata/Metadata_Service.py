@@ -102,3 +102,9 @@ class Metadata_Service:
 
     def set_f2f_plugin_git_commit(self, metadata_folder, rebuild_file_duration):
         self.set_metadata_field(metadata_folder, 'f2f_plugin_git_commit', rebuild_file_duration)
+
+    def set_hd1_to_hd2_copy_time(self,metadata_folder, seconds):
+        self.set_metadata_field(metadata_folder, 'hd1_to_hd2_copy_time', seconds)
+
+    def set_hd2_to_hd3_copy_time(self,metadata_folder, seconds):
+        self.set_metadata_field(metadata_folder, 'hd2_to_hd3_copy_time', seconds)

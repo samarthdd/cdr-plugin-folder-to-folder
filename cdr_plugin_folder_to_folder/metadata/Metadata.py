@@ -1,6 +1,7 @@
 import os
 import json
 import pathlib
+from datetime import datetime
 
 from osbot_utils.utils.Files import file_name, folder_exists, file_sha256, file_exists, folder_create, path_combine, \
     folder_delete_all, file_copy, files_list
@@ -37,7 +38,14 @@ class Metadata:
 
     def add_file(self, file_path):
         if file_exists(file_path):
+            tik = datetime.now()
+
             self.set_file_hash(self.metadata_utils.file_hash(file_path))
+
+            tok = datetime.now()
+            delta = tok - tik
+            self.set_file_hash_calculation_time(delta.total_seconds())
+
             if self.exists():
                 self.get_from_file()
             else:
@@ -74,6 +82,7 @@ class Metadata:
                    'error'                  : None               ,
                    'original_file_paths'    : []                 ,
                    'original_hash'          : None               ,
+                   'original_hash_calculation_time': None        ,
                    'original_file_extension': None               ,
                    'original_file_size'     : None               ,
                    'rebuild_file_path'      : None               ,
@@ -83,7 +92,9 @@ class Metadata:
                    'rebuild_file_size'      : None               ,
                    'rebuild_file_duration'  : None               ,
                    'f2f_plugin_version'     : None               ,
-                   'f2f_plugin_git_commit'  : None
+                   'f2f_plugin_git_commit'  : None               ,
+                   'hd1_to_hd2_copy_time'   : None                  ,
+                   'hd2_to_hd3_copy_time'   : None
                  }
 
     def delete(self):
@@ -121,6 +132,9 @@ class Metadata:
         self.data['last_update_time'] = datetime_now()
         if not self.exists():
             self.save()
+
+    def set_file_hash_calculation_time(self,seconds):
+        self.data['original_hash_calculation_time'] = seconds
 
     def set_original_file_name(self, file_path):
         original_file_name = file_name(file_path)
