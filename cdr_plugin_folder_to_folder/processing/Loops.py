@@ -147,6 +147,7 @@ class Loops(object):
                 self.hash_json.add_file(original_hash, file_name)
 
         self.hash_json.save()
+        return self.hash_json.data()
 
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
@@ -158,8 +159,7 @@ class Loops(object):
 
         log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
 
-        self.updateHashJson()
-        json_list = self.hash_json.data()
+        json_list = self.updateHashJson()
 
         log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
 
