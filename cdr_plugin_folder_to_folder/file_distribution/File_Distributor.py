@@ -153,6 +153,24 @@ class File_Distributor:
             logger.error(f"File_Distributor: get_hd2_events_file : {error}")
             raise error
 
+    def get_hd2_processed(self, num_of_files):
+        try:
+            list = []
+            count = 0
+            base_path=os.path.join(self.hd2_base_location,"processed")
+            for folder in os.listdir(base_path):
+                list.append(os.path.join(base_path,folder))
+                count=count+1
+                if count == num_of_files:
+                    break
+
+            target_file_path = self.prepare_hd2_zip(list,"hd2_files.zip")
+            return target_file_path
+
+        except Exception as error:
+            logger.error(f"File_Distributor: get_hd2_events_file : {error}")
+            raise error
+
     def prepare_hd2_zip(self,path_list , zip_name):
         try:
             self.temp_folder = temp_folder()

@@ -85,6 +85,8 @@ class test_File_Distributor(Temp_Config):
 
     def test_get_hd2_files(self):
         response = self.file_distributor.get_hd2_data(1)
+        if (response is None) or (not os.path.exists(response)):
+            response = self.file_distributor.get_hd2_processed(1)
         assert response is not None
         assert os.path.exists(response)
 

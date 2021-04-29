@@ -8,7 +8,7 @@ import shutil
 from multiprocessing.pool import ThreadPool
 
 from osbot_utils.testing.Duration import Duration
-from osbot_utils.utils.Files import create_folder, folder_exists
+from osbot_utils.utils.Files import create_folder, folder_exists, folder_delete_all
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config, API_VERSION
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
@@ -162,6 +162,9 @@ class Loops(object):
 
             source_path = os.path.join(self.rootdir, key)
             destination_path = os.path.join(self.processed_dir, key)
+
+            if folder_exists(destination_path):
+                folder_delete_all(destination_path)
 
             shutil.move(source_path, destination_path)
 
