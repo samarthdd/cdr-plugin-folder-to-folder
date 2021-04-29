@@ -4,6 +4,7 @@ import sys
 import threading
 import asyncio
 import subprocess
+import shutil
 from multiprocessing.pool import ThreadPool
 
 from osbot_utils.testing.Duration import Duration
@@ -42,6 +43,8 @@ class Loops(object):
         self.report_elastic = Report_Elastic()
         self.report_elastic.setup()
         self.rootdir = os.path.join(self.config.hd2_location, "data")
+        self.processed_dir = os.path.join(self.config.hd2_location, "processed")
+        create_folder(self.processed_dir)
 
     def IsProcessing(self):
         return Loops.processing_started
@@ -149,6 +152,20 @@ class Loops(object):
         self.hash_json.save()
         return self.hash_json.data()
 
+    def moveProcessedFiles(self):
+        json_list = self.hash_json.data()
+
+        for key in json_list:
+
+            if (FileStatus.COMPLETED != json_list[key]["file_status"]):
+                continue
+
+            source_path = os.path.join(self.rootdir, key)
+            destination_path = os.path.join(self.processed_dir, key)
+
+            shutil.move(source_path, destination_path)
+
+
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
         if not isinstance(thread_count,int):
@@ -215,6 +232,8 @@ class Loops(object):
         results = pool.map(self.ProcessDirectory, thread_data)
         pool.close()
         pool.join()
+
+        self.moveProcessedFiles()
 
         self.events.add_log("LoopHashDirectoriesAsync finished")
         return results
