@@ -64,7 +64,7 @@ variable "memory_mib" {
 variable "auto_power_on" {
   type        = bool
   description = "Will power on instances if true"
-  default     = false
+  default     = true
 }
 
 variable "boot_disk_size" {
@@ -77,12 +77,10 @@ variable "random_string" {
   default = "dev"
 }
 
-variable "ip_address" {
-  type = string
-  description = "IP address to be applied to the instance"
-  default = ""
+variable "ip_addresses" {
+  default = []
 }
 
-variable "gateway_ip" {
-  default = "192.168.30.1"
+variable "gateway_ips" {
+  default = []
 }
