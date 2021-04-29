@@ -68,6 +68,10 @@ class Loops(object):
         return git_commit
 
     def ProcessDirectoryWithEndpoint(self, itempath, file_hash, endpoint_index):
+
+        if not os.path.isdir(itempath):
+            return False
+
         log_info(message=f"Starting ProcessDirectoryWithEndpoint on endpoint # {endpoint_index} for file {file_hash}")
         meta_service = Metadata_Service()
         original_file_path = meta_service.get_original_file_paths(itempath)
@@ -79,37 +83,36 @@ class Loops(object):
         meta_service.set_f2f_plugin_version(itempath, API_VERSION)
         meta_service.set_f2f_plugin_git_commit(itempath, self.git_commit())
 
-        if os.path.isdir(itempath):
-            try:
-                file_processing = File_Processing(events, self.events_elastic, self.report_elastic, self.analysis_elastic, meta_service)
-                if not file_processing.processDirectory(endpoint, itempath):
-                    events.add_log("CANNOT be processed")
-                    return False
-
-                log_data = {
-                        'file': original_file_path,
-                        'status': FileStatus.COMPLETED,
-                        'error': 'none',
-                        'timestamp': datetime.now(),
-                    }
-                log_info('ProcessDirectoryWithEndpoint', data=log_data)
-                meta_service.set_error(itempath, "none")
-                meta_service.set_status(itempath, FileStatus.COMPLETED)
-                self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
-                events.add_log("Has been processed")
-                return True
-            except Exception as error:
-                log_data = {
-                    'file': original_file_path,
-                    'status': FileStatus.FAILED,
-                    'error': str(error),
-                }
-                log_error(message='error in ProcessDirectoryWithEndpoint', data=log_data)
-                meta_service.set_error(itempath, str(error))
-                meta_service.set_status(itempath, FileStatus.FAILED)
-                self.hash_json.update_status(file_hash, FileStatus.FAILED)
-                events.add_log("ERROR:" + str(error))
+        try:
+            file_processing = File_Processing(events, self.events_elastic, self.report_elastic, self.analysis_elastic, meta_service)
+            if not file_processing.processDirectory(endpoint, itempath):
+                events.add_log("CANNOT be processed")
                 return False
+
+            log_data = {
+                    'file': original_file_path,
+                    'status': FileStatus.COMPLETED,
+                    'error': 'none',
+                    'timestamp': datetime.now(),
+                }
+            log_info('ProcessDirectoryWithEndpoint', data=log_data)
+            meta_service.set_error(itempath, "none")
+            meta_service.set_status(itempath, FileStatus.COMPLETED)
+            self.hash_json.update_status(file_hash, FileStatus.COMPLETED)
+            events.add_log("Has been processed")
+            return True
+        except Exception as error:
+            log_data = {
+                'file': original_file_path,
+                'status': FileStatus.FAILED,
+                'error': str(error),
+            }
+            log_error(message='error in ProcessDirectoryWithEndpoint', data=log_data)
+            meta_service.set_error(itempath, str(error))
+            meta_service.set_status(itempath, FileStatus.FAILED)
+            self.hash_json.update_status(file_hash, FileStatus.FAILED)
+            events.add_log("ERROR:" + str(error))
+            return False
 
 
     def ProcessDirectory(self, thread_data):
@@ -157,7 +160,7 @@ class Loops(object):
             original_hash  = metadata.get_original_hash()
             status         = metadata.get_rebuild_status()
 
-            if status == FileStatus.INITIAL:
+            if status != FileStatus.COMPLETED:
                 self.hash_json.add_file(original_hash, file_name)
 
         self.hash_json.save()
@@ -182,21 +185,26 @@ class Loops(object):
 
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
+        if folder_exists(self.rootdir) is False:
+            log_message = "ERROR: rootdir does not exist: " + self.rootdir
+            log_error(log_message)
+            return False
+
         if not isinstance(thread_count,int):
             raise TypeError("thread_count must be a integer")
 
         if not isinstance(do_single,bool):
             raise TypeError("thread_count must be a integer")
 
-        log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
+        log_message = f"LoopHashDirectoriesInternal started with {thread_count} threads"
+        self.events.add_log(log_message)
+        log_info(log_message)
 
         json_list = self.updateHashJson()
 
-        log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
-
-        if folder_exists(self.rootdir) is False:
-            log_error("ERROR: rootdir does not exist: " + self.rootdir)
-            return
+        log_message = f"LoopHashDirectoriesInternal started with {thread_count} threads"
+        self.events.add_log(log_message)
+        log_info(log_message)
 
         threads = list()
 
@@ -208,10 +216,13 @@ class Loops(object):
             file_hash   =  key
 
             itempath = os.path.join(self.rootdir, key)
-            if (FileStatus.INITIAL != json_list[key]["file_status"]):
+            self.events.add_log(f"Adding \"{itempath}\" to the threads")
+            if (FileStatus.COMPLETED == json_list[key]["file_status"]):
+                self.events.add_log(f"The file processing has been already completed")
                 continue
 
             if not os.path.exists(itempath):
+                self.events.add_log(f"ERROR: Path \"{itempath}\" does not exist")
                 json_list[key]["file_status"] = FileStatus.FAILED
                 continue
 
@@ -249,8 +260,8 @@ class Loops(object):
 
         self.moveProcessedFiles()
 
-        self.events.add_log("LoopHashDirectoriesAsync finished")
-        return results
+        self.events.add_log("LoopHashDirectoriesInternal finished")
+        return True
 
     async def LoopHashDirectoriesAsync(self, thread_count, do_single = False):
         await Loops.lock.acquire()

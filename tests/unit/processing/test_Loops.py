@@ -14,6 +14,7 @@ from cdr_plugin_folder_to_folder.utils.testing.Setup_Testing import Setup_Testin
 from cdr_plugin_folder_to_folder.utils.testing.Temp_Config import Temp_Config
 from cdr_plugin_folder_to_folder.pre_processing.Pre_Processor import Pre_Processor
 from cdr_plugin_folder_to_folder.utils.testing.Test_Data import Test_Data
+from cdr_plugin_folder_to_folder.pre_processing.Status import FileStatus
 
 class test_Loops(Temp_Config):
 
@@ -72,7 +73,7 @@ class test_Loops(Temp_Config):
 
         Loops.continue_processing = False
         for metadata in metadatas:
-            assert metadata.get('rebuild_status') ==  'Completed Successfully'
+            assert metadata.get('rebuild_status') ==  FileStatus.COMPLETED
 
 
         #metadata = metadatas[0]
@@ -84,5 +85,13 @@ class test_Loops(Temp_Config):
         #assert b'Glasswall Processed' in file_contents_as_bytes(hd3_file)
         #assert metadata.get('rebuild_status') == 'Completed Successfully'
 
+    def test_ProcessDirectoryWithEndpoint_bad(self):
+        itempath = '/not_existing'
+        filehash = '1234567890'
+        assert self.loops.ProcessDirectoryWithEndpoint(itempath, filehash, 0) is False
+
+    def test_LoopHashDirectoriesInternal_bad(self):
+        self.loops.rootdir = '/not_existing'
+        assert self.loops.LoopHashDirectoriesInternal(thread_count=30, do_single=False) is False
 
 

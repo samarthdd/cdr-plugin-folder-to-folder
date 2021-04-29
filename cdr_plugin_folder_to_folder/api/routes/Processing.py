@@ -14,7 +14,6 @@ router = APIRouter(**router_params)
 
 @router.post("/start")
 def process_hd2_data_to_hd3(thread_count:int=DEFAULT_THREAD_COUNT):
-    Metadata_Elastic().reload_hash_json()  # for now do this here
     loops = Loops()
     loops.LoopHashDirectories(thread_count)
     if loops.HasBeenStopped():

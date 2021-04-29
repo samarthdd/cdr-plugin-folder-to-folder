@@ -232,10 +232,11 @@ class File_Processing:
             #raise ValueError("The metadate.json file does not exist")
             return False
 
-        if not self.meta_service.is_initial_status(dir):
-            self.add_event_log("Metadata not in the INITIAL state")
+        if self.meta_service.is_completed_status(dir):
+            self.add_event_log("Metadata is in the COMPLETED state")
             return False
 
+        self.add_event_log("Set metadata status IN_PROGRESS")
         self.meta_service.set_status_inprogress(dir)
         self.status.add_in_progress()
 

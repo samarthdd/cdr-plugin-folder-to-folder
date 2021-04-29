@@ -56,8 +56,8 @@ class Metadata_Service:
         self.get_from_file(metadata_folder)
         return self.metadata.get_rebuild_status()
 
-    def is_initial_status(self, metadata_folder):
-        return (self.get_status(metadata_folder) == FileStatus.INITIAL)
+    def is_completed_status(self, metadata_folder):
+        return (self.get_status(metadata_folder) == FileStatus.COMPLETED)
 
     def set_status_inprogress(self, metadata_folder):
         self.set_status(metadata_folder, FileStatus.IN_PROGRESS)
