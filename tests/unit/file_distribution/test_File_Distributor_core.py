@@ -90,3 +90,7 @@ class test_File_Distributor(Temp_Config):
         assert response is not None
         assert os.path.exists(response)
 
+    def test_get_hd2_processed(self):
+        response = self.file_distributor.get_hd2_processed(1)
+        assert response is not None
+

@@ -3,7 +3,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import file_contents_as_bytes
+from osbot_utils.utils.Files import file_contents_as_bytes, folder_exists
 
 from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
@@ -58,6 +58,7 @@ class test_Loops(Temp_Config):
         assert len(json_data) > 0
 
         self.loops.moveProcessedFiles()
+        assert folder_exists(self.loops.processed_dir)
 
     def test_LoopHashDirectoriesInternal(self):
         Loops.continue_processing = True
