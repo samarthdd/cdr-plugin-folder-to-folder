@@ -21,8 +21,13 @@ class Configure_Env:
         if not dotenv_file:
            with open("./.env", "w"):
                pass
+        self.last_error_message = ""
+
+    def reset_last_error(self):
+        self.last_error_message = ""
 
     def configure(self, hd1_path=None, hd2_path=None, hd3_path=None):
+        self.reset_last_error()
         try:
             dotenv_file = dotenv.find_dotenv()
             if hd1_path:
@@ -30,6 +35,7 @@ class Configure_Env:
                     environ['HD1_LOCATION'] = hd1_path
                     dotenv.set_key(dotenv_file, "HD1_LOCATION", environ["HD1_LOCATION"])
                 else:
+                    self.last_error_message = f"hd1_path did not exist: {hd1_path}"
                     log_error(message=f"hd1_path did not exist",data={"path": hd1_path})
                     return -1
 
@@ -52,21 +58,26 @@ class Configure_Env:
             self.config.load_values()
             return self.env_details()
 
-        except Exception as error:
-            raise ValueError(str(error))
+        except Exception as e:
+            self.last_error_message = f'Configure_Env : configure : {e}'
+            log_error(f'Configure_Env : configure : {e}')
+            raise ValueError(str(e))
 
     def env_details(self):
+        self.reset_last_error()
         try:
             return {
                 "hd1_path": environ.get('HD1_LOCATION'),
                 "hd2_path": environ.get('HD2_LOCATION'),
                 "hd3_path": environ.get('HD3_LOCATION')
             }
-        except Exception as error:
-            raise error
-
+        except Exception as e:
+            self.last_error_message = f'Configure_Env : env_details : {e}'
+            log_error(f'Configure_Env : env_details : {e}')
+            raise ValueError(str(e))
 
     def configure_endpoints(self, endpoint_string):
+        self.reset_last_error()
         try:
             dotenv_file = dotenv.find_dotenv()
             valid_endpoint_string=self.get_valid_endpoints(endpoint_string)
@@ -79,13 +90,18 @@ class Configure_Env:
                 return json.loads(environ['ENDPOINTS'])
 
             else:
+                self.last_error_message = f"No valid endpoint found in: {endpoint_string}"
+                log_error(f"No valid endpoint found in", data={"enpoints": endpoint_string})
                 return -1
 
 
-        except Exception as error:
-            raise error
+        except Exception as e:
+            self.last_error_message = f'Configure_Env : configure_endpoints : {e}'
+            log_error(f'Configure_Env : configure_endpoints : {e}')
+            raise ValueError(str(e))
 
     def get_valid_endpoints(self, endpoint_string):
+        self.reset_last_error()
         try:
             valid_endpoints   =  {'Endpoints' : [] }
             endpoint_json     =  json.loads(endpoint_string)
@@ -108,9 +124,12 @@ class Configure_Env:
             return json.dumps(valid_endpoints)
 
         except Exception as e:
+            self.last_error_message = f'Configure_Env : get_valid_endpoints : {e}'
+            log_error(f'Configure_Env : get_valid_endpoints : {e}')
             raise ValueError(str(e))
 
     def gw_sdk_healthcheck(self, server_url):
+        self.reset_last_error()
         try:
             api_route = "api/health/"
             url=urljoin(server_url,api_route)
@@ -119,5 +138,6 @@ class Configure_Env:
             return response
 
         except Exception as e:
-            logger.error(f'Configure_Env : gw_sdk_healthcheck : {e}')
+            self.last_error_message = f'Configure_Env : gw_sdk_healthcheck : {e}'
+            log_error(f'Configure_Env : gw_sdk_healthcheck : {e}')
             return None
