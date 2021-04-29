@@ -89,6 +89,7 @@ Configure VMs details using secret.auto.tfvars. See an example at *infra/terrafo
 once the value is updated in secret.auto.tfvars run
 
 ```shell
+cd cdr-plugin-folder-to-folder/infra/terraform/esxi/
 terraform init -var-file=./tfvars/secret.auto.tfvars
 ```
 run terraform plan to validate the code
