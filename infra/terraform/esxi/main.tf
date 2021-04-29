@@ -11,6 +11,8 @@ module "sdk" {
   datastore      = var.datastore_esxi1
   boot_disk_size = var.sdk_disk_size
   random_string = random_string.random.result
+  ip_addresses = var.sdk_ip_addresses_esxi1
+  gateway_ips = var.sdk_gateway_esxi1
 }
 
 module "offline_desktop" {
@@ -25,6 +27,8 @@ module "offline_desktop" {
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
   random_string = random_string.random.result
+  ip_addresses = var.od_ip_addresses_esxi1
+  gateway_ips = var.od_gateway_esxi1
 }
 
 module "workflow" {
@@ -39,6 +43,8 @@ module "workflow" {
   network        = var.network_esxi1
   datastore      = var.datastore_esxi1
   random_string = random_string.random.result
+  ip_addresses = var.workflow_ip_addresses_esxi1
+  gateway_ips = var.workflow_gateway_esxi1
 }
 
 # ESXI 02
@@ -54,6 +60,8 @@ module "sdk2" {
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
   random_string = random_string.random.result
+  ip_addresses = var.sdk_ip_addresses_esxi2
+  gateway_ips = var.sdk_gateway_esxi2
 }
 
 module "offline_desktop2" {
@@ -68,6 +76,8 @@ module "offline_desktop2" {
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
   random_string = random_string.random.result
+  ip_addresses = var.od_ip_addresses_esxi2
+  gateway_ips = var.od_gateway_esxi2
 }
 
 module "workflow2" {
@@ -82,6 +92,8 @@ module "workflow2" {
   network        = var.network_esxi2
   datastore      = var.datastore_esxi2
   random_string = random_string.random.result
+  ip_addresses = var.workflow_ip_addresses_esxi2
+  gateway_ips = var.workflow_gateway_esxi2
 }
 
 resource "random_string" "random" {

@@ -62,7 +62,7 @@ variable "sdk_vcpu_count" {
 variable "sdk_memory_mib" {
   type        = number
   description = "Count of RAM per instance in MiB"
-  default     = 4096
+  default     = 16384
 
   validation {
     condition     = var.sdk_memory_mib >= 1024
@@ -154,5 +154,55 @@ variable "datastore_esxi2" {
   type        = string
   description = "Datastore name"
   default     = "datastore1"
+}
+
+# IP addresses for ESXI01
+variable "sdk_ip_addresses_esxi1" {
+  default = []
+}
+
+variable "sdk_gateway_esxi1" {
+  default = []
+}
+
+variable "workflow_ip_addresses_esxi1" {
+  default = []
+}
+
+variable "workflow_gateway_esxi1" {
+  default = []
+}
+
+variable "od_ip_addresses_esxi1" {
+  default = []
+}
+
+variable "od_gateway_esxi1" {
+  default = []
+}
+
+# IP addresses for ESXI02
+variable "sdk_ip_addresses_esxi2" {
+  default = []
+}
+
+variable "sdk_gateway_esxi2" {
+  default = []
+}
+
+variable "workflow_ip_addresses_esxi2" {
+  default = []
+}
+
+variable "workflow_gateway_esxi2" {
+  default = []
+}
+
+variable "od_ip_addresses_esxi2" {
+  default = []
+}
+
+variable "od_gateway_esxi2" {
+  default = []
 }
 
