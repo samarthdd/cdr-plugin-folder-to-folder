@@ -8,7 +8,8 @@ Automated deployment of OVAs in to ESXi
 ## 2. Import Installer OVA to ESXi
 
  2.1. Logon to ESXi webconsole --> Click on Virtual Machines-->Click on Create or Register VM
-![image](https://user-images.githubusercontent.com/78961055/116544871-4c050b00-a90d-11eb-9588-2f1e4fd52ac4.png)
+![image](https://user-images.githubusercontent.com/78961055/116545737-655a8700-a90e-11eb-8c7c-e137beb06147.png)
+
 
  2.2. On the New Virtual Machine window, select creation type as “Deploy a virtual machine from an OVF or OVA file” and click Next
 ![image](https://user-images.githubusercontent.com/78961055/116544896-558e7300-a90d-11eb-85c3-15d2c9f065e3.png)
