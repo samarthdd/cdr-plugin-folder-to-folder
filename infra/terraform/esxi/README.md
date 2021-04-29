@@ -1,48 +1,65 @@
 ![OvaToEsxiDeploy](https://user-images.githubusercontent.com/78961055/114981290-61a91800-9eab-11eb-82a2-c628805a8f4c.png)
 
-```shell
-Download SDK, Workflow and Installer/Monitor(Glasswall Desktop) OVAs from AWS S3 bucket to the User computer.
-Connect to ESXi-01 from User Computer and manually import the Installer ova and start the Installer VM instance.
-Copy the SDK, Workflow OVAs and Terraform code from User Computer to the datastore of ESXi-01 and mount the datastore to Installer VM Instance.
-Run the Terraform from Installer VM Instance.
-Validate the SDK and Workflow VM Instances created in respective ESXi.
-```
 
-
-
-
-Terraform for OVA/OVF ESXi deployment
+Automated deployment of OVAs in to ESXi
 ===
+## 1. On your computer, download OVAs from S3 bucket using the provided link
 
-- [Terraform for OVA/OVF ESXi deployment](#terraform-for-ovaovf-esxi-deployment)
-  - [1. OVA/OVF](#1-ovaovf)
-    - [1.1. Requirements](#11-requirements)
-    - [1.2. Configuration](#12-configuration)
-    - [1.3. Terraform_apply](#13-Terraform_apply)
-  - [2. VMDK](#2-vmdk)
-    - [2.1. Configuration](#21-configuration)
-  - [3. Apply](#3-apply)
+## 2. Import Installer OVA to ESXi
 
-## 1. OVA/OVF
+ 2.1. Logon to ESXi webconsole --> Click on Virtual Machines-->Click on Create or Register VM
+![image](https://user-images.githubusercontent.com/78961055/116544871-4c050b00-a90d-11eb-9588-2f1e4fd52ac4.png)
 
-> See an example in \infra\terraform\esxi\tfvars\secret.auto.tfvars.example
+ 2.2. On the New Virtual Machine window, select creation type as “Deploy a virtual machine from an OVF or OVA file” and click Next
+![image](https://user-images.githubusercontent.com/78961055/116544896-558e7300-a90d-11eb-85c3-15d2c9f065e3.png)
 
-### 1.1. Requirements
+ 2.3. Enter the name for the virtual machine and click on "select files or drag/drop" and select Installer OVA then click Next
+![image](https://user-images.githubusercontent.com/78961055/116544916-5b845400-a90d-11eb-877e-d50d79da7ed4.png)
 
-Install [OVF tools](https://my.vmware.com/group/vmware/downloads/details?downloadGroup=OVFTOOL441&productId=955). We have downloaded it for Linux x64 at ./artifacts folder.
+ 2.4. Select storage and click Next,
+![image](https://user-images.githubusercontent.com/78961055/116544927-5f17db00-a90d-11eb-98bf-9169fb0728bb.png)
 
+ 2.5. Select VM network and click next
+![image](https://user-images.githubusercontent.com/78961055/116544942-650dbc00-a90d-11eb-903c-5f23a97856d7.png)
+
+ 2.6. Click on Finish
+
+## 3. Copy SDK and Workflow OVAs to ESXi datastore
+
+ 3.1. Login to ESXi web console 
+ 3.1.1. Click on Storage-->datastore1 (or any storage of your choice)-->Datastore Browse-->Select the Installer folder and create directory with name "OVAs" ![image](https://user-images.githubusercontent.com/78961055/116545133-a7cf9400-a90d-11eb-82ca-29b938552c92.png)
+
+ 3.1.2. Click on OVAs directory and click on Upload, and then upload sdk.ova and workflow.ova
+
+## 4. Install sshfs and mount datastore to Installer VM
 ```shell
+ 4.1. Open terminal from Installer VM and Create directory OVAs under $HOME
+          mkdir $HOME/OVAs
+          cd $HOME/OVAs
+ 4.2. Install sshfs and mount datastore
+          sudo apt -y install sshfs
+          sshfs --version
+          sshfs root@esxi01.glasswall-icap.com:/vmfs/volumes/datastore1/Installer/OVAs /home/glasswall/OVAs/
+          cd $HOME
+          ls /home/glasswall/OVAs/
+```
+## 5. Terraform Deployment
+ ```shell
+ 5.1. Validate ovftool
+Login to Installer VM and issue below command,
+          ovftool --version
+          If ovftool is not installed then download it from ./artifacts folder and install it using below command,
+
 sudo bash ./VMware-ovftool-4.4.1-16812187-lin.x86_64.bundle
 ```
-
-### 1.2. Configuration
-
-Navigate to tfvars folder 
-```shell
-cd infra/terraform/esxi/tfvars
-```
+ ```shell
+ 5.2. Download terraform code
+         cd $HOME
+         mkdir terraform && cd terraform
+         git clone https://github.com/filetrust/cdr-plugin-folder-to-folder.git
+         cd cdr-plugin-folder-to-folder/infra/terraform/esxi/tfvars/
+         
 Make a copy of *secret.auto.tfvars.example* and place your credentials.
-```shell
 cp secret.auto.tfvars.example secret.auto.tfvars
 ```
 update details as require in secret.auto.tfvars
@@ -65,7 +82,8 @@ Configure VMs details using secret.auto.tfvars. See an example at *infra/terrafo
 |  boot_disk_size | HDD size of GiB                  |
 
 
-### 1.3. Terraform_apply
+ 
+ 5.3. Terraform_apply
 
 once the value is updated in secret.auto.tfvars run
 
@@ -82,6 +100,7 @@ run terraform apply to deploy the VMs
 ```shell
 terraform apply -var-file=./tfvars/secret.auto.tfvars
 ```
+===
 
 ## 2. VMDK
 
