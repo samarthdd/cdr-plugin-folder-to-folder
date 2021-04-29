@@ -49,6 +49,16 @@ class test_Loops(Temp_Config):
         json_data = self.loops.updateHashJson()
         assert len(json_data) > 0
 
+    def test_moveProcessedFiles(self):
+        Loops.continue_processing = True
+        count = 40
+        self.add_test_files(count=count, execute_stage_1=True)
+
+        json_data = self.loops.updateHashJson()
+        assert len(json_data) > 0
+
+        self.loops.moveProcessedFiles()
+
     def test_LoopHashDirectoriesInternal(self):
         Loops.continue_processing = True
         count = 40
