@@ -146,7 +146,7 @@ class Loops(object):
             original_hash  = metadata.get_original_hash()
             status         = metadata.get_rebuild_status()
 
-            if status == FileStatus.INITIAL:
+            if status != FileStatus.COMPLETED:
                 self.hash_json.add_file(original_hash, file_name)
 
         self.hash_json.save()
@@ -177,14 +177,20 @@ class Loops(object):
         if not isinstance(do_single,bool):
             raise TypeError("thread_count must be a integer")
 
-        log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
+        log_message = f"LoopHashDirectoriesInternal started with {thread_count} threads"
+        self.events.add_log(log_message)
+        log_info(log_message)
 
         json_list = self.updateHashJson()
 
-        log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
+        log_message = f"LoopHashDirectoriesInternal started with {thread_count} threads"
+        self.events.add_log(log_message)
+        log_info(log_message)
 
         if folder_exists(self.rootdir) is False:
-            log_error("ERROR: rootdir does not exist: " + self.rootdir)
+            log_message = "ERROR: rootdir does not exist: " + self.rootdir
+            self.events.add_log(log_message)
+            log_error(log_message)
             return
 
         threads = list()
@@ -197,10 +203,13 @@ class Loops(object):
             file_hash   =  key
 
             itempath = os.path.join(self.rootdir, key)
-            if (FileStatus.INITIAL != json_list[key]["file_status"]):
+            self.events.add_log(f"Adding \"{itempath}\" to the threads")
+            if (FileStatus.COMPLETED == json_list[key]["file_status"]):
+                self.events.add_log(f"The file processing has been already completed")
                 continue
 
             if not os.path.exists(itempath):
+                self.events.add_log(f"ERROR: Path \"{itempath}\" does not exist")
                 json_list[key]["file_status"] = FileStatus.FAILED
                 continue
 
@@ -238,7 +247,7 @@ class Loops(object):
 
         self.moveProcessedFiles()
 
-        self.events.add_log("LoopHashDirectoriesAsync finished")
+        self.events.add_log("LoopHashDirectoriesInternal finished")
         return results
 
     async def LoopHashDirectoriesAsync(self, thread_count, do_single = False):
