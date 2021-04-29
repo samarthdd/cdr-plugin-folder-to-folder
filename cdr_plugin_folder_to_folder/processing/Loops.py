@@ -23,7 +23,7 @@ from datetime import datetime
 
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.Logging import log_error, log_info
-
+from cdr_plugin_folder_to_folder.processing.Analysis_Elastic import Analysis_Elastic
 
 class Loops(object):
 
@@ -40,7 +40,9 @@ class Loops(object):
         self.events_elastic = Events_Log_Elastic()
         self.hash=None
         self.report_elastic = Report_Elastic()
+        self.analysis_elastic = Analysis_Elastic()
         self.report_elastic.setup()
+        self.analysis_elastic.setup()
 
     def IsProcessing(self):
         return Loops.processing_started
@@ -74,7 +76,7 @@ class Loops(object):
 
         if os.path.isdir(itempath):
             try:
-                file_processing = File_Processing(events, self.events_elastic, self.report_elastic, meta_service)
+                file_processing = File_Processing(events, self.events_elastic, self.report_elastic, self.analysis_elastic, meta_service)
                 if not file_processing.processDirectory(endpoint, itempath):
                     events.add_log("CANNOT be processed")
                     return False
