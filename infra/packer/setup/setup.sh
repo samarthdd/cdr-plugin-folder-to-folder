@@ -45,6 +45,7 @@ sudo docker-compose up -d --build
 # install vmware tools
 sudo apt install open-vm-tools
 sudo apt install open-vm-tools-desktop -y
+curl -sSL https://raw.githubusercontent.com/vmware/cloud-init-vmware-guestinfo/master/install.sh | sudo sh -
 
 # allow password login (useful when deployed to esxi)
 SSH_PASSWORD=${SSH_PASSWORD:-glasswall}
