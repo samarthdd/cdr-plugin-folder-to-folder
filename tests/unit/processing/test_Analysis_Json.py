@@ -9,6 +9,8 @@ from osbot_utils.utils.Misc import list_set, random_string, str_sha256
 
 from cdr_plugin_folder_to_folder.metadata.Metadata_Utils import Metadata_Utils
 from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
+from cdr_plugin_folder_to_folder.metadata.Metadata import Metadata
+
 import os
 FIXTURE_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -24,6 +26,9 @@ class test_Analysis_Json(TestCase):
         cls.test_file      = temp_file(contents='Static text so that we have a static hash')
         cls.test_file_name = file_name(cls.test_file)
         cls.test_file_hash = '500286533bf75d769e9180a19414d1c3502dd52093e7351a0a9b1385d8f8961c'
+        cls.meta_data={    'file_name'            : None               ,
+                           'original_hash'       : '500286533bf75d769e9180a19414d1c3502dd52093e7351a0a9b1385d8f8961c'               ,
+                           'rebuild_hash'         : None   }
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -108,6 +113,23 @@ class test_Analysis_Json(TestCase):
             self.analysis_json.add_file(self.test_file_hash, self.test_file_name)
             self.analysis_json.update_report(self.test_file_hash, self.report_data)
         pprint(self.analysis_json.get_from_file())
+
+    def test_get_file_analysis(self):
+        with patch.object(Metadata, 'get_from_file', return_value=self.meta_data):
+            response=self.analysis_json.get_file_analysis(self.test_file_hash, self.report_data)
+            pprint(response)
+            assert "file_name" in response
+            assert "original_hash"         in response
+            assert response["original_hash"]    == self.test_file_hash
+            assert "rebuild_hash"          in response
+            assert "file_type"             in response
+            assert "file_size"             in response
+            assert "remediated_item_count" in response
+            assert "remediate_items_list"  in response
+            assert "sanitised_item_count"  in response
+            assert "sanitised_items_list"  in response
+            assert "issue_item_count"      in response
+            assert "issue_item_list"       in response
 
     def test_get_remediated_item_details(self):
         count,list = self.analysis_json.get_remediated_item_details(self.report_data)
