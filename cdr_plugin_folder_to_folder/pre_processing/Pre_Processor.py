@@ -9,7 +9,6 @@ from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
-from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
 from cdr_plugin_folder_to_folder.processing.Analysis_Json import Analysis_Json
 
@@ -28,7 +27,6 @@ class Pre_Processor:
         self.dst_folder     = None
         self.dst_file_name  = None
 
-        self.hash_json = Hash_Json()
         self.status = Status()
         self.status.reset()
 
@@ -82,16 +80,12 @@ class Pre_Processor:
                 if os.path.isfile(file_path):
                     self.process(file_path)
 
-        self.hash_json.save()
-
         return True
 
     @log_duration
     def process_files(self):
         self.status.set_phase_1()
         self.process_folder(self.storage.hd1())
-        self.hash_json.reset()
-        self.hash_json.save()
         self.status.set_phase_2()
 
     @log_duration
