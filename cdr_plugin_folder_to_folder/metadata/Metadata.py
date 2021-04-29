@@ -1,6 +1,7 @@
 import os
 import json
 import pathlib
+from datetime import datetime
 
 from osbot_utils.utils.Files import file_name, folder_exists, file_sha256, file_exists, folder_create, path_combine, \
     folder_delete_all, file_copy, files_list
@@ -37,7 +38,14 @@ class Metadata:
 
     def add_file(self, file_path):
         if file_exists(file_path):
+            tik = datetime.now()
+
             self.set_file_hash(self.metadata_utils.file_hash(file_path))
+
+            tok = datetime.now()
+            delta = tok - tik
+            self.set_file_hash_calculation_time(delta.total_seconds())
+
             if self.exists():
                 self.get_from_file()
             else:
@@ -121,6 +129,9 @@ class Metadata:
         self.data['last_update_time'] = datetime_now()
         if not self.exists():
             self.save()
+
+    def set_file_hash_calculation_time(self,seconds):
+        self.data['original_hash_calculation_time'] = seconds
 
     def set_original_file_name(self, file_path):
         original_file_name = file_name(file_path)
