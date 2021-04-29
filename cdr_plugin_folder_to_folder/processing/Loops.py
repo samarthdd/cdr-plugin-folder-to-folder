@@ -4,10 +4,11 @@ import sys
 import threading
 import asyncio
 import subprocess
+import shutil
 from multiprocessing.pool import ThreadPool
 
 from osbot_utils.testing.Duration import Duration
-from osbot_utils.utils.Files import create_folder, folder_exists
+from osbot_utils.utils.Files import create_folder, folder_exists, folder_delete_all
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config, API_VERSION
 from cdr_plugin_folder_to_folder.processing.Events_Log import Events_Log
@@ -41,6 +42,9 @@ class Loops(object):
         self.hash=None
         self.report_elastic = Report_Elastic()
         self.report_elastic.setup()
+        self.rootdir = os.path.join(self.config.hd2_location, "data")
+        self.processed_dir = os.path.join(self.config.hd2_location, "processed")
+        create_folder(self.processed_dir)
 
     def IsProcessing(self):
         return Loops.processing_started
@@ -126,6 +130,45 @@ class Loops(object):
         #    # Retry it with the next one
         #    endpoint_index = (endpoint_index + 1) % self.config.endpoints_count
 
+    def updateHashJson(self):
+        self.hash_json.reset()
+        meta_service = Metadata_Service()
+
+        for hash_folder in os.listdir(self.rootdir):
+
+            metadata_folder = os.path.join(self.rootdir, hash_folder)
+
+            if not os.path.isdir(metadata_folder):
+                continue
+
+            metadata       = meta_service.get_from_file(metadata_folder)
+            file_name      = metadata.get_file_name()
+            original_hash  = metadata.get_original_hash()
+            status         = metadata.get_rebuild_status()
+
+            if status == FileStatus.INITIAL:
+                self.hash_json.add_file(original_hash, file_name)
+
+        self.hash_json.save()
+        return self.hash_json.data()
+
+    def moveProcessedFiles(self):
+        json_list = self.hash_json.data()
+
+        for key in json_list:
+
+            if (FileStatus.COMPLETED != json_list[key]["file_status"]):
+                continue
+
+            source_path = os.path.join(self.rootdir, key)
+            destination_path = os.path.join(self.processed_dir, key)
+
+            if folder_exists(destination_path):
+                folder_delete_all(destination_path)
+
+            shutil.move(source_path, destination_path)
+
+
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
         if not isinstance(thread_count,int):
@@ -136,14 +179,12 @@ class Loops(object):
 
         log_info(f"LoopHashDirectoriesAsync started with {thread_count} threads")
 
-        json_list = self.hash_json.data()
+        json_list = self.updateHashJson()
 
         log_info(f"There are {len(json_list)} files to in hash_json (i.e. to review) ")
 
-        rootdir = os.path.join(self.config.hd2_location, "data")
-
-        if folder_exists(rootdir) is False:
-            log_error("ERROR: rootdir does not exist: " + rootdir)
+        if folder_exists(self.rootdir) is False:
+            log_error("ERROR: rootdir does not exist: " + self.rootdir)
             return
 
         threads = list()
@@ -155,7 +196,7 @@ class Loops(object):
         for key in json_list:
             file_hash   =  key
 
-            itempath = os.path.join(rootdir, key)
+            itempath = os.path.join(self.rootdir, key)
             if (FileStatus.INITIAL != json_list[key]["file_status"]):
                 continue
 
@@ -194,6 +235,8 @@ class Loops(object):
         results = pool.map(self.ProcessDirectory, thread_data)
         pool.close()
         pool.join()
+
+        self.moveProcessedFiles()
 
         self.events.add_log("LoopHashDirectoriesAsync finished")
         return results
