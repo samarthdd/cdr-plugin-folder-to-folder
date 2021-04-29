@@ -6,20 +6,21 @@ Automated deployment of OVAs in to ESXi
 ## 1. On your computer, download OVAs from S3 bucket using the provided link
 
 ## 2. Import Installer OVA to ESXi
-
+```shell
  2.1. Logon to ESXi webconsole --> Click on Virtual Machines-->Click on Create or Register VM
  2.2. On the New Virtual Machine window, select creation type as “Deploy a virtual machine from an OVF or OVA file” and click Next
  2.3. Enter the name for the virtual machine and click on "select files or drag/drop" and select Installer OVA then click Next
  2.4. Select storage and click Next,
  2.5. Select VM network and click next
  2.6. Click on Finish
-
+ 2.7. Power on the VM once it is created and configure network.
+```
 ## 3. Copy SDK and Workflow OVAs to ESXi datastore
-
+```shell
  3.1. Login to ESXi web console 
  3.1.1. Click on Storage-->datastore1 (or any storage of your choice)-->Datastore Browse-->Select the Installer folder and create directory with name "OVAs" 
  3.1.2. Click on OVAs directory and click on Upload, and then upload sdk.ova and workflow.ova
-
+```
 ## 4. Install sshfs and mount datastore to Installer VM
 ```shell
  4.1. Open terminal from Installer VM and Create directory OVAs under $HOME
