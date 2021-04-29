@@ -25,7 +25,7 @@ from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
 class File_Processing:
 
-    def __init__(self, events_log, events_elastic, report_elastic, meta_service):
+    def __init__(self, events_log, events_elastic, report_elastic, analysis_elastic, meta_service):
         self.meta_service   = meta_service
         self.events_log     = events_log
         self.events_elastic = events_elastic
@@ -38,6 +38,8 @@ class File_Processing:
         self.sdk_engine_version = "Not available"
 
         self.analysis_json  = Analysis_Json()
+        self.analysis_elastic   = analysis_elastic
+
 
     def add_event_log(self, message, event_data = {}):
         json_data = self.events_log.add_log(message, event_data)
@@ -97,8 +99,10 @@ class File_Processing:
 
             #self.report_elastic.add_report(json_obj)
 
-            analysis_obj=self.analysis_json.get_file_analysis(dir, json_obj)
+            analysis_obj=self.analysis_json.get_file_analysis(os.path.basename(dir), json_obj)
             json_save_file_pretty(analysis_obj, os.path.join(dir, "analysis.json"))
+
+            self.analysis_elastic.add_analysis(analysis_obj)
 
             return True
         except Exception as error:
