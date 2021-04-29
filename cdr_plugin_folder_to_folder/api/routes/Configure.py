@@ -41,7 +41,7 @@ def configure_environment(item: CONFIGURATION):
                                        hd3_path=item.hd3_path)
 
     if response == -1 :
-        raise HTTPException(status_code=404, detail="Data Paths are not valid")
+        raise HTTPException(status_code=404, detail=f"Data Paths are not valid: {configure_env.last_error_message}")
 
     return response
 
@@ -51,7 +51,7 @@ def configure_multiple_gw_sdk_endpoints(item: ItemList):
     json_item=item.json()
     response = configure_env.configure_endpoints(endpoint_string=json_item)
     if response == -1 :
-        raise HTTPException(status_code=404, detail="GW_sdk_endpoints are not valid")
+        raise HTTPException(status_code=404, detail=f"GW_sdk_endpoints are not valid: {configure_env.last_error_message}")
     return response
 
 @router.put("/reload_elastic_file_metadata/")

@@ -5,6 +5,7 @@ import dotenv
 import pytest
 
 from cdr_plugin_folder_to_folder.configure.Configure_Env import Configure_Env
+from osbot_utils.utils.Files import folder_exists, folder_delete_all
 from os import environ,path,remove,rename
 
 from unittest.mock import patch,Mock
@@ -34,9 +35,50 @@ class test_Configure_Env(TestCase):
                                           hd3_path=hd3_path)
 
         assert response is not None
+        assert self.configure.last_error_message == ""
         self.assertEqual(environ["HD1_LOCATION"]   , hd1_path)
         self.assertEqual(environ["HD2_LOCATION"]   , hd2_path)
         self.assertEqual(environ["HD3_LOCATION"]   , hd3_path)
+
+    def test_invalid_hd1(self):
+        hd1_path      = "./test_data/scenario-1/hd1xyz"
+        hd2_path      = "./test_data/scenario-1/hd2"
+        hd3_path      = "./test_data/scenario-1/hd3"
+
+        response=self.configure.configure(hd1_path=hd1_path,
+                                          hd2_path=hd2_path,
+                                          hd3_path=hd3_path)
+
+        assert self.configure.last_error_message != ""
+        assert response is not None
+
+    def test_invalid_hd2(self):
+        hd1_path      = "./test_data/scenario-1/hd1"
+        hd2_path      = "./test_data/scenario-1/hd2xyz"
+        hd3_path      = "./test_data/scenario-1/hd3"
+
+        response=self.configure.configure(hd1_path=hd1_path,
+                                          hd2_path=hd2_path,
+                                          hd3_path=hd3_path)
+
+        assert self.configure.last_error_message == ""
+        assert response is not None
+        assert folder_exists(hd2_path)
+        folder_delete_all(hd2_path)
+
+    def test_invalid_hd3(self):
+        hd1_path      = "./test_data/scenario-1/hd1"
+        hd2_path      = "./test_data/scenario-1/hd2"
+        hd3_path      = "./test_data/scenario-1/hd3xyz"
+
+        response=self.configure.configure(hd1_path=hd1_path,
+                                          hd2_path=hd2_path,
+                                          hd3_path=hd3_path)
+
+        assert self.configure.last_error_message == ""
+        assert response is not None
+        assert folder_exists(hd3_path)
+        folder_delete_all(hd3_path)
 
     @pytest.mark.skip("this is breaking current .env file (this needs to run on a temp .env file)")
     @patch("cdr_plugin_folder_to_folder.configure.Configure_Env.Configure_Env.get_valid_endpoints")
