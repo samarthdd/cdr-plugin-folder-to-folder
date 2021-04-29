@@ -3,7 +3,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import file_contents_as_bytes
+from osbot_utils.utils.Files import file_contents_as_bytes, folder_exists
 
 from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 from cdr_plugin_folder_to_folder.processing.File_Processing import File_Processing
@@ -40,6 +40,25 @@ class test_Loops(Temp_Config):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self.loops.LoopHashDirectoriesAsync(thread_count=1))
+
+    def test_updateHashJson(self):
+        Loops.continue_processing = True
+        count = 40
+        self.add_test_files(count=count, execute_stage_1=True)
+
+        json_data = self.loops.updateHashJson()
+        assert len(json_data) > 0
+
+    def test_moveProcessedFiles(self):
+        Loops.continue_processing = True
+        count = 40
+        self.add_test_files(count=count, execute_stage_1=True)
+
+        json_data = self.loops.updateHashJson()
+        assert len(json_data) > 0
+
+        self.loops.moveProcessedFiles()
+        assert folder_exists(self.loops.processed_dir)
 
     def test_LoopHashDirectoriesInternal(self):
         Loops.continue_processing = True
