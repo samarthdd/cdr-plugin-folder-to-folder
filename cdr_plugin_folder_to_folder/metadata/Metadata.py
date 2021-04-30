@@ -93,7 +93,7 @@ class Metadata:
                    'rebuild_file_duration'  : None               ,
                    'f2f_plugin_version'     : None               ,
                    'f2f_plugin_git_commit'  : None               ,
-                   'hd1_to_hd2_copy_time'   : None                  ,
+                   'hd1_to_hd2_copy_time'   : None               ,
                    'hd2_to_hd3_copy_time'   : None
                  }
 
