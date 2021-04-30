@@ -11,7 +11,7 @@ curl https://rclone.org/install.sh | sudo bash
 
 ```
     n/s/q>                 -  n 
-    name>                  -  <Name>
+    name>                  -  <remote_name>  ( any name )
     Storage                - 4
     provider               - 1
     env_auth               - 1 and give aws access key and secret key
@@ -30,16 +30,35 @@ curl https://rclone.org/install.sh | sudo bash
 - Verify s3 is connected by listing all buckets `rclone lsd <Name>:`  
   Example   `rclone lsd remote_s3:`
   
-- Copy 
+- Copy and Sync Commands from s3 to local
 
     ```
-    rclone copy <Name>:<Bucket_Name>/<folder> <local_destination_location>
+    rclone copy <remote_name>:<Bucket_Name>/<folder> <local_destination_location>
+    rclone sync -i <remote_name>:<Bucket_Name>/<folder> <local_destination_location>
   ```
   
-- Mount 
+- Copy and Sync Commands from local to s3
 
     ```
-    rclone mount <Name>:<Bucket_Name>/<folder> <local_destination_location>  --daemon 
+    rclone copy <local_destination_location> <remote_name>:<Bucket_Name>/<folder>
+    rclone sync -i  <local_destination_location> <remote_name>:<Bucket_Name>/<folder>
+  ```
+  
+- Mount from s3 to local
+
+    ```
+    rclone mount <local_destination_location>  <remote_name>:<Bucket_Name>/<folder> --daemon 
    ```
+  
+- Mount from local to s3
+
+    ```
+    rclone mount <local_destination_location> <remote_name>:<Bucket_Name>/<folder> --daemon 
+   ```
+  
+- Create bucket
+```
+rclone mkdir <remote_name>:<bucket_name>
+```
 - For more details Follow doc `https://rclone.org/s3/`
 
