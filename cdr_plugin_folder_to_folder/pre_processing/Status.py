@@ -1,4 +1,5 @@
 import threading
+import psutil
 import logging as logger
 
 from osbot_utils.utils.Files                        import path_combine, folder_create, file_create
@@ -68,10 +69,10 @@ class Status:
                     Status.VAR_COMPLETED              : 0               ,
                     Status.VAR_FAILED                 : 0               ,
                     Status.VAR_IN_PROGRESS            : 0               ,
-                    Status.VAR_CPU_UTILIZATION        : 0               ,
-                    Status.VAR_RAM_UTILIZATION        : 0               ,
-                    Status.VAR_NUM_OF_PROCESSES       : 0               ,
-                    Status.VAR_NUM_OF_THREADS         : 0               ,
+                    Status.VAR_CPU_UTILIZATION        : None            ,
+                    Status.VAR_RAM_UTILIZATION        : None            ,
+                    Status.VAR_NUM_OF_PROCESSES       : None            ,
+                    Status.VAR_NUM_OF_THREADS         : None            ,
                 }
 
     def load_data(self):
@@ -96,6 +97,21 @@ class Status:
 
     def status_file_path(self):
         return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
+
+    def get_server_status(self):
+        Status.lock.acquire()
+        try:
+            data = self.data()
+
+            data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
+            data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
+            data[Status.VAR_NUM_OF_PROCESSES] = len(psutil.pids())
+            data[Status.VAR_NUM_OF_THREADS] = 0
+        finally:
+            Status.lock.release()
+            self.save()
+
+        return self
 
     def set_processing_status(self, processing_status):
         Status.lock.acquire()
