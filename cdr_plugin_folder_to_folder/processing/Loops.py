@@ -216,7 +216,6 @@ class Loops(object):
             file_hash   =  key
 
             itempath = os.path.join(self.rootdir, key)
-            self.events.add_log(f"Adding \"{itempath}\" to the threads")
             if (FileStatus.COMPLETED == json_list[key]["file_status"]):
                 self.events.add_log(f"The file processing has been already completed")
                 continue
