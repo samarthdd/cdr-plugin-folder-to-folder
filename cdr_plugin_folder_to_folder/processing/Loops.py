@@ -164,6 +164,7 @@ class Loops(object):
                 self.hash_json.add_file(original_hash, file_name)
 
         self.hash_json.save()
+        self.status.set_processing_counters(len(self.hash_json.data()))
         return self.hash_json.data()
 
     def moveProcessedFiles(self):

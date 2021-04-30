@@ -68,16 +68,16 @@ class Server:
             sleep(update_interval)
 
     def start(self):
-        self.status_thread_on = True
-        self.status_thread = threading.Thread(target=self.StatusThread, args=(self.status_update_interval,))
-        self.status_thread.start()
+        #self.status_thread_on = True
+        #self.status_thread = threading.Thread(target=self.StatusThread, args=(self.status_update_interval,))
+        #self.status_thread.start()
 
         log_debug(message=f"Starting API server on {self.host}:{self.port} with uvicorn log level {self.log_level}")
         uvicorn.run("cdr_plugin_folder_to_folder.api.Server:app", host=self.host, port=self.port, log_level=self.log_level, reload=self.reload)
 
-        print("Stopping the FastAPI server")
-        self.status_thread_on = False
-        self.status_thread.join()
+        #print("Stopping the FastAPI server")
+        #self.status_thread_on = False
+        #self.status_thread.join()
 
     def setup_logging(self):
         start_logging()

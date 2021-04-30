@@ -133,7 +133,6 @@ class Status:
         Status.lock.acquire()
         try:
             data = self.data()
-            #data[Status.VAR_CURRENT_STATUS] = updated_status
 
             if updated_status == FileStatus.NONE:
                 data[Status.VAR_FILES_COUNT] += count
@@ -164,6 +163,24 @@ class Status:
             elif updated_status == FileStatus.TO_PROCESS:
                 data[Status.VAR_FILES_TO_PROCESS] += 1
                 data[Status.VAR_FILES_LEFT_TO_PROCESS] += 1
+
+        finally:
+            Status.lock.release()
+            self.save()
+
+        return self
+
+    def set_processing_counters(self, count):
+        Status.lock.acquire()
+        try:
+            data = self.data()
+
+            data[Status.VAR_IN_PROGRESS] = 0
+            data[Status.VAR_FAILED]      = 0
+            data[Status.VAR_COMPLETED]   = 0
+
+            data[Status.VAR_FILES_TO_PROCESS]      = count
+            data[Status.VAR_FILES_LEFT_TO_PROCESS] = count
 
         finally:
             Status.lock.release()
