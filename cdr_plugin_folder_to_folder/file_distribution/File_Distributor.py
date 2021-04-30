@@ -137,38 +137,46 @@ class File_Distributor:
 
     def get_hd2_data(self, num_of_files):
         try:
+            base_path = os.path.join(self.hd2_base_location, "data")
             list = []
             count = 0
-            base_path=os.path.join(self.hd2_base_location,"data")
-            for folder in os.listdir(base_path):
-                list.append(os.path.join(base_path,folder))
-                count=count+1
-                if count == num_of_files:
-                    break
+            if num_of_files == -1:
+                for folder in os.listdir(base_path):
+                    list.append(os.path.join(base_path, folder))
+            else:
+                for folder in os.listdir(base_path):
+                    list.append(os.path.join(base_path,folder))
+                    count=count+1
+                    if count == num_of_files:
+                        break
 
-            target_file_path = self.prepare_hd2_zip(list,"hd2_files.zip")
+            target_file_path = self.prepare_hd2_zip(list,"hd2_data_files.zip")
             return target_file_path
 
         except Exception as error:
-            logger.error(f"File_Distributor: get_hd2_events_file : {error}")
+            logger.error(f"File_Distributor: get_hd2_data : {error}")
             raise error
 
     def get_hd2_processed(self, num_of_files):
         try:
+            base_path = os.path.join(self.hd2_base_location, "processed")
             list = []
             count = 0
-            base_path=os.path.join(self.hd2_base_location,"processed")
-            for folder in os.listdir(base_path):
-                list.append(os.path.join(base_path,folder))
-                count=count+1
-                if count == num_of_files:
-                    break
+            if num_of_files == -1:
+                for folder in os.listdir(base_path):
+                    list.append(os.path.join(base_path, folder))
+            else:
+                for folder in os.listdir(base_path):
+                    list.append(os.path.join(base_path, folder))
+                    count = count + 1
+                    if count == num_of_files:
+                        break
 
-            target_file_path = self.prepare_hd2_zip(list,"hd2_files.zip")
+            target_file_path = self.prepare_hd2_zip(list, "hd2_processed_files.zip")
             return target_file_path
 
         except Exception as error:
-            logger.error(f"File_Distributor: get_hd2_events_file : {error}")
+            logger.error(f"File_Distributor: get_hd2_processed : {error}")
             raise error
 
     def prepare_hd2_zip(self,path_list , zip_name):

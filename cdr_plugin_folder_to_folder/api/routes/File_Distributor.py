@@ -1,5 +1,6 @@
 from cdr_plugin_folder_to_folder.file_distribution.File_Distributor import File_Distributor
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
+from typing import  Optional
 import ntpath
 router_params = { "prefix": "/file-distributor"  ,
                   "tags"  : ['File Distributor'] }
@@ -43,10 +44,12 @@ def get_hd2_status_files():
     file_path=file_distributor.get_hd2_status_hash_file()
     return FileResponse(file_path, media_type='application/octet-stream', filename=ntpath.basename(file_path))
 
-@router.get("/hd2/data")
-def get_hd2_data_files(num_of_files: int):
+@router.get("/hd2/processed")
+def get_hd2_data_files(num_of_files: int = Query(-1, description="Keep -1 to get all hd2/processed data",)):
+    if num_of_files == 0 :
+        return "Invalid value for num_of_files"
     file_distributor = File_Distributor()
-    file_path=file_distributor.get_hd2_data(num_of_files=num_of_files)
+    file_path=file_distributor.get_hd2_processed(num_of_files=num_of_files)
     return FileResponse(file_path, media_type='application/octet-stream', filename=ntpath.basename(file_path))
 
 # @router.get("/hd3/{num_of_files}")
