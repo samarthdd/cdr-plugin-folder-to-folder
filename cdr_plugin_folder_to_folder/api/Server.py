@@ -18,6 +18,7 @@ from cdr_plugin_folder_to_folder.api.routes.Health import router as router_healt
 from cdr_plugin_folder_to_folder.api.routes.Configure import router as router_configure
 from cdr_plugin_folder_to_folder.utils.Logging import log_debug
 from cdr_plugin_folder_to_folder.utils.Logging_Process import start_logging
+from cdr_plugin_folder_to_folder.pre_processing.Status import Status
 
 from time import sleep
 
@@ -43,7 +44,6 @@ class Server:
         self.status_update_interval = 10
         self.status_thread          = threading.Thread()
         self.status_thread_on       = False
-        #self.status                 = Status()
 
     def add_routes(self):
         self.app.include_router(router_processing       )
@@ -61,10 +61,10 @@ class Server:
         logging.getLogger().handlers.clear()                                # todo: see side effects of this
 
     def StatusThread(self, update_interval):
-        count = 0
+        status = Status()
         while self.status_thread_on:
-            count += 1
-            print(count)
+            status.get_server_status()
+            status.save()
             sleep(update_interval)
 
     def start(self):
