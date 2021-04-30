@@ -58,6 +58,10 @@ class Server:
         log_debug(message=f"Starting API server on {self.host}:{self.port} with uvicorn log level {self.log_level}")
         uvicorn.run("cdr_plugin_folder_to_folder.api.Server:app", host=self.host, port=self.port, log_level=self.log_level, reload=self.reload)
 
+    def stop(self):
+        print("Stopping the FastAPI server")
+        pass
+
     def setup_logging(self):
         start_logging()
         self.app.add_middleware(Logging_Middleware)
@@ -92,5 +96,7 @@ if "PYTEST_CURRENT_TEST" not in os.environ:
 def run_if_main():
     if __name__ == "__main__":
         server.start()
+
+    server.stop()
 
 run_if_main()
