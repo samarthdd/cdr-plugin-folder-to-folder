@@ -79,7 +79,7 @@ class test_File_Distributor(TestCase):
         assert response.status_code is 200
         assert response.content is not None
 
-    def test_get_hd2_data(self):
+    def test_get_hd2_processed(self):
         num_of_files = 2
         path = f"{self.prefix}/hd2/processed?num_of_files={num_of_files}"
         response = self.client.GET_FILE(path)
