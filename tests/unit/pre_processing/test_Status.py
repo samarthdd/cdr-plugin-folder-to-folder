@@ -35,7 +35,7 @@ class test_Status(Temp_Config):
         cpu_percents = data[Status.VAR_CPU_UTILIZATION]
         assert len(cpu_percents) > 0
         assert isinstance(cpu_percents[0], (int, float))
-        assert cpu_percents[0] > 0
+        assert cpu_percents[0] >= 0
 
         ram_percent = data[Status.VAR_RAM_UTILIZATION]
         assert isinstance(ram_percent, (int, float))
