@@ -1,0 +1,13 @@
+{
+  "file_name": "sample3.pdf",
+  "original_hash": "2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f",
+  "rebuild_hash": "2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f",
+  "file_type": "pdf",
+  "file_size": 45655,
+  "remediated_item_count": 0,
+  "remediate_items_list": [],
+  "sanitised_item_count": 0,
+  "sanitised_items_list": [],
+  "issue_item_count": 0,
+  "issue_item_list": []
+}
