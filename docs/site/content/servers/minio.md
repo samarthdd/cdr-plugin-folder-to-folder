@@ -1,0 +1,4 @@
+---
+title : minio
+---
+{{< iframe/minio >}}

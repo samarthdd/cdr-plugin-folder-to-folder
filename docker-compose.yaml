@@ -48,6 +48,7 @@ services:
       - ${PWD}/docs/site:/src/site
     ports:
       - 1313:1313
+    restart: always
 
   # Elastic and Kibana
 

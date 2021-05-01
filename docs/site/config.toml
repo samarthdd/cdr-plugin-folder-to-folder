@@ -9,4 +9,5 @@ metaDataFormat  = "yaml"
   themeVariant    = "blue"
   disableSearch   = true
   disableNextPrev = true
+  titleSeparator = "-"
 

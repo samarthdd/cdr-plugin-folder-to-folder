@@ -1,0 +1,5 @@
+api      : http://localhost:8880
+api_docs : http://localhost:8880/docs
+kibana   : http://localhost:5601/app/dashboards#/list
+elastic  : http://localhost:9200
+minio    : http://localhost:9000

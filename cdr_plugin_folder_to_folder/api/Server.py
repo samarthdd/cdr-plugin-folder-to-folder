@@ -9,6 +9,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 #from cdr_plugin_folder_to_folder.api.users import router
 from osbot_utils.utils.Misc import to_int
+from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Scope, Receive, Send
 
 from cdr_plugin_folder_to_folder.api.routes.Processing import router as router_processing
@@ -52,6 +53,14 @@ class Server:
         self.app.include_router(router_health           )
         self.app.include_router(router_configure        )
         self.fix_logging_bug()
+        self.allow_cors()
+        return self
+
+    def allow_cors(self):
+        self.app.add_middleware(CORSMiddleware, allow_origins     = ["*"],
+                                                allow_credentials = True ,
+                                                allow_methods     = ["*"],
+                                                allow_headers     = ["*"])
         return self
 
     def fix_logging_bug(self):
