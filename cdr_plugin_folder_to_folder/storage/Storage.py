@@ -67,6 +67,8 @@ class Storage:
                 metadatas.append(metadata.data)
         return metadatas
 
+    def hd2_processed(self, path=''):
+        return path_combine(self.config.hd2_processed_location, path )
 
     def hd2_status(self, path=''):
         return path_combine(self.config.hd2_status_location, path )  # add path and convert to absolute paths

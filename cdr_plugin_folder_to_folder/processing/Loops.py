@@ -123,14 +123,14 @@ class Loops(object):
         tik = datetime.now()
         process_result = self.ProcessDirectoryWithEndpoint(itempath, file_hash, endpoint_index)
 
-        tok = datetime.now()
-        delta= tok - tik
-
-        meta_service = Metadata_Service()
-        meta_service.set_hd2_to_hd3_copy_time(itempath, delta.total_seconds())
-
         if process_result:
             self.status.add_completed()
+
+            tok = datetime.now()
+            delta = tok - tik
+
+            meta_service = Metadata_Service()
+            meta_service.set_hd2_to_hd3_copy_time(itempath, delta.total_seconds())
         else:
             self.status.add_failed()
 

@@ -14,6 +14,7 @@ DEFAULT_HD2_NAME         = 'hd2'
 DEFAULT_HD3_NAME         = 'hd3'
 DEFAULT_HD2_DATA_NAME    = 'data'
 DEFAULT_HD2_STATUS_NAME  = 'status'
+DEFAULT_HD2_PROCESSED_NAME = 'processed'
 DEFAULT_ROOT_FOLDER      = path_combine(__file__                , '../../../test_data/scenario-1' )
 DEFAULT_HD1_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , DEFAULT_HD1_NAME                )
 DEFAULT_HD2_LOCATION     = path_combine(DEFAULT_ROOT_FOLDER     , DEFAULT_HD2_NAME                )
@@ -40,22 +41,23 @@ class Config:
 
     def __init__(self):
         if hasattr(self, 'root_folder') is False:                     # only set these values first time around
-            self.hd1_location        = None
-            self.hd2_location        = None
-            self.hd2_data_location   = None
-            self.hd2_status_location = None
-            self.hd3_location        = None
-            self.root_folder         = None
-            self.elastic_host        = None
-            self.elastic_port        = None
-            self.elastic_schema      = None
-            self.kibana_host         = None
-            self.kibana_port         = None
-            self.thread_count        = None
-            self.test_sdk            = None
-            self.endpoints           = None
-            self.endpoints_count     = None
-            self.request_timeout     = None
+            self.hd1_location           = None
+            self.hd2_location           = None
+            self.hd2_data_location      = None
+            self.hd2_status_location    = None
+            self.hd2_processed_location = None
+            self.hd3_location           = None
+            self.root_folder            = None
+            self.elastic_host           = None
+            self.elastic_port           = None
+            self.elastic_schema         = None
+            self.kibana_host            = None
+            self.kibana_port            = None
+            self.thread_count           = None
+            self.test_sdk               = None
+            self.endpoints              = None
+            self.endpoints_count        = None
+            self.request_timeout        = None
             self.load_values()                                      # due to the singleton pattern this will only be executed once
 
     def load_values(self):
@@ -92,12 +94,14 @@ class Config:
         folder_create(self.hd1_location)
 
     def set_hd2_location(self, hd2_location):
-        self.hd2_location        = self.ensure_last_char_is_not_forward_slash(hd2_location)
-        self.hd2_data_location   = path_combine(self.hd2_location, DEFAULT_HD2_DATA_NAME)
-        self.hd2_status_location = path_combine(self.hd2_location, DEFAULT_HD2_STATUS_NAME)
+        self.hd2_location           = self.ensure_last_char_is_not_forward_slash(hd2_location)
+        self.hd2_data_location      = path_combine(self.hd2_location, DEFAULT_HD2_DATA_NAME)
+        self.hd2_status_location    = path_combine(self.hd2_location, DEFAULT_HD2_STATUS_NAME)
+        self.hd2_processed_location = path_combine(self.hd2_location, DEFAULT_HD2_PROCESSED_NAME)
         folder_create(self.hd2_location       )
         folder_create(self.hd2_data_location  )
         folder_create(self.hd2_status_location)
+        folder_create(self.hd2_processed_location)
 
     def set_hd3_location(self, hd3_location):
         self.hd3_location = self.ensure_last_char_is_not_forward_slash(hd3_location)
@@ -120,18 +124,19 @@ class Config:
 
     def values(self):
         return {
-            "hd1_location"       : self.hd1_location        ,
-            "hd2_location"       : self.hd2_location        ,
-            "hd2_data_location"  : self.hd2_data_location   ,
-            "hd2_status_location": self.hd2_status_location ,
-            "hd3_location"       : self.hd3_location        ,
-            "root_folder"        : self.root_folder         ,
-            "elastic_host"       : self.elastic_host        ,
-            "elastic_port"       : self.elastic_port        ,
-            "elastic_schema"     : self.elastic_schema      ,
-            "kibana_host"        : self.kibana_host         ,
-            "kibana_port"        : self.kibana_port         ,
-            "thread_count"       : self.thread_count        ,
-            "endpoints"          : self.endpoints           ,
-            "request_timeout"    : self.request_timeout
+            "hd1_location"           : self.hd1_location        ,
+            "hd2_location"           : self.hd2_location        ,
+            "hd2_data_location"      : self.hd2_data_location   ,
+            "hd2_status_location"    : self.hd2_status_location ,
+            "hd2_processed_location" : self.hd2_processed_location,
+            "hd3_location"           : self.hd3_location        ,
+            "root_folder"            : self.root_folder         ,
+            "elastic_host"           : self.elastic_host        ,
+            "elastic_port"           : self.elastic_port        ,
+            "elastic_schema"         : self.elastic_schema      ,
+            "kibana_host"            : self.kibana_host         ,
+            "kibana_port"            : self.kibana_port         ,
+            "thread_count"           : self.thread_count        ,
+            "endpoints"              : self.endpoints           ,
+            "request_timeout"        : self.request_timeout
         }

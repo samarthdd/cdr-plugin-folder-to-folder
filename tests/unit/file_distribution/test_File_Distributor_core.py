@@ -79,11 +79,11 @@ class test_File_Distributor(Temp_Config):
     #     assert os.path.exists(response)
 
     def test_get_hd2_status_hash_file(self):
-        response = self.file_distributor.get_hd2_status_hash_file()
+        response = self.file_distributor.get_hd2_status()
         assert response is not None
         assert os.path.exists(response)
 
-    def test_get_hd2_files(self):
+    def test_get_hd2_data(self):
         response = self.file_distributor.get_hd2_data(1)
         if (response is None) or (not os.path.exists(response)):
             response = self.file_distributor.get_hd2_processed(1)

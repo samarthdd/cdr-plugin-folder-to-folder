@@ -24,7 +24,7 @@ class test_File_Distributor(TestCase):
         cls.pre_processor.clear_data_and_status_folders()
         cls.stage_1       = cls.pre_processor.process(cls.test_file)
         cls.hash_json.save()
-        #cls.stage_2       = Loops().LoopHashDirectories()
+        cls.stage_2       = Loops().LoopHashDirectories()
         #assert cls.stage_2 is True
 
     @classmethod
@@ -79,8 +79,15 @@ class test_File_Distributor(TestCase):
         assert response.status_code is 200
         assert response.content is not None
 
+    def test_get_hd2_data(self):
+        num_of_files = 1
+        path = f"{self.prefix}/hd2/data?num_of_files={num_of_files}"
+        response = self.client.GET_FILE(path)
+        assert response.status_code is 200
+        assert response.content is not None
+
     def test_get_hd2_processed(self):
-        num_of_files = 2
+        num_of_files = 1
         path = f"{self.prefix}/hd2/processed?num_of_files={num_of_files}"
         response = self.client.GET_FILE(path)
         assert response.status_code is 200
