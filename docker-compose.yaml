@@ -38,6 +38,17 @@ services:
           condition: service_healthy
       restart: always
 
+  # Docs
+  docs:
+    image: cdr_plugin_folder_to_folder_docs
+    build:
+      dockerfile: ${PWD}/docs/Dockerfile
+      context: ${PWD}/docs
+    volumes:
+      - ${PWD}/docs/site:/src/site
+    ports:
+      - 1313:1313
+
   # Elastic and Kibana
 
   es01:
