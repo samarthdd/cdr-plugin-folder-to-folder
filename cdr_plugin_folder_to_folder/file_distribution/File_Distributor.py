@@ -66,7 +66,6 @@ class File_Distributor:
     def get_hd2_status(self):
         try:
             base_path = self.storage.hd2_status()
-
             if not os.listdir(base_path) :
                 return -1
 
@@ -79,7 +78,8 @@ class File_Distributor:
     def get_hd2_data(self, num_of_files):
         try:
             base_path = self.storage.hd2_data()
-
+            if num_of_files == 0:
+                return 0
             if not os.listdir(base_path):
                 return -1
 
@@ -105,7 +105,8 @@ class File_Distributor:
     def get_hd2_processed(self, num_of_files):
         try:
             base_path = self.storage.hd2_processed()
-
+            if num_of_files == 0:
+                return 0
             if not os.listdir(base_path):
                 return -1
 
