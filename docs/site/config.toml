@@ -1,0 +1,12 @@
+baseURL         = "/"
+title           = "Glasswall CDR Platform"
+theme           = "hugo-theme-learn"
+themesdir       = "../"
+metaDataFormat  = "yaml"
+
+
+[params]
+  themeVariant    = "blue"
+  disableSearch   = true
+  disableNextPrev = true
+
