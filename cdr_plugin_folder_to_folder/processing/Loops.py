@@ -164,6 +164,7 @@ class Loops(object):
                 self.hash_json.add_file(original_hash, file_name)
 
         self.hash_json.save()
+        self.status.set_processing_counters(len(self.hash_json.data()))
         return self.hash_json.data()
 
     def moveProcessedFiles(self):
@@ -216,7 +217,6 @@ class Loops(object):
             file_hash   =  key
 
             itempath = os.path.join(self.rootdir, key)
-            self.events.add_log(f"Adding \"{itempath}\" to the threads")
             if (FileStatus.COMPLETED == json_list[key]["file_status"]):
                 self.events.add_log(f"The file processing has been already completed")
                 continue

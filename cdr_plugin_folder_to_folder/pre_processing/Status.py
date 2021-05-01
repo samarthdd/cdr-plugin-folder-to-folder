@@ -1,4 +1,5 @@
 import threading
+import psutil
 import logging as logger
 
 from osbot_utils.utils.Files                        import path_combine, folder_create, file_create
@@ -25,14 +26,20 @@ class Processing_Status:
 
 class Status:
 
-    STATUS_FILE_NAME        = "status.json"
-    VAR_COMPLETED           = "completed"
-    VAR_CURRENT_STATUS      = "current_status"
-    VAR_FAILED              = "failed"
-    VAR_FILES_TO_PROCESS    = "files_to_process"
-    VAR_FILES_COUNT         = "files_count"
-    VAR_FILES_COPIED        = "files_copied"
-    VAR_IN_PROGRESS         = "in_progress"
+    STATUS_FILE_NAME             = "status.json"
+    VAR_COMPLETED                = "completed"
+    VAR_CURRENT_STATUS           = "current_status"
+    VAR_FAILED                   = "failed"
+    VAR_FILES_TO_PROCESS         = "files_to_process"
+    VAR_FILES_LEFT_TO_PROCESS    = "files_left_to_process"
+    VAR_FILES_COUNT              = "files_count"
+    VAR_FILES_COPIED             = "files_copied"
+    VAR_FILES_TO_BE_COPIED       = "files_left_to_be_copied"
+    VAR_IN_PROGRESS              = "in_progress"
+    VAR_CPU_UTILIZATION          = "cpu_utilization"
+    VAR_RAM_UTILIZATION          = "memory_utilization"
+    VAR_NUM_OF_PROCESSES         = "number_of_processes"
+    VAR_NUM_OF_THREADS           = "number_of_threads"
 
     lock = threading.Lock()
 
@@ -53,15 +60,20 @@ class Status:
         return self._status_data
 
     def default_data(self):
-        return {    Status.VAR_CURRENT_STATUS   : FileStatus.NONE ,
-                    Status.VAR_FILES_COUNT      : 0               ,
-                    Status.VAR_FILES_COPIED     : 0               ,
-                    'files_left_to_be_copied'   : 0               ,
-                    Status.VAR_FILES_TO_PROCESS : 0               ,
-                    'files_left_to_process'     : 0               ,
-                    Status.VAR_COMPLETED        : 0               ,
-                    Status.VAR_FAILED           : 0               ,
-                    Status.VAR_IN_PROGRESS      : 0               }
+        return {    Status.VAR_CURRENT_STATUS         : FileStatus.NONE ,
+                    Status.VAR_FILES_COUNT            : 0               ,
+                    Status.VAR_FILES_COPIED           : 0               ,
+                    Status.VAR_FILES_TO_BE_COPIED     : 0               ,
+                    Status.VAR_FILES_TO_PROCESS       : 0               ,
+                    Status.VAR_FILES_LEFT_TO_PROCESS  : 0               ,
+                    Status.VAR_COMPLETED              : 0               ,
+                    Status.VAR_FAILED                 : 0               ,
+                    Status.VAR_IN_PROGRESS            : 0               ,
+                    Status.VAR_CPU_UTILIZATION        : None            ,
+                    Status.VAR_RAM_UTILIZATION        : None            ,
+                    Status.VAR_NUM_OF_PROCESSES       : None            ,
+                    Status.VAR_NUM_OF_THREADS         : None            ,
+                }
 
     def load_data(self):
         self._status_data = json_load_file(self.status_file_path())
@@ -86,6 +98,21 @@ class Status:
     def status_file_path(self):
         return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
 
+    def get_server_status(self):
+        Status.lock.acquire()
+        try:
+            data = self.data()
+
+            data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
+            data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
+            data[Status.VAR_NUM_OF_PROCESSES] = len(psutil.pids())
+            data[Status.VAR_NUM_OF_THREADS] = 0
+        finally:
+            Status.lock.release()
+            self.save()
+
+        return self
+
     def set_processing_status(self, processing_status):
         Status.lock.acquire()
         try:
@@ -106,16 +133,15 @@ class Status:
         Status.lock.acquire()
         try:
             data = self.data()
-            #data[Status.VAR_CURRENT_STATUS] = updated_status
 
             if updated_status == FileStatus.NONE:
                 data[Status.VAR_FILES_COUNT] += count
-                data["files_left_to_be_copied"] += count
+                data[Status.VAR_FILES_TO_BE_COPIED] += count
                 
             elif updated_status == FileStatus.INITIAL:
                 data[Status.VAR_FILES_COPIED] += 1
-                if data["files_left_to_be_copied"] > 0:
-                    data["files_left_to_be_copied"] -= 1
+                if data[Status.VAR_FILES_TO_BE_COPIED] > 0:
+                    data[Status.VAR_FILES_TO_BE_COPIED] -= 1
 
             elif updated_status == FileStatus.IN_PROGRESS:
                 data[Status.VAR_IN_PROGRESS] += 1
@@ -124,19 +150,37 @@ class Status:
                 data[Status.VAR_COMPLETED] += 1
                 if data[Status.VAR_IN_PROGRESS] > 0:
                     data[Status.VAR_IN_PROGRESS] -= 1
-                if data["files_left_to_process"] > 0:
-                    data["files_left_to_process"] -= 1
+                if data[Status.VAR_FILES_LEFT_TO_PROCESS] > 0:
+                    data[Status.VAR_FILES_LEFT_TO_PROCESS] -= 1
 
             elif updated_status == FileStatus.FAILED:
                 data[Status.VAR_FAILED] += 1
                 if data[Status.VAR_IN_PROGRESS] > 0:
                     data[Status.VAR_IN_PROGRESS] -= 1
-                if data["files_left_to_process"] > 0:
-                    data["files_left_to_process"] -= 1
+                if data[Status.VAR_FILES_LEFT_TO_PROCESS] > 0:
+                    data[Status.VAR_FILES_LEFT_TO_PROCESS] -= 1
 
             elif updated_status == FileStatus.TO_PROCESS:
                 data[Status.VAR_FILES_TO_PROCESS] += 1
-                data["files_left_to_process"] += 1
+                data[Status.VAR_FILES_LEFT_TO_PROCESS] += 1
+
+        finally:
+            Status.lock.release()
+            self.save()
+
+        return self
+
+    def set_processing_counters(self, count):
+        Status.lock.acquire()
+        try:
+            data = self.data()
+
+            data[Status.VAR_IN_PROGRESS] = 0
+            data[Status.VAR_FAILED]      = 0
+            data[Status.VAR_COMPLETED]   = 0
+
+            data[Status.VAR_FILES_TO_PROCESS]      = count
+            data[Status.VAR_FILES_LEFT_TO_PROCESS] = count
 
         finally:
             Status.lock.release()

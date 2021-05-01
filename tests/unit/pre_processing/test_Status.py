@@ -27,6 +27,24 @@ class test_Status(Temp_Config):
                                                                               ('TO_PROCESS'  , 'To Process'                                       ),
                                                                               ('__module__'  , 'cdr_plugin_folder_to_folder.pre_processing.Status')]
 
+    def test_server_status(self):
+        status = self.status
+        status.get_server_status()
+        data = status.data()
+
+        cpu_percents = data[Status.VAR_CPU_UTILIZATION]
+        assert len(cpu_percents) > 0
+        assert isinstance(cpu_percents[0], (int, float))
+        assert cpu_percents[0] >= 0
+
+        ram_percent = data[Status.VAR_RAM_UTILIZATION]
+        assert isinstance(ram_percent, (int, float))
+        assert ram_percent > 0
+
+        processes_count = data[Status.VAR_NUM_OF_PROCESSES]
+        assert isinstance(processes_count, (int))
+        assert processes_count > 0
+
     def test_load_data(self):
         status = self.status
         assert status.data()             == status.default_data()

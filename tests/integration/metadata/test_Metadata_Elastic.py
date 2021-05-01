@@ -125,7 +125,8 @@ class test_Metadata_Elastic(Temp_Config):
                                     'error'                  : None                      ,
                                     'original_file_paths'    : [ self.test_file]         ,
                                     'original_hash'          : self.file_hash            ,
-                                    'original_file_extension': '.tmp'                     ,
+                                    'original_hash_calculation_time': metadata_data['original_hash_calculation_time']               ,
+                                    'original_file_extension': '.tmp'                    ,
                                     'original_file_size'     : 41                        ,
                                     'rebuild_file_path'      : None                      ,
                                     'rebuild_hash'           : None                      ,
@@ -134,7 +135,9 @@ class test_Metadata_Elastic(Temp_Config):
                                     'rebuild_file_size'      : None                      ,
                                     'rebuild_file_duration'  : None                      ,
                                     'f2f_plugin_version'     : None                      ,
-                                    'f2f_plugin_git_commit'  : None
+                                    'f2f_plugin_git_commit'  : None                      ,
+                                    'hd1_to_hd2_copy_time'   : None                      ,
+                                    'hd2_to_hd3_copy_time'   : None
                                 }
 
         metadata.delete()
