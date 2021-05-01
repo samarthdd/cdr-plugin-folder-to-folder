@@ -1,10 +1,6 @@
-#FROM    python:3.9.3-alpine3.12
-#       todo: refacor to use alpine version (above). The version below was needed to use the python pstools
-#             but it increases the docker image size quite considerably
-FROM    python:3.9.3
-
-RUN     apt update && \
-        apt install -y bash git
+FROM    python:3.9.3-alpine3.12
+RUN     apk update && apk upgrade && \
+        apk add --no-cache bash git openssh gcc libc-dev linux-headers
 
 WORKDIR /app
 COPY    cdr_plugin_folder_to_folder/requirements.txt .
