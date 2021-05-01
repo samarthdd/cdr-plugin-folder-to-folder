@@ -66,38 +66,42 @@ class test_File_Distributor(Temp_Config):
     #     assert response is not None
     #     assert os.path.exists(response)
 
-    def test_get_hd2_status_hash_file(self):
+    def test_get_hd2_status(self):
         response = self.file_distributor.get_hd2_status()
         assert response is not None
         assert os.path.exists(response)
 
     def test_get_hd2_data(self):
-        response = self.file_distributor.get_hd2_data(1)
+        response = self.file_distributor.get_hd2_data(1)      # num_of_file = 1  , get 1 files
         assert response is not None
         assert os.path.exists(response)
 
-    def test_get_hd2_data_invalid(self):
-        response = self.file_distributor.get_hd2_data(0)
+        response = self.file_distributor.get_hd2_data(-1)     # num_of_file = -1 , get all files
+        assert response is not None
+
+        response = self.file_distributor.get_hd2_data(0)      # num_of_file = 0  , invalid
         assert response == 0
 
     def test_get_hd2_processed(self):
-        response = self.file_distributor.get_hd2_processed(1)
+        response = self.file_distributor.get_hd2_processed(1)  # num_of_file = 1   , get 1 files
         assert response is not None
 
-    def test_get_hd2_processed_invalid(self):
-        response = self.file_distributor.get_hd2_processed(0)
+        response = self.file_distributor.get_hd2_processed(-1)  # num_of_file = -1 , get all files
+        assert response is not None
+
+        response = self.file_distributor.get_hd2_processed(0)   # num_of_file = 0   , invalid
         assert response == 0
 
     def test_prepare_zip(self):
         zip_name  =  self.zip_name
 
-        response  = self.file_distributor.prepare_zip(self.test_file,zip_name)
+        response  = self.file_distributor.prepare_zip(self.test_file,zip_name)           # zip a file
         assert response == os.path.join(self.file_distributor.zip_folder, zip_name)
         assert file_exists(os.path.join(self.file_distributor.zip_folder, zip_name))
 
         file_delete(os.path.join(self.file_distributor.zip_folder, zip_name))
 
-        response  = self.file_distributor.prepare_zip(self.test_folder, zip_name)
+        response  = self.file_distributor.prepare_zip(self.test_folder, zip_name)        # zip a folder
         assert response == os.path.join(self.file_distributor.zip_folder, zip_name)
         assert file_exists(os.path.join(self.file_distributor.zip_folder, zip_name))
 

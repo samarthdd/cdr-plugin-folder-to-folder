@@ -54,40 +54,36 @@ class test_File_Distributor(TestCase):
 
     def test_get_hd2_data(self):
         num_of_files = 1
-        path = f"{self.prefix}/hd2/data?num_of_files={num_of_files}"
-        response = self.client.GET_FILE(path)
+        path = f"{self.prefix}/hd2/data?num_of_files={num_of_files}"       # num_of_files = 1
+        response = self.client.GET_FILE(path)                              # get 1 file
         assert response.status_code == 200
         assert response.content is not None
 
-    def test_get_hd2_data_all(self):
-        path = f"{self.prefix}/hd2/data?num_of_files=-1"  # num_of_files = -1
-        response = self.client.GET_FILE(path)             # get all files
+        path = f"{self.prefix}/hd2/data?num_of_files=-1"                    # num_of_files = -1
+        response = self.client.GET_FILE(path)                               # get all files
         assert response.status_code == 200
         assert response.content is not None
 
-    def test_get_hd2_data_error(self):
         num_of_files = 0
-        path = f"{self.prefix}/hd2/data?num_of_files={num_of_files}"
+        path = f"{self.prefix}/hd2/data?num_of_files={num_of_files}"        # num_of_files = 0, invalid
         response = self.client.GET_FILE(path)
         assert response.status_code == 403
         assert response.content.decode("utf-8") == "Invalid value for num_of_files"
 
     def test_get_hd2_processed(self):
         num_of_files = 1
-        path = f"{self.prefix}/hd2/processed?num_of_files={num_of_files}"
-        response = self.client.GET_FILE(path)
+        path = f"{self.prefix}/hd2/processed?num_of_files={num_of_files}"   # num_of_files = 1
+        response = self.client.GET_FILE(path)                               #get 1 file
         assert response.status_code == 200
         assert response.content is not None
 
-    def test_get_hd2_processed_all(self):
-        path = f"{self.prefix}/hd2/processed?num_of_files=-1"    # num_of_files = -1
-        response = self.client.GET_FILE(path)                    # get all files
+        path = f"{self.prefix}/hd2/processed?num_of_files=-1"               # num_of_files = -1
+        response = self.client.GET_FILE(path)                               # get all files
         assert response.status_code == 200
         assert response.content is not None
 
-    def test_get_hd2_processed_error(self):
         num_of_files = 0
-        path = f"{self.prefix}/hd2/processed?num_of_files={num_of_files}"
+        path = f"{self.prefix}/hd2/processed?num_of_files={num_of_files}"   # num_of_files = 0, invalid
         response = self.client.GET_FILE(path)
         assert response.status_code == 403
         assert response.content.decode("utf-8") == "Invalid value for num_of_files"
