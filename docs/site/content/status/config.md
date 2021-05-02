@@ -1,5 +1,0 @@
----
-title : config
----
-
-{{< status/config >}}

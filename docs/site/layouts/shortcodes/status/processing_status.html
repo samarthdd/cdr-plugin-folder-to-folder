@@ -1,0 +1,18 @@
+
+{{ $url := "http://localhost:8000/processing/status" }}
+
+
+<pre>
+    <code id="result" class="json"></code>
+</pre>
+
+<script>
+    jsonRequestUrl = "{{ $url }} "
+    $.getJSON(jsonRequestUrl, function (result) {
+        $('#result').html(JSON.stringify(result, null, 2))
+        //todo: find a better way to load and set the highlight (since in some cases it wasn't loading)
+        document.querySelectorAll('#result').forEach(block => {
+             hljs.highlightBlock(block);
+        });
+    })
+</script>
