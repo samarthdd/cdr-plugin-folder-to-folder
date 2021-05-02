@@ -1,5 +1,0 @@
-api      : http://localhost:8000
-api_docs : http://localhost:8000/docs
-kibana   : http://localhost:8002/app/dashboards#/list
-jupyter  : http://localhost:8005/voila/tree/work
-minio    : http://localhost:8003

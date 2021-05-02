@@ -52,14 +52,16 @@ services:
           condition: service_healthy
       restart: always
 
-  # Docs
-  docs:
-    image: cdr_plugin_folder_to_folder_docs
+  # Website
+  website:
+    image: cdr_plugin_folder_to_folder_website
     build:
-      dockerfile: ${PWD}/docs/Dockerfile
-      context: ${PWD}/docs
+      dockerfile: ${PWD}/website/Dockerfile
+      context: ${PWD}/website
     volumes:
-      - ${PWD}/docs/site:/src/site
+      - ${PWD}/website/site:/src/site
+      - ${PWD}/website/content:/src/site/content
+      - ${PWD}/website/data:/src/site/data
     ports:
       - 1313:1313
     restart: always
