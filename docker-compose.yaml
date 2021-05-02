@@ -1,5 +1,6 @@
 version:  '3.3'
 services:
+  # Jupyter
   jupyter:
       image: cdr_plugin_folder_to_folder_notebooks
       build:
@@ -17,6 +18,19 @@ services:
       restart: always
       command: "start-notebook.sh \
                  --NotebookApp.token=${ACCESS_TOKEN}"
+
+  # Voila (Viewer for Jupyter pages)
+  voila:
+      image: cdr_plugin_folder_to_folder_notebooks
+      volumes:
+        - ${PWD}/jupyter/notebooks:/home/jovyan/work
+      ports:
+        - 8866:8866
+      container_name: jupyter_voila
+      restart: always
+      command: "voila --Voila.tornado_settings=\"{'headers':{'Content-Security-Policy': 'frame-ancestors http://localhost:*'}}\" "
+      depends_on:
+        - "jupyter"
 
 # Fast API
 

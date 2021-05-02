@@ -1,4 +1,0 @@
----
-title : elastic
----
-{{< iframe/elastic >}}

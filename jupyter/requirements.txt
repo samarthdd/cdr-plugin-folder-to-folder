@@ -10,3 +10,4 @@ pydot
 python-dotenv
 qgrid
 squarify
+voila

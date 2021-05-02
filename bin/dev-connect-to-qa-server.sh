@@ -9,6 +9,6 @@ echo "note that these ports are a different from the ones used by DockerCompose"
 echo "\n\n"
 export SSH_KEY=$1
 export SERVER_IP=$2
-ssh -L 8000:127.0.0.1:8880 -L 8001:127.0.0.1:8888 -L 8003:127.0.0.1:9000 \
-    -L 8002:127.0.0.1:5601 -L 8004:127.0.0.1:1313 \
+ssh -L 8000:127.0.0.1:8880 -L 8001:127.0.0.1:8888 -L 8002:127.0.0.1:5601 \
+    -L 8003:127.0.0.1:9000 -L 8004:127.0.0.1:1313 -L 8005:127.0.0.1:8866 \
     -i $SSH_KEY ubuntu@$SERVER_IP

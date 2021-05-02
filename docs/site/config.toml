@@ -11,3 +11,10 @@ metaDataFormat  = "yaml"
   disableNextPrev = true
   titleSeparator = "-"
 
+
+[[menu.shortcuts]]
+name = "<i class='fab fa-github'></i> Github repo"
+identifier = "ds"
+url = "https://github.com/filetrust/cdr-plugin-folder-to-folder"
+target = "_blank"
+weight = 10
