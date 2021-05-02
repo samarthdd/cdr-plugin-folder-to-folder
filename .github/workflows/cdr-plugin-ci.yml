@@ -14,7 +14,7 @@ jobs:
   deploy-cdr-plugin:
     runs-on: ubuntu-latest
     steps:
-      - name: Update CDR pluging folder to folder
+      - name: Update CDR plugin folder to folder
         uses: appleboy/ssh-action@master
         with:
           host: "34.243.16.58"
