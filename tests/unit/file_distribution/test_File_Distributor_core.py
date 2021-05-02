@@ -1,9 +1,10 @@
 import os
 import sys
 from unittest import TestCase
+import pytest
 
 from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Files import folder_exists, folder_create, file_copy,folder_delete_all
+from osbot_utils.utils.Files import folder_exists, folder_create, file_copy,folder_delete_all,file_delete,file_exists
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
 from cdr_plugin_folder_to_folder.file_distribution.File_Distributor import File_Distributor
@@ -18,6 +19,11 @@ from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
+FIXTURE_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    'test_files',
+    )
+
 class test_File_Distributor(Temp_Config):
 
     def setUp(self) -> None:
@@ -31,11 +37,14 @@ class test_File_Distributor(Temp_Config):
         cls.hash_json      = Hash_Json()
         cls.test_data      = Test_Data()
         cls.test_file      = cls.test_data.image()
-        cls.pre_processor = Pre_Processor()
+        cls.pre_processor  = Pre_Processor()
         #cls.pre_processor.clear_data_and_status_folders()
-        cls.stage_1       = cls.pre_processor.process(cls.test_file)
+        cls.stage_1        = cls.pre_processor.process(cls.test_file)
         cls.hash_json.save()
-        cls.stage_2       = Loops().LoopHashDirectories()
+        cls.stage_2        = Loops().LoopHashDirectories()
+        cls.test_folder    = os.path.join(FIXTURE_DIR, '2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f')
+        cls.test_file      = os.path.join(FIXTURE_DIR, 'test_file.pdf')
+        cls.zip_name       = "test.zip"
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -57,40 +66,57 @@ class test_File_Distributor(Temp_Config):
     #     response = self.file_distributor.get_hd3_files(1)
     #     assert response is not None
     #     assert os.path.exists(response)
-    #
-    # def test_get_hd2_metadata_files(self):
-    #     response = self.file_distributor.get_hd2_metadata_files(1)
-    #     assert response is not None
-    #     assert os.path.exists(response)
-    #
-    # def test_get_hd2_source_files(self):
-    #     response = self.file_distributor.get_hd2_source_files(1)
-    #     assert response is not None
-    #     assert os.path.exists(response)
-    #
-    # def test_get_hd2_hash_folder_list(self):
-    #     response = self.file_distributor.get_hd2_hash_folder_list(1)
-    #     assert response is not None
-    #     assert os.path.exists(response)
-    #
-    # def test_get_hd2_report_file(self):
-    #     response = self.file_distributor.get_hd2_report_files(1)
-    #     assert response is not None
-    #     assert os.path.exists(response)
 
-    def test_get_hd2_status_hash_file(self):
-        response = self.file_distributor.get_hd2_status_hash_file()
+    def test_get_hd2_status(self):
+        response = self.file_distributor.get_hd2_status()
         assert response is not None
         assert os.path.exists(response)
 
-    def test_get_hd2_files(self):
-        response = self.file_distributor.get_hd2_data(1)
-        if (response is None) or (not os.path.exists(response)):
-            response = self.file_distributor.get_hd2_processed(1)
+    @pytest.mark.skip("this will fail if when no files exists in hd2/data)")
+    def test_get_hd2_data(self):
+        response = self.file_distributor.get_hd2_data(1)      # num_of_file = 1  , get 1 files
         assert response is not None
         assert os.path.exists(response)
+
+        response = self.file_distributor.get_hd2_data(-1)     # num_of_file = -1 , get all files
+        assert response is not None
+
+        response = self.file_distributor.get_hd2_data(0)      # num_of_file = 0  , invalid
+        assert response == 0
 
     def test_get_hd2_processed(self):
-        response = self.file_distributor.get_hd2_processed(1)
+        response = self.file_distributor.get_hd2_processed(1)  # num_of_file = 1   , get 1 files
         assert response is not None
+
+        response = self.file_distributor.get_hd2_processed(-1)  # num_of_file = -1 , get all files
+        assert response is not None
+
+        response = self.file_distributor.get_hd2_processed(0)   # num_of_file = 0   , invalid
+        assert response == 0
+
+    def test_prepare_zip(self):
+        zip_name  =  self.zip_name
+
+        response  = self.file_distributor.prepare_zip(self.test_file,zip_name)           # zip a file
+        assert response == os.path.join(self.file_distributor.zip_folder, zip_name)
+        assert file_exists(os.path.join(self.file_distributor.zip_folder, zip_name))
+
+        file_delete(os.path.join(self.file_distributor.zip_folder, zip_name))
+
+        response  = self.file_distributor.prepare_zip(self.test_folder, zip_name)        # zip a folder
+        assert response == os.path.join(self.file_distributor.zip_folder, zip_name)
+        assert file_exists(os.path.join(self.file_distributor.zip_folder, zip_name))
+
+        file_delete(os.path.join(self.file_distributor.zip_folder, zip_name))
+
+    def test_prepare_hd2_hash_folder_zip(self):
+        zip_name  =  self.zip_name
+        test_path_list=[self.test_folder]
+
+        response  = self.file_distributor.prepare_hd2_hash_folder_zip(test_path_list, zip_name)
+        assert response == os.path.join(self.file_distributor.zip_folder, zip_name)
+        assert file_exists(os.path.join(self.file_distributor.zip_folder, zip_name))
+
+        file_delete(os.path.join(self.file_distributor.zip_folder, zip_name))
+
 

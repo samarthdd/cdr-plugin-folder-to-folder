@@ -34,12 +34,15 @@ class Pre_Processor:
 
     @log_duration
     def clear_data_and_status_folders(self):
-        data_target     = self.storage.hd2_data()       # todo: refactor this clean up to the storage class
-        status_target   = self.storage.hd2_status()
+        data_target      = self.storage.hd2_data()       # todo: refactor this clean up to the storage class
+        status_target    = self.storage.hd2_status()
+        processed_target = self.storage.hd2_processed()
         folder_delete_all(data_target)
         folder_delete_all(status_target)
+        folder_delete_all(processed_target)
         folder_create(data_target)
         folder_create(status_target)
+        folder_create(processed_target)
         self.status.reset()
 
     def file_hash(self, file_path):

@@ -1,0 +1,893 @@
+{
+  "gw:GWallInfo": {
+    "@xsi:schemaLocation": "http://glasswall.com/namespace/gwallInfo.xsd",
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns:gw": "http://glasswall.com/namespace",
+    "gw:DocumentStatistics": {
+      "gw:DocumentSummary": {
+        "gw:TotalSizeInBytes": "45655",
+        "gw:FileType": "pdf",
+        "gw:Version": "PDF-1.7"
+      },
+      "gw:ContentManagementPolicy": {
+        "gw:Camera": [
+          {
+            "@cameraName": "pdfConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "javascript",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "acroform",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "actions_all",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "value_outside_reasonable_limits",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "retain_exported_streams",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "digital_signatures",
+                "gw:ContentValue": "disallow"
+              }
+            ]
+          },
+          {
+            "@cameraName": "wordConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "macros",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "review_comments",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "dynamic_data_exchange",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              }
+            ]
+          },
+          {
+            "@cameraName": "pptConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "macros",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "review_comments",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              }
+            ]
+          },
+          {
+            "@cameraName": "xlsConfig",
+            "gw:ContentSwitch": [
+              {
+                "gw:ContentName": "metadata",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "macros",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_files",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "internal_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "external_hyperlinks",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "review_comments",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "dynamic_data_exchange",
+                "gw:ContentValue": "sanitise"
+              },
+              {
+                "gw:ContentName": "embedded_images",
+                "gw:ContentValue": "sanitise"
+              }
+            ]
+          },
+          {
+            "@cameraName": "tiffConfig",
+            "gw:ContentSwitch": {
+              "gw:ContentName": "geotiff",
+              "gw:ContentValue": "sanitise"
+            }
+          }
+        ]
+      },
+      "gw:ContentGroups": {
+        "@groupCount": "15",
+        "gw:ContentGroup": [
+          {
+            "gw:BriefDescription": "PDF document has Basic File Section structure instances",
+            "gw:ContentItems": {
+              "@itemCount": "5",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "PDF Cross Reference Table Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "5351",
+                  "gw:AverageSizeInBytes": "5351",
+                  "gw:MinSizeInBytes": "5351",
+                  "gw:MaxSizeInBytes": "5351"
+                },
+                {
+                  "gw:TechnicalDescription": "PDF Header Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "17",
+                  "gw:AverageSizeInBytes": "17",
+                  "gw:MinSizeInBytes": "17",
+                  "gw:MaxSizeInBytes": "17"
+                },
+                {
+                  "gw:TechnicalDescription": "PDF Object Instances",
+                  "gw:InstanceCount": "20",
+                  "gw:TotalSizeInBytes": "40154",
+                  "gw:AverageSizeInBytes": "2007",
+                  "gw:MinSizeInBytes": "46",
+                  "gw:MaxSizeInBytes": "34678"
+                },
+                {
+                  "gw:TechnicalDescription": "PDF StartXref Section Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "25",
+                  "gw:AverageSizeInBytes": "25",
+                  "gw:MinSizeInBytes": "25",
+                  "gw:MaxSizeInBytes": "25"
+                },
+                {
+                  "gw:TechnicalDescription": "PDF Trailer Section Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "106",
+                  "gw:AverageSizeInBytes": "106",
+                  "gw:MinSizeInBytes": "106",
+                  "gw:MaxSizeInBytes": "106"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Basic Object Structure instances",
+            "gw:ContentItems": {
+              "@itemCount": "14",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "ARRAY",
+                  "gw:InstanceCount": "154",
+                  "gw:TotalSizeInBytes": "154",
+                  "gw:AverageSizeInBytes": "1",
+                  "gw:MinSizeInBytes": "1",
+                  "gw:MaxSizeInBytes": "1"
+                },
+                {
+                  "gw:TechnicalDescription": "ARRAY_end",
+                  "gw:InstanceCount": "154",
+                  "gw:TotalSizeInBytes": "154",
+                  "gw:AverageSizeInBytes": "1",
+                  "gw:MinSizeInBytes": "1",
+                  "gw:MaxSizeInBytes": "1"
+                },
+                {
+                  "gw:TechnicalDescription": "BOOLEAN",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "8",
+                  "gw:AverageSizeInBytes": "4",
+                  "gw:MinSizeInBytes": "4",
+                  "gw:MaxSizeInBytes": "4"
+                },
+                {
+                  "gw:TechnicalDescription": "DICTIONARY",
+                  "gw:InstanceCount": "33",
+                  "gw:TotalSizeInBytes": "66",
+                  "gw:AverageSizeInBytes": "2",
+                  "gw:MinSizeInBytes": "2",
+                  "gw:MaxSizeInBytes": "2"
+                },
+                {
+                  "gw:TechnicalDescription": "DICTIONARY_end",
+                  "gw:InstanceCount": "33",
+                  "gw:TotalSizeInBytes": "66",
+                  "gw:AverageSizeInBytes": "2",
+                  "gw:MinSizeInBytes": "2",
+                  "gw:MaxSizeInBytes": "2"
+                },
+                {
+                  "gw:TechnicalDescription": "NAME",
+                  "gw:InstanceCount": "249",
+                  "gw:TotalSizeInBytes": "1763",
+                  "gw:AverageSizeInBytes": "7",
+                  "gw:MinSizeInBytes": "2",
+                  "gw:MaxSizeInBytes": "18"
+                },
+                {
+                  "gw:TechnicalDescription": "NUMERIC_INTEGER",
+                  "gw:InstanceCount": "2177",
+                  "gw:TotalSizeInBytes": "3477",
+                  "gw:AverageSizeInBytes": "1",
+                  "gw:MinSizeInBytes": "1",
+                  "gw:MaxSizeInBytes": "6"
+                },
+                {
+                  "gw:TechnicalDescription": "NUMERIC_REAL",
+                  "gw:InstanceCount": "440",
+                  "gw:TotalSizeInBytes": "2485",
+                  "gw:AverageSizeInBytes": "5",
+                  "gw:MinSizeInBytes": "4",
+                  "gw:MaxSizeInBytes": "7"
+                },
+                {
+                  "gw:TechnicalDescription": "REFERENCE",
+                  "gw:InstanceCount": "29",
+                  "gw:TotalSizeInBytes": "171",
+                  "gw:AverageSizeInBytes": "5",
+                  "gw:MinSizeInBytes": "5",
+                  "gw:MaxSizeInBytes": "7"
+                },
+                {
+                  "gw:TechnicalDescription": "STREAM",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "36806",
+                  "gw:AverageSizeInBytes": "9201",
+                  "gw:MinSizeInBytes": "65",
+                  "gw:MaxSizeInBytes": "34595"
+                },
+                {
+                  "gw:TechnicalDescription": "STREAM_GRAPHICS_CMD",
+                  "gw:InstanceCount": "706",
+                  "gw:TotalSizeInBytes": "1370",
+                  "gw:AverageSizeInBytes": "1",
+                  "gw:MinSizeInBytes": "1",
+                  "gw:MaxSizeInBytes": "2"
+                },
+                {
+                  "gw:TechnicalDescription": "STREAM_end",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "36",
+                  "gw:AverageSizeInBytes": "9",
+                  "gw:MinSizeInBytes": "9",
+                  "gw:MaxSizeInBytes": "9"
+                },
+                {
+                  "gw:TechnicalDescription": "STRING_HEX",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "68",
+                  "gw:AverageSizeInBytes": "34",
+                  "gw:MinSizeInBytes": "34",
+                  "gw:MaxSizeInBytes": "34"
+                },
+                {
+                  "gw:TechnicalDescription": "STRING_LITERAL",
+                  "gw:InstanceCount": "1451",
+                  "gw:TotalSizeInBytes": "4467",
+                  "gw:AverageSizeInBytes": "3",
+                  "gw:MinSizeInBytes": "2",
+                  "gw:MaxSizeInBytes": "10"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Content Stream Structure instances",
+            "gw:ContentItems": {
+              "@itemCount": "1",
+              "gw:ContentItem": {
+                "gw:TechnicalDescription": "Content Stream Structure",
+                "gw:InstanceCount": "6",
+                "gw:TotalSizeInBytes": "4364",
+                "gw:AverageSizeInBytes": "727",
+                "gw:MinSizeInBytes": "56",
+                "gw:MaxSizeInBytes": "1458"
+              }
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Indirect Object Structure instances",
+            "gw:ContentItems": {
+              "@itemCount": "1",
+              "gw:ContentItem": {
+                "gw:TechnicalDescription": "Indirect Object",
+                "gw:InstanceCount": "100",
+                "gw:TotalSizeInBytes": "0",
+                "gw:AverageSizeInBytes": "0",
+                "gw:MinSizeInBytes": "0",
+                "gw:MaxSizeInBytes": "0"
+              }
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has embedded Huffman Filter Stream instances",
+            "gw:ContentItems": {
+              "@itemCount": "1",
+              "gw:ContentItem": {
+                "gw:TechnicalDescription": "Embedded Huffman Filter Stream",
+                "gw:InstanceCount": "7",
+                "gw:TotalSizeInBytes": "40963",
+                "gw:AverageSizeInBytes": "5851",
+                "gw:MinSizeInBytes": "668",
+                "gw:MaxSizeInBytes": "34585"
+              }
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Standard Font Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "4",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "/Helvetica",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "383",
+                  "gw:AverageSizeInBytes": "383",
+                  "gw:MinSizeInBytes": "383",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Direct Font Instances",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "861",
+                  "gw:AverageSizeInBytes": "215",
+                  "gw:MinSizeInBytes": "155",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Type 1 Font Instances",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "861",
+                  "gw:AverageSizeInBytes": "215",
+                  "gw:MinSizeInBytes": "155",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Unspecified Font Face Instances",
+                  "gw:InstanceCount": "3",
+                  "gw:TotalSizeInBytes": "478",
+                  "gw:AverageSizeInBytes": "159",
+                  "gw:MinSizeInBytes": "155",
+                  "gw:MaxSizeInBytes": "162"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Resource Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "3",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "Inheritable Resource Instances",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "1055",
+                  "gw:AverageSizeInBytes": "263",
+                  "gw:MinSizeInBytes": "56",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Inherited Resource Array Element Instances",
+                  "gw:InstanceCount": "19",
+                  "gw:TotalSizeInBytes": "6006",
+                  "gw:AverageSizeInBytes": "316",
+                  "gw:MinSizeInBytes": "304",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Resource Dictionary Instances",
+                  "gw:InstanceCount": "3",
+                  "gw:TotalSizeInBytes": "999",
+                  "gw:AverageSizeInBytes": "333",
+                  "gw:MinSizeInBytes": "304",
+                  "gw:MaxSizeInBytes": "383"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Graphic Content Stream Instances",
+            "gw:ContentItems": {
+              "@itemCount": "3",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "Content Page or Form XObject Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "616",
+                  "gw:AverageSizeInBytes": "308",
+                  "gw:MinSizeInBytes": "304",
+                  "gw:MaxSizeInBytes": "312"
+                },
+                {
+                  "gw:TechnicalDescription": "Content Stream Instances",
+                  "gw:InstanceCount": "3",
+                  "gw:TotalSizeInBytes": "2644",
+                  "gw:AverageSizeInBytes": "881",
+                  "gw:MinSizeInBytes": "383",
+                  "gw:MaxSizeInBytes": "1526"
+                },
+                {
+                  "gw:TechnicalDescription": "Content Stream Operator Instances",
+                  "gw:InstanceCount": "706",
+                  "gw:TotalSizeInBytes": "1370",
+                  "gw:AverageSizeInBytes": "1",
+                  "gw:MinSizeInBytes": "1",
+                  "gw:MaxSizeInBytes": "2"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Page Tree Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "4",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "Page Object Parent Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "10",
+                  "gw:AverageSizeInBytes": "5",
+                  "gw:MinSizeInBytes": "5",
+                  "gw:MaxSizeInBytes": "5"
+                },
+                {
+                  "gw:TechnicalDescription": "Page Tree Instances",
+                  "gw:InstanceCount": "3",
+                  "gw:TotalSizeInBytes": "6",
+                  "gw:AverageSizeInBytes": "2",
+                  "gw:MinSizeInBytes": "2",
+                  "gw:MaxSizeInBytes": "2"
+                },
+                {
+                  "gw:TechnicalDescription": "Page Tree Kids Array Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "56",
+                  "gw:AverageSizeInBytes": "56",
+                  "gw:MinSizeInBytes": "56",
+                  "gw:MaxSizeInBytes": "56"
+                },
+                {
+                  "gw:TechnicalDescription": "Page Tree Node Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "56",
+                  "gw:AverageSizeInBytes": "56",
+                  "gw:MinSizeInBytes": "56",
+                  "gw:MaxSizeInBytes": "56"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Colour Space Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "2",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "Colour Space Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "616",
+                  "gw:AverageSizeInBytes": "308",
+                  "gw:MinSizeInBytes": "304",
+                  "gw:MaxSizeInBytes": "312"
+                },
+                {
+                  "gw:TechnicalDescription": "Direct Colour Space Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "616",
+                  "gw:AverageSizeInBytes": "308",
+                  "gw:MinSizeInBytes": "304",
+                  "gw:MaxSizeInBytes": "312"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Graphic State Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "3",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "Blend Mode Element Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "92",
+                  "gw:AverageSizeInBytes": "46",
+                  "gw:MinSizeInBytes": "46",
+                  "gw:MaxSizeInBytes": "46"
+                },
+                {
+                  "gw:TechnicalDescription": "Blend Mode Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "92",
+                  "gw:AverageSizeInBytes": "46",
+                  "gw:MinSizeInBytes": "46",
+                  "gw:MaxSizeInBytes": "46"
+                },
+                {
+                  "gw:TechnicalDescription": "Graphic State Parameter Dictionary Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "92",
+                  "gw:AverageSizeInBytes": "46",
+                  "gw:MinSizeInBytes": "46",
+                  "gw:MaxSizeInBytes": "46"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Common Supporting Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "10",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "BBOX Rectangle Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "383",
+                  "gw:AverageSizeInBytes": "383",
+                  "gw:MinSizeInBytes": "383",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Check Viewer Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "37",
+                  "gw:AverageSizeInBytes": "37",
+                  "gw:MinSizeInBytes": "37",
+                  "gw:MaxSizeInBytes": "37"
+                },
+                {
+                  "gw:TechnicalDescription": "Direct Dictionary Value",
+                  "gw:InstanceCount": "159",
+                  "gw:TotalSizeInBytes": "864",
+                  "gw:AverageSizeInBytes": "5",
+                  "gw:MinSizeInBytes": "1",
+                  "gw:MaxSizeInBytes": "17"
+                },
+                {
+                  "gw:TechnicalDescription": "Glyph Rectangle Instances",
+                  "gw:InstanceCount": "3",
+                  "gw:TotalSizeInBytes": "676",
+                  "gw:AverageSizeInBytes": "225",
+                  "gw:MinSizeInBytes": "219",
+                  "gw:MaxSizeInBytes": "233"
+                },
+                {
+                  "gw:TechnicalDescription": "Group Attributes Dictionary Instances",
+                  "gw:InstanceCount": "3",
+                  "gw:TotalSizeInBytes": "999",
+                  "gw:AverageSizeInBytes": "333",
+                  "gw:MinSizeInBytes": "304",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Known Dictionary",
+                  "gw:InstanceCount": "27",
+                  "gw:TotalSizeInBytes": "42240",
+                  "gw:AverageSizeInBytes": "1564",
+                  "gw:MinSizeInBytes": "0",
+                  "gw:MaxSizeInBytes": "34669"
+                },
+                {
+                  "gw:TechnicalDescription": "Mark Info Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "104",
+                  "gw:AverageSizeInBytes": "104",
+                  "gw:MinSizeInBytes": "104",
+                  "gw:MaxSizeInBytes": "104"
+                },
+                {
+                  "gw:TechnicalDescription": "Numeric Array Instances",
+                  "gw:InstanceCount": "4",
+                  "gw:TotalSizeInBytes": "1007",
+                  "gw:AverageSizeInBytes": "251",
+                  "gw:MinSizeInBytes": "98",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Page Rectangle Instances",
+                  "gw:InstanceCount": "2",
+                  "gw:TotalSizeInBytes": "616",
+                  "gw:AverageSizeInBytes": "308",
+                  "gw:MinSizeInBytes": "304",
+                  "gw:MaxSizeInBytes": "312"
+                },
+                {
+                  "gw:TechnicalDescription": "Rectangle Instances",
+                  "gw:InstanceCount": "6",
+                  "gw:TotalSizeInBytes": "1675",
+                  "gw:AverageSizeInBytes": "279",
+                  "gw:MinSizeInBytes": "219",
+                  "gw:MaxSizeInBytes": "383"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Trailer Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "3",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "PDF Document trailer ID Array Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "0",
+                  "gw:AverageSizeInBytes": "0",
+                  "gw:MinSizeInBytes": "0",
+                  "gw:MaxSizeInBytes": "0"
+                },
+                {
+                  "gw:TechnicalDescription": "PDF Document trailer Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "0",
+                  "gw:AverageSizeInBytes": "0",
+                  "gw:MinSizeInBytes": "0",
+                  "gw:MaxSizeInBytes": "0"
+                },
+                {
+                  "gw:TechnicalDescription": "PDF Document trailer Size Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "0",
+                  "gw:AverageSizeInBytes": "0",
+                  "gw:MinSizeInBytes": "0",
+                  "gw:MaxSizeInBytes": "0"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has Catalog Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "1",
+              "gw:ContentItem": {
+                "gw:TechnicalDescription": "Catalog Data",
+                "gw:InstanceCount": "1",
+                "gw:TotalSizeInBytes": "104",
+                "gw:AverageSizeInBytes": "104",
+                "gw:MinSizeInBytes": "104",
+                "gw:MaxSizeInBytes": "104"
+              }
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          },
+          {
+            "gw:BriefDescription": "PDF document has XObject Data Instances",
+            "gw:ContentItems": {
+              "@itemCount": "2",
+              "gw:ContentItem": [
+                {
+                  "gw:TechnicalDescription": "Form Xobject Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "383",
+                  "gw:AverageSizeInBytes": "383",
+                  "gw:MinSizeInBytes": "383",
+                  "gw:MaxSizeInBytes": "383"
+                },
+                {
+                  "gw:TechnicalDescription": "Xobject Instances",
+                  "gw:InstanceCount": "1",
+                  "gw:TotalSizeInBytes": "312",
+                  "gw:AverageSizeInBytes": "312",
+                  "gw:MinSizeInBytes": "312",
+                  "gw:MaxSizeInBytes": "312"
+                }
+              ]
+            },
+            "gw:SanitisationItems": {
+              "@itemCount": "0"
+            },
+            "gw:RemedyItems": {
+              "@itemCount": "0"
+            },
+            "gw:IssueItems": {
+              "@itemCount": "0"
+            }
+          }
+        ]
+      },
+      "gw:ExtractedItems": {
+        "@itemCount": "0"
+      }
+    }
+  },
+  "original_hash": "2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f"
+}

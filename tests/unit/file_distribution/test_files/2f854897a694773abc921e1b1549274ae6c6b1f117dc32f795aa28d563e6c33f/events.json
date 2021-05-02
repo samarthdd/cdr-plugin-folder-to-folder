@@ -1,0 +1,87 @@
+{
+  "events": [
+    {
+      "timestamp": "2021-05-01 14:54:26.003058",
+      "message": "Processing with: http://91.109.25.88:8080",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:27.992282",
+      "message": "Processing Directory: ./test_data/scenario-2/hd2/data/2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:28.360689",
+      "message": "Set metadata status IN_PROGRESS",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:28.859803",
+      "message": "Sending to rebuild",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:29.259840",
+      "message": "Starting File rebuild",
+      "data": {
+        "endpoint": "http://91.109.25.88:8080",
+        "hash": "2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f",
+        "source_path": "./test_data/scenario-2/hd2/data/2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f/source",
+        "dir": "./test_data/scenario-2/hd2/data/2f854897a694773abc921e1b1549274ae6c6b1f117dc32f795aa28d563e6c33f"
+      },
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:33.356796",
+      "message": "Saving to: ./test_data/scenario-2/hd3/sample3.pdf",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:33.891354",
+      "message": "The decoded file has been saved",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:35.190747",
+      "message": "Saving to: ./test_data/scenario-2/hd3/sample4.pdf",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:35.510241",
+      "message": "The decoded file has been saved",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:37.119879",
+      "message": "Saving to: ./test_data/scenario-2/hd3/in_folder/sample4.pdf",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:37.381255",
+      "message": "The decoded file has been saved",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:45.016026",
+      "message": "The XML report has been saved",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    },
+    {
+      "timestamp": "2021-05-01 14:54:46.344422",
+      "message": "Has been processed",
+      "data": {},
+      "uuid": "712d27cd-d7f3-49f8-b537-2e137e9a91b5"
+    }
+  ]
+}

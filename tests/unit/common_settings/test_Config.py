@@ -37,6 +37,7 @@ class test_Config(Temp_Config):
         assert folder_exists(config.hd2_location        )
         assert folder_exists(config.hd2_data_location   )
         assert folder_exists(config.hd2_status_location )
+        assert folder_exists(config.hd2_processed_location)
         assert folder_exists(config.hd3_location        )
 
         # check config_cache
@@ -60,7 +61,7 @@ class test_Config(Temp_Config):
     def test_get_values(self):
         values = self.config.values()
         assert self.config.values().get('root_folder') == self.config.root_folder
-        assert list_set(values) == ['elastic_host', 'elastic_port', 'elastic_schema', 'endpoints', 'hd1_location', 'hd2_data_location', 'hd2_location', 'hd2_status_location', 'hd3_location', 'kibana_host', 'kibana_port', 'request_timeout', 'root_folder', 'thread_count']
+        assert list_set(values) == ['elastic_host', 'elastic_port', 'elastic_schema', 'endpoints', 'hd1_location', 'hd2_data_location', 'hd2_location', 'hd2_processed_location', 'hd2_status_location', 'hd3_location', 'kibana_host', 'kibana_port', 'request_timeout', 'root_folder', 'thread_count']
 
     def test_set_root_folder(self):
         root_folder = temp_folder()
@@ -77,6 +78,7 @@ class test_Config(Temp_Config):
         assert folder_exists(self.config.hd2_location       )
         assert folder_exists(self.config.hd2_data_location  )
         assert folder_exists(self.config.hd2_status_location)
+        assert folder_exists(self.config.hd2_processed_location)
         assert folder_exists(self.config.hd3_location       )
 
         folder_delete_all(root_folder)
@@ -105,6 +107,7 @@ class test_Config(Temp_Config):
         assert self.config.hd2_location         == hd2_location
         assert self.config.hd2_data_location    == path_combine(hd2_location, DEFAULT_HD2_DATA_NAME  )
         assert self.config.hd2_status_location  == path_combine(hd2_location, DEFAULT_HD2_STATUS_NAME)
+        assert self.config.hd2_processed_location == path_combine(hd2_location, DEFAULT_HD2_PROCESSED_NAME)
         assert file_exists(hd2_location)
 
         self.config.load_values()
