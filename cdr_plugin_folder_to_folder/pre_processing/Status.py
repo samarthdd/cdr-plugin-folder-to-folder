@@ -11,6 +11,7 @@ logger.basicConfig(level=logger.INFO)
 
 class FileStatus:                                     # todo move to separate file (either per enum or with all enums)
     INITIAL     = "Initial"
+    NOT_COPIED  = "Will not be copied"
     IN_PROGRESS = "In Progress"
     COMPLETED   = "Completed Successfully"
     FAILED      = "Completed with errors"
@@ -143,6 +144,10 @@ class Status:
                 if data[Status.VAR_FILES_TO_BE_COPIED] > 0:
                     data[Status.VAR_FILES_TO_BE_COPIED] -= 1
 
+            elif updated_status == FileStatus.NOT_COPIED:
+                if data[Status.VAR_FILES_TO_BE_COPIED] > 0:
+                    data[Status.VAR_FILES_TO_BE_COPIED] -= 1
+
             elif updated_status == FileStatus.IN_PROGRESS:
                 data[Status.VAR_IN_PROGRESS] += 1
 
@@ -192,6 +197,7 @@ class Status:
     def add_failed          (self       ): return self.update_counters(FileStatus.FAILED             )
     def add_file            (self       ): return self.update_counters(FileStatus.INITIAL            )
     def set_files_count     (self, count): return self.update_counters(FileStatus.NONE        , count)
+    def set_not_copied      (self       ): return self.update_counters(FileStatus.NOT_COPIED         )
     def add_in_progress     (self       ): return self.update_counters(FileStatus.IN_PROGRESS        )
     def add_to_be_processed (self       ): return self.update_counters(FileStatus.TO_PROCESS         )
 

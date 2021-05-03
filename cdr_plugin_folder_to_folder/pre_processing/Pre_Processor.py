@@ -107,6 +107,8 @@ class Pre_Processor:
         if metadata.is_in_todo():
             hash_folder_path = os.path.join(self.storage.hd2_data(), original_hash)
             self.meta_service.set_hd1_to_hd2_copy_time(hash_folder_path, delta.total_seconds())
+        else:
+            self.status.set_not_copied()
 
     def update_status(self, file_name, original_hash, status):
         if status == FileStatus.INITIAL:
