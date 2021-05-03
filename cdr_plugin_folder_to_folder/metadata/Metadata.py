@@ -193,6 +193,12 @@ class Metadata:
     def get_last_update_time(self):
         return self.data.get('last_update_time')
 
+    def get_error(self):
+        return self.data.get('error')
+
+    def get_original_file_extension(self):
+        return self.data.get('original_file_extension')
+
     def report_file_path(self):
         if self.file_hash:
             return path_combine(self.metadata_folder_path(), DEFAULT_REPORT_FILENAME)
