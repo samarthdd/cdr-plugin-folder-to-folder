@@ -39,7 +39,7 @@ class Loops(object):
         self.status = Status()
         self.storage = Storage()
         self.hash_json = Hash_Json()
-        self.events = Events_Log(os.path.join(self.config.hd2_location, self.config.hd2_status_location))
+        self.events = Events_Log(self.config.hd2_status_location)
         self.events_elastic = Events_Log_Elastic()
         self.hash=None
         self.report_elastic = Report_Elastic()
@@ -173,10 +173,10 @@ class Loops(object):
 
         for key in json_list:
 
-            source_path = os.path.join(self.storage.hd2_data(), key)
+            source_path = self.storage.hd2_data(key)
 
             if (FileStatus.COMPLETED == json_list[key]["file_status"]):
-                destination_path = os.path.join(self.storage.hd2_processed(), key)
+                destination_path = self.storage.hd2_processed(key)
 
                 if folder_exists(destination_path):
                     folder_delete_all(destination_path)
@@ -190,7 +190,7 @@ class Loops(object):
                 metadata = meta_service.metadata
                 if ("Engine response could not be decoded" == metadata.get_error()) and \
                     metadata.get_original_file_extension() in ['.xml', '.json']:
-                        destination_path = os.path.join(self.storage.hd2_not_processed(), key)
+                        destination_path = self.storage.hd2_not_processed(key)
 
                         if folder_exists(destination_path):
                             folder_delete_all(destination_path)
@@ -229,7 +229,7 @@ class Loops(object):
         for key in json_list:
             file_hash   =  key
 
-            itempath = os.path.join(self.storage.hd2_data(), key)
+            itempath = self.storage.hd2_data(key)
             if (FileStatus.COMPLETED == json_list[key]["file_status"]):
                 self.events.add_log(f"The file processing has been already completed")
                 continue

@@ -105,7 +105,7 @@ class Pre_Processor:
         delta = tok - tik
 
         if metadata.is_in_todo():
-            hash_folder_path = os.path.join(self.storage.hd2_data(), original_hash)
+            hash_folder_path = self.storage.hd2_data(original_hash)
             self.meta_service.set_hd1_to_hd2_copy_time(hash_folder_path, delta.total_seconds())
         else:
             self.status.set_not_copied()
