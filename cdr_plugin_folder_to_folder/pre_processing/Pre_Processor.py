@@ -75,7 +75,7 @@ class Pre_Processor:
                 if os.path.isfile(file_path):
                     files_count += 1
 
-        self.status.add_files_count(files_count)
+        self.status.set_files_count(files_count)
 
         for folderName, subfolders, filenames in os.walk(folder_to_process):
             for filename in filenames:

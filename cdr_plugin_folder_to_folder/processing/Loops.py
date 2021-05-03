@@ -37,15 +37,15 @@ class Loops(object):
         self.config = Config()
         self.status = Status()
         self.hash_json = Hash_Json()
-        self.events = Events_Log(os.path.join(self.config.hd2_location, "status"))
+        self.events = Events_Log(os.path.join(self.config.hd2_location, self.config.hd2_status_location))
         self.events_elastic = Events_Log_Elastic()
         self.hash=None
         self.report_elastic = Report_Elastic()
         self.analysis_elastic = Analysis_Elastic()
         self.report_elastic.setup()
         self.analysis_elastic.setup()
-        self.rootdir = os.path.join(self.config.hd2_location, "data")
-        self.processed_dir = os.path.join(self.config.hd2_location, "processed")
+        self.rootdir = os.path.join(self.config.hd2_location, self.config.hd2_data_location)
+        self.processed_dir = os.path.join(self.config.hd2_location, self.config.hd2_processed_location)
         create_folder(self.processed_dir)
 
 
