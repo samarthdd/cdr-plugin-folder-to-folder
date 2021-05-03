@@ -44,6 +44,9 @@ class API_Client:
     def reload_elastic_file_metadata(self):
         return self._request_put('/configuration/reload_elastic_file_metadata/') 
 
+    def reload_kibana_dashboards(self):
+        return self._request_put('/configuration/reload_kibana_dashboards/')
+    
     def health(self):
         return self._request_get('/health')
 

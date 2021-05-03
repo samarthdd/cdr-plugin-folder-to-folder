@@ -5,6 +5,7 @@ from cdr_plugin_folder_to_folder.storage.Storage import Storage
 from cdr_plugin_folder_to_folder.utils.Elastic     import Elastic
 from cdr_plugin_folder_to_folder.utils.Log_Duration import log_duration
 from cdr_plugin_folder_to_folder.utils.Logging import log_debug
+from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Elastic.Kibana import Kibana
 
 DEFAULT_TIME_FIELD = 'timestamp'
 
@@ -87,4 +88,13 @@ class Metadata_Elastic:
         count = self.reload_metadatas()
 
         return f'Elastic {self.index_name} has been reset and {count} metadata items reloaded'
+
+    def reload_kibana_dashboards(self):
+        kibana = self.elastic().kibana()
+        dashboard_file_names = ['processed-files-v8.ndjson', 'KD1.ndjson', 'Processed-files.ndjson']
+        result = []
+        for dashboard_file_name in dashboard_file_names:
+            result.append(kibana.dashboard_import_from_github(dashboard_file_name=dashboard_file_name))
+        return f"reloaded {len(result)} dashboards"
+
 

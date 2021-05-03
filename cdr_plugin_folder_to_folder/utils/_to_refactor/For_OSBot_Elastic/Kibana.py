@@ -2,8 +2,11 @@ import json
 
 import requests
 from osbot_utils.decorators.lists.index_by import index_by
+from osbot_utils.utils.Files import file_copy
 from osbot_utils.utils.Http import GET
 from requests.auth import HTTPBasicAuth
+
+from cdr_plugin_folder_to_folder.utils._to_refactor.For_OSBot_Elastic.Dashboard import Dashboard
 
 
 class Kibana:
@@ -33,20 +36,36 @@ class Kibana:
             return json.loads(response.text)
 
     def get_request(self, path):
+        print()
+        print(path)
         if self.enabled:
             url      = self.request_url(path)
             kwargs   = self.get_request_kwargs()
             response = requests.get(url, **kwargs)
             return json.loads(response.text)
 
-    def post_request(self, path, payload):  # todo refactor out setup section (which will be same for all requests)
+    def post_request(self, path, payload, parse_into_json=True):  # todo refactor out setup section (which will be same for all requests)
         if self.enabled:
             data     = json.dumps(payload)
             url      = self.request_url(path)
             kwargs   = self.get_request_kwargs()
             response = requests.post(url, data, **kwargs)
+            if parse_into_json:
+                return json.loads(response.text)
+            return response.text
 
-            return json.loads(response.text)
+    def post_file(self, path, path_file, parse_into_json=True):  # todo refactor out setup section (which will be same for all requests)
+        if self.enabled:
+            #ndjson_file = path_file + '.ndjson'
+            #file_copy(path_file, ndjson_file)
+            url      = self.request_url(path)
+            #kwargs   = self.get_request_kwargs()
+            kwargs = { 'headers' : {'kbn-xsrf': 'kibana'}} #'Content-Type': "multipart/form-data",
+            files    = {'file': open(path_file , 'rb')}
+            response = requests.post(url, files=files, **kwargs)
+            if parse_into_json:
+                return json.loads(response.text)
+            return response.text
 
     def request_url(self, path):
         return f'{self.schema}://{self.host}:{self.port}/{path}'
@@ -84,7 +103,11 @@ class Kibana:
 
     @index_by
     def dashboards(self):
-        return self.find("dashboards")
+        return self.find("dashboard")
+
+    def dashboard_import_from_github(self, dashboard_file_name):
+        dashboard = Dashboard(kibana=self)
+        return dashboard.import_dashboard_from_github(dashboard_file_name)
 
     @index_by
     def features(self):
