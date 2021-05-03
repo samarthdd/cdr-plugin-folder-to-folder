@@ -123,9 +123,9 @@ class Analysis_Json:
                 macros = True
             if "javascript" in item.lower():
                 javascript = True
-            if "comments" in item.lower():
+            if "comment" in item.lower():
                 comments = True
-            if "urls" in item.lower():
+            if "url" in item.lower():
                 urls = True
         if macros or javascript:
             thread_level = "high"
