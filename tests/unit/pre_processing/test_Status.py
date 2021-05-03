@@ -24,6 +24,7 @@ class test_Status(Temp_Config):
                                                                               ('INITIAL'     , 'Initial'                                          ),
                                                                               ('IN_PROGRESS' , 'In Progress'                                      ),
                                                                               ('NONE'        , 'None'                                             ),
+                                                                              ('NOT_COPIED'  , 'Will not be copied'                               ),
                                                                               ('TO_PROCESS'  , 'To Process'                                       ),
                                                                               ('__module__'  , 'cdr_plugin_folder_to_folder.pre_processing.Status')]
 
