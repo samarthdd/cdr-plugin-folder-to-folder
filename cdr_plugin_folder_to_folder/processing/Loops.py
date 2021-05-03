@@ -18,6 +18,7 @@ from cdr_plugin_folder_to_folder.metadata.Metadata_Service import Metadata_Servi
 from cdr_plugin_folder_to_folder.pre_processing.Status import Status, FileStatus
 from cdr_plugin_folder_to_folder.pre_processing.Hash_Json import Hash_Json
 from cdr_plugin_folder_to_folder.processing.Report_Elastic import Report_Elastic
+from cdr_plugin_folder_to_folder.storage.Storage import Storage
 
 from elasticsearch import Elasticsearch
 from datetime import datetime
@@ -36,6 +37,7 @@ class Loops(object):
         self.use_es = False
         self.config = Config()
         self.status = Status()
+        self.storage = Storage()
         self.hash_json = Hash_Json()
         self.events = Events_Log(os.path.join(self.config.hd2_location, self.config.hd2_status_location))
         self.events_elastic = Events_Log_Elastic()
@@ -44,9 +46,8 @@ class Loops(object):
         self.analysis_elastic = Analysis_Elastic()
         self.report_elastic.setup()
         self.analysis_elastic.setup()
-        self.rootdir = os.path.join(self.config.hd2_location, self.config.hd2_data_location)
-        self.processed_dir = os.path.join(self.config.hd2_location, self.config.hd2_processed_location)
-        create_folder(self.processed_dir)
+        create_folder(self.storage.hd2_processed())
+        create_folder(self.storage.hd2_not_processed())
 
 
     def IsProcessing(self):
@@ -148,9 +149,9 @@ class Loops(object):
         self.hash_json.reset()
         meta_service = Metadata_Service()
 
-        for hash_folder in os.listdir(self.rootdir):
+        for hash_folder in os.listdir(self.storage.hd2_data()):
 
-            metadata_folder = os.path.join(self.rootdir, hash_folder)
+            metadata_folder = self.storage.hd2_data(hash_folder)
 
             if not os.path.isdir(metadata_folder):
                 continue
@@ -172,22 +173,27 @@ class Loops(object):
 
         for key in json_list:
 
-            if (FileStatus.COMPLETED != json_list[key]["file_status"]):
-                continue
+            source_path = os.path.join(self.storage.hd2_data(), key)
 
-            source_path = os.path.join(self.rootdir, key)
-            destination_path = os.path.join(self.processed_dir, key)
+            if (FileStatus.COMPLETED == json_list[key]["file_status"]):
+                destination_path = os.path.join(self.storage.hd2_processed(), key)
 
-            if folder_exists(destination_path):
-                folder_delete_all(destination_path)
+                if folder_exists(destination_path):
+                    folder_delete_all(destination_path)
 
-            shutil.move(source_path, destination_path)
+                shutil.move(source_path, destination_path)
 
+            if (FileStatus.FAILED == json_list[key]["file_status"]):
+
+                meta_service = Metadata_Service()
+                original_file_path = meta_service.get_original_file_paths(source_path)
+
+                #"Engine response could not be decoded"
 
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
 
-        if folder_exists(self.rootdir) is False:
-            log_message = "ERROR: rootdir does not exist: " + self.rootdir
+        if folder_exists(self.storage.hd2_data()) is False:
+            log_message = "ERROR: rootdir does not exist: " + self.storage.hd2_data()
             log_error(log_message)
             return False
 
@@ -216,7 +222,7 @@ class Loops(object):
         for key in json_list:
             file_hash   =  key
 
-            itempath = os.path.join(self.rootdir, key)
+            itempath = os.path.join(self.storage.hd2_data(), key)
             if (FileStatus.COMPLETED == json_list[key]["file_status"]):
                 self.events.add_log(f"The file processing has been already completed")
                 continue
