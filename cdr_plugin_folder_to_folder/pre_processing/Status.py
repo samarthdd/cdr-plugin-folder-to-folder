@@ -37,10 +37,13 @@ class Status:
     VAR_FILES_COPIED             = "files_copied"
     VAR_FILES_TO_BE_COPIED       = "files_left_to_be_copied"
     VAR_IN_PROGRESS              = "in_progress"
+    VAR_NUMBER_OF_CPUS           = "number_of_cpus"
     VAR_CPU_UTILIZATION          = "cpu_utilization"
     VAR_RAM_UTILIZATION          = "memory_utilization"
     VAR_NUM_OF_PROCESSES         = "number_of_processes"
     VAR_NUM_OF_THREADS           = "number_of_threads"
+    VAR_NETWORK_CONNECTIONS      = "network_connections"
+    VAR_DISK_PARTITIONS          = "disk_partitions"
 
     lock = threading.Lock()
 
@@ -70,10 +73,13 @@ class Status:
                     Status.VAR_COMPLETED              : 0               ,
                     Status.VAR_FAILED                 : 0               ,
                     Status.VAR_IN_PROGRESS            : 0               ,
+                    Status.VAR_NUMBER_OF_CPUS         : psutil.cpu_count()            ,
                     Status.VAR_CPU_UTILIZATION        : None            ,
                     Status.VAR_RAM_UTILIZATION        : None            ,
                     Status.VAR_NUM_OF_PROCESSES       : None            ,
                     Status.VAR_NUM_OF_THREADS         : None            ,
+                    Status.VAR_NETWORK_CONNECTIONS    : None            ,
+                    Status.VAR_DISK_PARTITIONS        : len(psutil.disk_partitions())  ,
                 }
 
     def load_data(self):
@@ -85,6 +91,17 @@ class Status:
 
     def reset(self):
         self._status_data = self.default_data()
+
+        #self._status_data[Status.VAR_CURRENT_STATUS]         = FileStatus.NONE
+        #self._status_data[Status.VAR_FILES_COUNT]            = 0
+        #self._status_data[Status.VAR_FILES_COPIED]           = 0
+        #self._status_data[Status.VAR_FILES_TO_BE_COPIED]     = 0
+        #self._status_data[Status.VAR_FILES_TO_PROCESS]       = 0
+        #self._status_data[Status.VAR_FILES_LEFT_TO_PROCESS]  = 0
+        #self._status_data[Status.VAR_COMPLETED]              = 0
+        #self._status_data[Status.VAR_FAILED]                 = 0
+        #self._status_data[Status.VAR_IN_PROGRESS]            = 0
+
         self.save()
         return self
 
@@ -102,12 +119,23 @@ class Status:
     def get_server_status(self):
         Status.lock.acquire()
         try:
-            data = self.data()
+            #self._status_data[Status.VAR_NUMBER_OF_CPUS] = psutil.cpu_count()
+            self._status_data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
+            self._status_data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
 
-            data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
-            data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
-            data[Status.VAR_NUM_OF_PROCESSES] = len(psutil.pids())
-            data[Status.VAR_NUM_OF_THREADS] = 0
+            pids = psutil.pids()
+            self._status_data[Status.VAR_NUM_OF_PROCESSES] = len(pids)
+
+            thread_count = 0
+            for pid in pids:
+                p = psutil.Process(int(pid))
+                thread_count += p.num_threads()
+
+            self._status_data[Status.VAR_NUM_OF_THREADS] = thread_count
+
+            self._status_data[Status.VAR_NETWORK_CONNECTIONS] = len(psutil.net_connections(kind='tcp'))
+
+            #self._status_data[Status.VAR_DISK_PARTITIONS] = len(psutil.disk_partitions())
         finally:
             Status.lock.release()
             self.save()
