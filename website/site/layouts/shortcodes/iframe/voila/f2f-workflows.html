@@ -1,0 +1,7 @@
+{{ $url_voila  := printf "%s%s" $.Site.Data.urls.voila $.Site.Data.urls.f2f_workflows}}
+{{ $url_kibana := printf "%s%s" $.Site.Data.urls.kibana }}
+<a href="javascript:window.location.replace(window.location.href, target='self')">reload</a>
+
+{{ partial "iframe-small.html"  $url_voila }}
+
+{{ partial "iframe.html"  $url_kibana }}

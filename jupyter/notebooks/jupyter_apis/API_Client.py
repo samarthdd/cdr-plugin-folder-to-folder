@@ -76,5 +76,8 @@ class API_Client:
         status['set_gw_sdk_endpoints'] = self.set_gw_sdk_endpoints(data=sdk_endpoints)
         return status
 
+    def get_config(self):
+        return self._request_get('/configuration/config')
+    
     def get_processing_status(self):
         return self._request_get('/processing/status')
