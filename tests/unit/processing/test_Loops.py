@@ -92,6 +92,6 @@ class test_Loops(Temp_Config):
 
     def test_LoopHashDirectoriesInternal_bad(self):
         self.loops.rootdir = '/not_existing'
-        assert self.loops.LoopHashDirectoriesInternal(thread_count=30, do_single=False) is False
+        assert self.loops.LoopHashDirectoriesInternal(thread_count=10, do_single=False) is False
 
 
