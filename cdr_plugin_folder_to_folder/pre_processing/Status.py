@@ -120,6 +120,7 @@ class Status:
         Status.lock.acquire()
         try:
             #self._status_data[Status.VAR_NUMBER_OF_CPUS] = psutil.cpu_count()
+
             self._status_data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
             self._status_data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
 

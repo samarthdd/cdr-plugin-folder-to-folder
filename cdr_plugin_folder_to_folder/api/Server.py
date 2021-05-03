@@ -73,7 +73,6 @@ class Server:
         status = Status()
         while self.status_thread_on:
             status.get_server_status()
-            status.save()
             sleep(update_interval)
 
     def start(self):
