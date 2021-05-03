@@ -1,6 +1,6 @@
 api      : http://localhost:8000
 api_docs : http://localhost:8000/docs
-#kibana   : http://localhost:8002/app/dashboards#/list
-kibana   : http://localhost:8002/app/dashboards#/view/8e34bc70-a9ce-11eb-8be5-5708680ec247?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true
+kibana   : http://localhost:8002/app/dashboards#/list
 jupyter  : http://localhost:8005/voila/tree/work
 minio    : http://localhost:8003
+aws_api  : https://tmol8zkg3c.execute-api.eu-west-1.amazonaws.com/prod/docs
