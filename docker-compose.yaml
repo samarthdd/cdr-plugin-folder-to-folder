@@ -28,7 +28,7 @@ services:
         - 8866:8866
       container_name: jupyter_voila
       restart: always
-      command: "voila --Voila.tornado_settings=\"{'headers':{'Content-Security-Policy': 'frame-ancestors http://localhost:*'}}\" "
+      command: "voila --VoilaConfiguration.show_tracebacks=True --Voila.tornado_settings=\"{'headers':{'Content-Security-Policy': 'frame-ancestors http://localhost:*'}}\" "
       depends_on:
         - "jupyter"
 

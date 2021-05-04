@@ -100,6 +100,7 @@ class test_File_Processing(Temp_Config):
     def test_pdf_rebuild(self,):            # refactor into separate test file
         #server          = "192.168.0.249"   # local
         server          = self.config.test_sdk
+        server          = "63.35.219.252"
         url             = f"http://{server}:8080/api/rebuild/base64"
         headers         = { 'accept': 'application/json',
                             'Content-Type': 'application/json'}
@@ -113,12 +114,12 @@ class test_File_Processing(Temp_Config):
         rebuild_base64 = base64_to_bytes(result)
 
         assert str_to_bytes(text)     in     original_bytes
-        assert b'Glasswall Processed' not in original_bytes
+        assert b'Glasswall'           not in original_bytes
 
         assert str_to_bytes(text)     in     rebuild_base64
-        assert b'Glasswall Processed' in     rebuild_base64
+        assert b'Glasswall'           in     rebuild_base64
         #pprint(rebuild_base64)
-        #assert b'Glasswall Protected' in     rebuild_base64
+        #assert b'Glasswall'    in     rebuild_base64
 
 
 

@@ -11,3 +11,4 @@ python-dotenv
 qgrid
 squarify
 voila
+voila-gridstack

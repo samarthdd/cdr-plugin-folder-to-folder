@@ -85,7 +85,10 @@ class Analysis_Json:
             metadata       = meta_service.get_from_file(index)
 
             self.file_analysis_data={}
-            self.file_analysis_data["file_name"]                  = metadata.data.get('file_name')
+            self.file_analysis_data["file_name"             ]     = metadata.data.get('file_name')
+            self.file_analysis_data["rebuild_file_extension"]     = metadata.data.get('rebuild_file_extension')
+            self.file_analysis_data["rebuild_file_size"     ]     = metadata.data.get('rebuild_file_size')
+
             self.file_analysis_data["original_hash"]              = index
             self.file_analysis_data["rebuild_hash"]               = metadata.data.get('rebuild_hash')
 
@@ -101,10 +104,44 @@ class Analysis_Json:
             self.file_analysis_data["issue_item_count"],\
             self.file_analysis_data["issue_item_list"]            = self.get_issue_item_details(report_json)
 
+            self.file_analysis_data["threat_analysis"]            = self.get_threat_analysis(self.file_analysis_data["sanitised_items_list"])
+
             return self.file_analysis_data
 
         except Exception as error:
             log_error(message=f"Error in get_file_analysis from json data {dir} : {error}")
+
+    def get_threat_analysis(self, sanitised_items_list):
+        macros     = False
+        javascript = False
+        comments   = False
+        metadata   = False
+        urls       = False
+
+        for item in sanitised_items_list:
+            if "macros" in item.lower():
+                macros = True
+            if "javascript" in item.lower():
+                javascript = True
+            if "comment" in item.lower():
+                comments = True
+            if "url" in item.lower():
+                urls = True
+        if macros or javascript:
+            thread_level = "high"
+        elif metadata or comments:
+            thread_level = "medium"
+        else:
+            thread_level = "low"
+        threat_analysis = {"threat_level": thread_level,
+                           "macros" : macros,
+                           "javascript": javascript,
+                           "comments" : comments,
+                           "metadata" : metadata,
+                           "urls"     : urls
+                           }
+        return threat_analysis
+
 
     def get_remediated_item_details(self, report_json):
         total_remediate_count = 0
