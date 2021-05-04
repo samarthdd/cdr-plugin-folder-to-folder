@@ -77,7 +77,7 @@ class Status:
             return
 
         self.status_thread_on = True
-        self.status_thread = threading.Thread(target=self.StatusThread, args=(10,))
+        self.status_thread = threading.Thread(target=self.StatusThread, args=(1,))
         self.status_thread.start()
 
     def StopStatusThread(self):
@@ -140,8 +140,12 @@ class Status:
 
         thread_count = 0
         for pid in pids:
-            p = psutil.Process(int(pid))
-            thread_count += p.num_threads()
+            try:
+                p = psutil.Process(int(pid))
+                process_treads = p.num_threads()
+                thread_count += process_treads
+            except:
+                pass
 
         self._status_data[Status.VAR_NUM_OF_THREADS] = thread_count
 

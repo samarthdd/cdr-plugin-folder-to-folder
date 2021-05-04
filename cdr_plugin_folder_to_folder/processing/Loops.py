@@ -295,12 +295,15 @@ class Loops(object):
         if self.IsProcessing():
             log_error(message="ERROR: Attempt to start processing while processing is in progress")
             return False
+
+        self.status.StartStatusThread()
         thread_count = thread_count or self.config.thread_count
         log_info(message="in LoopHashDirectories, about to start main loop")
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self.LoopHashDirectoriesAsync(thread_count))
         log_info(message="in LoopHashDirectories, Loop completed")
+        self.status.StopStatusThread()
         return True
 
     @log_duration
