@@ -48,8 +48,7 @@ services:
       ports:
         - 8880:8880
       depends_on:
-        es01:
-          condition: service_healthy
+        - 'es01'
       restart: always
 
   # Website
