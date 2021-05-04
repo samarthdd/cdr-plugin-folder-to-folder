@@ -11,6 +11,7 @@ logger.basicConfig(level=logger.INFO)
 
 class FileStatus:                                     # todo move to separate file (either per enum or with all enums)
     INITIAL     = "Initial"
+    NOT_COPIED  = "Will not be copied"
     IN_PROGRESS = "In Progress"
     COMPLETED   = "Completed Successfully"
     FAILED      = "Completed with errors"
@@ -32,7 +33,7 @@ class Status:
     VAR_FAILED                   = "failed"
     VAR_FILES_TO_PROCESS         = "files_to_process"
     VAR_FILES_LEFT_TO_PROCESS    = "files_left_to_process"
-    VAR_FILES_COUNT              = "files_count"
+    VAR_FILES_COUNT              = "files_in_hd1_folder"
     VAR_FILES_COPIED             = "files_copied"
     VAR_FILES_TO_BE_COPIED       = "files_left_to_be_copied"
     VAR_IN_PROGRESS              = "in_progress"
@@ -135,11 +136,15 @@ class Status:
             data = self.data()
 
             if updated_status == FileStatus.NONE:
-                data[Status.VAR_FILES_COUNT] += count
-                data[Status.VAR_FILES_TO_BE_COPIED] += count
+                data[Status.VAR_FILES_COUNT] = count
+                data[Status.VAR_FILES_TO_BE_COPIED] = count
                 
             elif updated_status == FileStatus.INITIAL:
                 data[Status.VAR_FILES_COPIED] += 1
+                if data[Status.VAR_FILES_TO_BE_COPIED] > 0:
+                    data[Status.VAR_FILES_TO_BE_COPIED] -= 1
+
+            elif updated_status == FileStatus.NOT_COPIED:
                 if data[Status.VAR_FILES_TO_BE_COPIED] > 0:
                     data[Status.VAR_FILES_TO_BE_COPIED] -= 1
 
@@ -191,7 +196,8 @@ class Status:
     def add_completed       (self       ): return self.update_counters(FileStatus.COMPLETED          )
     def add_failed          (self       ): return self.update_counters(FileStatus.FAILED             )
     def add_file            (self       ): return self.update_counters(FileStatus.INITIAL            )
-    def add_files_count     (self, count): return self.update_counters(FileStatus.NONE        , count)
+    def set_files_count     (self, count): return self.update_counters(FileStatus.NONE        , count)
+    def set_not_copied      (self       ): return self.update_counters(FileStatus.NOT_COPIED         )
     def add_in_progress     (self       ): return self.update_counters(FileStatus.IN_PROGRESS        )
     def add_to_be_processed (self       ): return self.update_counters(FileStatus.TO_PROCESS         )
 
