@@ -61,8 +61,6 @@ class Status:
             self.storage        = Storage()
             #self._on_save      = []                             # todo: add support for firing up events when data is saved
             self._status_data   = self.default_data()
-            #self.load_data()
-            self.status_file_name = Status.STATUS_FILE_NAME
 
             self.status_thread_on = True
             self.status_thread = threading.Thread(target=self.StatusThread, args=(10,))
@@ -134,7 +132,7 @@ class Status:
         return self
 
     def status_file_path(self):
-        return path_combine(self.storage.hd2_status(), self.status_file_name)
+        return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
 
     def get_server_data(self):
         #self._status_data[Status.VAR_NUMBER_OF_CPUS] = psutil.cpu_count()
