@@ -61,6 +61,7 @@ class Status:
             #self._on_save      = []                             # todo: add support for firing up events when data is saved
             self._status_data   = self.default_data()
             self.status_thread_on = False
+            self.status_thread = threading.Thread()
 
     @classmethod
     def clear_instance(cls):
