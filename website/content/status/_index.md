@@ -1,6 +1,6 @@
 ---
 title: Status
-weight: 5
+weight: 9
 ---
 
 Here are multiple status pages

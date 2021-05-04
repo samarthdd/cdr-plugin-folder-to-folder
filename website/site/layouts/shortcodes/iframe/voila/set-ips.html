@@ -1,0 +1,3 @@
+{{ $url_voila  := printf "%s%s" $.Site.Data.urls.voila $.Site.Data.urls.f2f_set_ips}}
+
+{{ partial "iframe.html"  $url_voila }}

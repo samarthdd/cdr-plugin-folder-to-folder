@@ -2,6 +2,7 @@ from unittest import TestCase
 
 import pytest
 from osbot_utils.utils.Dev import pprint
+from osbot_utils.utils.Json import json_save_file, json_load_file
 from osbot_utils.utils.Misc import list_set
 
 from cdr_plugin_folder_to_folder.common_settings.Config import Config
@@ -29,8 +30,12 @@ class test_Kibana(TestCase):
             pytest.skip('Kibana server not available')
 
     def test_dashboards(self):
-        results = self.kibana.dashboards()
-        #pprint(results)
+        dashboards   = json_load_file('/var/folders/_j/frqs70d93l328f307rw2jx5h0000gn/T/tmp628dz7n_.tmp')
+        dashboard    = dashboards[0]
+        dashboard_id = dashboard.get('id')
+        pprint(dashboard)
+        #results = self.kibana.dashboards()
+        #pprint(json_save_file(results))
 
     def test_features(self):
         features                = self.kibana.features(index_by='id')
