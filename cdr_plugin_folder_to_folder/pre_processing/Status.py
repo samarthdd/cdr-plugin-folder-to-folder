@@ -52,7 +52,6 @@ class Status:
     def __new__(cls):                                               # singleton pattern
         if cls._instance is None:
             cls._instance = super(Status, cls).__new__(cls)
-            cls.status_thread_on = True
         return cls._instance
 
     def __init__(self):
@@ -61,21 +60,28 @@ class Status:
             self.storage        = Storage()
             #self._on_save      = []                             # todo: add support for firing up events when data is saved
             self._status_data   = self.default_data()
-
-            self.status_thread_on = True
-            self.status_thread = threading.Thread(target=self.StatusThread, args=(10,))
-            self.status_thread.start()
+            self.status_thread_on = False
 
     @classmethod
     def clear_instance(cls):
-        cls.status_thread_on = False
-        cls.status_thread.join()
         del cls.instance
 
     def StatusThread(self, update_interval):
         while self.status_thread_on:
             self.get_server_status()
             sleep(update_interval)
+
+    def StartStatusThread(self):
+        if self.status_thread_on:
+            return
+
+        self.status_thread_on = True
+        self.status_thread = threading.Thread(target=self.StatusThread, args=(10,))
+        self.status_thread.start()
+
+    def StopStatusThread(self):
+        self.status_thread_on = False
+        self.status_thread.join()
 
     def data(self):
         return self._status_data
@@ -108,18 +114,6 @@ class Status:
 
     def reset(self):
         self._status_data = self.default_data()
-
-        #self._status_data[Status.VAR_CURRENT_STATUS]         = FileStatus.NONE
-        #self._status_data[Status.VAR_FILES_COUNT]            = 0
-        #self._status_data[Status.VAR_FILES_COPIED]           = 0
-        #self._status_data[Status.VAR_FILES_TO_BE_COPIED]     = 0
-        #self._status_data[Status.VAR_FILES_TO_PROCESS]       = 0
-        #self._status_data[Status.VAR_FILES_LEFT_TO_PROCESS]  = 0
-        #self._status_data[Status.VAR_COMPLETED]              = 0
-        #self._status_data[Status.VAR_FAILED]                 = 0
-        #self._status_data[Status.VAR_IN_PROGRESS]            = 0
-
-        self.get_server_data()
         self.save()
         return self
 
@@ -135,7 +129,7 @@ class Status:
         return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
 
     def get_server_data(self):
-        #self._status_data[Status.VAR_NUMBER_OF_CPUS] = psutil.cpu_count()
+        self._status_data[Status.VAR_NUMBER_OF_CPUS] = psutil.cpu_count()
 
         self._status_data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
         self._status_data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
@@ -152,7 +146,7 @@ class Status:
 
         self._status_data[Status.VAR_NETWORK_CONNECTIONS] = len(psutil.net_connections(kind='tcp'))
 
-        #self._status_data[Status.VAR_DISK_PARTITIONS] = len(psutil.disk_partitions())
+        self._status_data[Status.VAR_DISK_PARTITIONS] = len(psutil.disk_partitions())
 
 
     def get_server_status(self):
