@@ -195,6 +195,7 @@ class Loops(object):
                         if folder_exists(destination_path):
                             folder_delete_all(destination_path)
 
+
                         shutil.move(source_path, destination_path)
 
     def LoopHashDirectoriesInternal(self, thread_count, do_single):
