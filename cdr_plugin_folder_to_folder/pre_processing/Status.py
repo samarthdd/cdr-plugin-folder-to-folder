@@ -1,6 +1,7 @@
 import threading
 import psutil
 import logging as logger
+from time import sleep
 
 from osbot_utils.utils.Files                        import path_combine, folder_create, file_create
 from osbot_utils.utils.Json                         import json_save_file_pretty, json_load_file, file_exists
@@ -51,14 +52,32 @@ class Status:
     def __new__(cls):                                               # singleton pattern
         if cls._instance is None:
             cls._instance = super(Status, cls).__new__(cls)
+            cls.status_thread_on = True
         return cls._instance
 
     def __init__(self):
-        if hasattr(self, '_status_data') is False:                     # only set these values first time around
+        if hasattr(self, 'instantiated') is False:                     # only set these values first time around
+            self.instantiated   = True
             self.storage        = Storage()
             #self._on_save      = []                             # todo: add support for firing up events when data is saved
             self._status_data   = self.default_data()
-            self.load_data()
+            #self.load_data()
+            self.status_file_name = Status.STATUS_FILE_NAME
+
+            self.status_thread_on = True
+            self.status_thread = threading.Thread(target=self.StatusThread, args=(10,))
+            self.status_thread.start()
+
+    @classmethod
+    def clear_instance(cls):
+        cls.status_thread_on = False
+        cls.status_thread.join()
+        del cls.instance
+
+    def StatusThread(self, update_interval):
+        while self.status_thread_on:
+            self.get_server_status()
+            sleep(update_interval)
 
     def data(self):
         return self._status_data
@@ -102,6 +121,7 @@ class Status:
         #self._status_data[Status.VAR_FAILED]                 = 0
         #self._status_data[Status.VAR_IN_PROGRESS]            = 0
 
+        self.get_server_data()
         self.save()
         return self
 
@@ -114,29 +134,33 @@ class Status:
         return self
 
     def status_file_path(self):
-        return path_combine(self.storage.hd2_status(), Status.STATUS_FILE_NAME)
+        return path_combine(self.storage.hd2_status(), self.status_file_name)
+
+    def get_server_data(self):
+        #self._status_data[Status.VAR_NUMBER_OF_CPUS] = psutil.cpu_count()
+
+        self._status_data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
+        self._status_data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
+
+        pids = psutil.pids()
+        self._status_data[Status.VAR_NUM_OF_PROCESSES] = len(pids)
+
+        thread_count = 0
+        for pid in pids:
+            p = psutil.Process(int(pid))
+            thread_count += p.num_threads()
+
+        self._status_data[Status.VAR_NUM_OF_THREADS] = thread_count
+
+        self._status_data[Status.VAR_NETWORK_CONNECTIONS] = len(psutil.net_connections(kind='tcp'))
+
+        #self._status_data[Status.VAR_DISK_PARTITIONS] = len(psutil.disk_partitions())
+
 
     def get_server_status(self):
         Status.lock.acquire()
         try:
-            #self._status_data[Status.VAR_NUMBER_OF_CPUS] = psutil.cpu_count()
-
-            self._status_data[Status.VAR_CPU_UTILIZATION] = psutil.cpu_percent(interval=1, percpu=True)
-            self._status_data[Status.VAR_RAM_UTILIZATION] = psutil.virtual_memory().percent
-
-            pids = psutil.pids()
-            self._status_data[Status.VAR_NUM_OF_PROCESSES] = len(pids)
-
-            thread_count = 0
-            for pid in pids:
-                p = psutil.Process(int(pid))
-                thread_count += p.num_threads()
-
-            self._status_data[Status.VAR_NUM_OF_THREADS] = thread_count
-
-            self._status_data[Status.VAR_NETWORK_CONNECTIONS] = len(psutil.net_connections(kind='tcp'))
-
-            #self._status_data[Status.VAR_DISK_PARTITIONS] = len(psutil.disk_partitions())
+            self.get_server_data()
         finally:
             Status.lock.release()
             self.save()

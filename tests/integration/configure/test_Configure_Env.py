@@ -21,7 +21,7 @@ class test_Configure_Env(TestCase):
 #                      '3.250.212.118']
 
 
-        test_ips =[   '84.16.229.232' ]
+        test_ips =[   '3.250.114.207' ]
 
         endpoints = []
         for ip in test_ips:

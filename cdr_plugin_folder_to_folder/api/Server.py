@@ -69,15 +69,17 @@ class Server:
         #    - https://github.com/encode/uvicorn/issues/562
         logging.getLogger().handlers.clear()                                # todo: see side effects of this
 
-    def StatusThread(self, update_interval):
-        status = Status()
+    def StatusThread(self, update_interval, status):
         while self.status_thread_on:
             status.get_server_status()
             sleep(update_interval)
 
     def start(self):
+        #status = Status()
+        #status.status_file_name = "server_status.json"
+
         #self.status_thread_on = True
-        #self.status_thread = threading.Thread(target=self.StatusThread, args=(self.status_update_interval,))
+        #self.status_thread = threading.Thread(target=self.StatusThread, args=(self.status_update_interval,status,))
         #self.status_thread.start()
 
         log_debug(message=f"Starting API server on {self.host}:{self.port} with uvicorn log level {self.log_level}")
