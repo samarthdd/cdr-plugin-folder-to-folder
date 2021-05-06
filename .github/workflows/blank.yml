@@ -11,8 +11,8 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
-      name:
-        description: create_new_tag
+      create_new_tag:
+        description: create_new_tag? 
         required: true
         default: 'false'
 
