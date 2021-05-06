@@ -28,9 +28,10 @@ jobs:
         with:
           github-token: ${{ github.token }}
           script: |
+            tag_id=$(echo $GITHUB_REF | cut -d'/' -f 3)-${GITHUB_SHA::7}
             github.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/tagnamejjjj"
+              ref: "refs/tags/${tag_id}",
               sha: context.sha
             })
