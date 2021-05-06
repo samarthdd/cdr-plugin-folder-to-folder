@@ -28,13 +28,8 @@ jobs:
       - name: tag id
         id: tag_id
         run: |
-          git remote -v
-          latest_tag_name=$(git describe --tags --abbrev=0)
-          echo $latest_tag_name
-          echo "${latest_tag_name%.*}"
-          run_id=${{ github.run_number }}
-          base_tag="${latest_tag_name%%.*}"
-          tag_id=$base_tag.$run_id
+
+          tag_id=0.2.1
 
 
       - name: Release snapshot
