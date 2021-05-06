@@ -28,8 +28,9 @@ jobs:
       - name: tag id
         id: tag_id
         run: |
-
+        
           tag_id=0.2.1
+          echo "::set-output name=tag_id::0.2.1"
 
 
       - name: Release snapshot
