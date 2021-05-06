@@ -37,7 +37,7 @@ jobs:
           run_id=${{ github.run_number }}
           base_tag="${latest_tag_name%%.*}"
           tag_id=$base_tag.$run_id
-          tag_name: echo "$tag_id"
-          release_name: echo "$tag_id"
+          tag_name: ${{ tag_id }}
+          release_name: ${{ tag_id }}
           draft: false
           prerelease: false
