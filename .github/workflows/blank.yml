@@ -29,7 +29,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v$${{ github.run_id }}
+          latest_tag_commit_id=$(git rev-list --tags --max-count=1)
+          latest_tag_name=$(git describe --tags $tag_commit_id)
+          echo $latest_tag_name
+
+          echo "${latest_tag_name%.*}"
+          base_tag="${latest_tag_name%%.*}"
+          tag_name: $base_tag.${{ github.run_number }}
           release_name: v${{ github.run_number }}
           draft: false
           prerelease: false
