@@ -32,10 +32,12 @@ jobs:
           git config user.name github-actions@github.com
           git config user.email github-actions
           git config --global http.postBuffer 1048576000
+          
+          git fetch --all
           tags=$(git tag -l)
           echo $tags
-          tag_name=$(git describe --tags --abbrev=0)
-          
+          tag_name=$(git describe --tags --abbrev=0)s
+          echo $tag_name
 
 
           
