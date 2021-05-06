@@ -50,7 +50,7 @@ jobs:
           echo $version
           major=`echo $latest_tag | cut -d. -f2`
           minor=`echo $latest_tag | cut -d. -f3`
-          branch = ${{ steps.extract_branch.outputs.branch }}
+          branch=${{ steps.extract_branch.outputs.branch }}
           echo $branch
           if [ $branch == 'main' ]; then
             echo "main branch"
@@ -61,7 +61,7 @@ jobs:
               then
             echo "develop branch"
               if [ -z "$revision" ] then
-                revision = 0
+                revision=0
               else
               minor=`expr $minor + 1`
           tag_name= $version.$major.$minor
