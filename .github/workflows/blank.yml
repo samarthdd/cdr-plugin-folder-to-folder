@@ -29,6 +29,7 @@ jobs:
         id: tag_id
         run: |
           latest_tag_commit_id=$(git rev-list --tags --max-count=1)
+          echo $latest_tag_name
           latest_tag_name=$(git describe --tags $tag_commit_id)
           echo $latest_tag_name
           echo "${latest_tag_name%.*}"
@@ -42,8 +43,6 @@ jobs:
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
         with:
           tag_name: ${{ steps.tag_id.outputs.tag_id }}
           release_name: ${{ steps.tag_id.outputs.tag_id }}
