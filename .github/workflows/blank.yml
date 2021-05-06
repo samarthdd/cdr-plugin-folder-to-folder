@@ -48,6 +48,7 @@ jobs:
           echo $latest_tag
           
           echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo ${{ env.RELEASE_VERSION }}
 
           version=`echo $latest_tag| cut -d. -f1`
           major=`echo $latest_tag | cut -d. -f2`
