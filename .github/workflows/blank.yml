@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{secrets.GITHUB_TOKEN}}
+          submodules: recursive
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
@@ -41,7 +42,7 @@ jobs:
           git config user.email github-actions
           git config --global http.postBuffer 1048576000
           
-          git fetch --all
+          git fetch --tags
           
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
           echo "latest tag"
