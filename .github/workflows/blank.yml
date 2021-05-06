@@ -30,7 +30,7 @@ jobs:
         run: |
 
           
-          echo ::set-output name=tag_id::${GITHUB_REF#refs/*/}s
+          echo ::set-output name=tag_id::$(echo $GITHUB_REF | cut -d / -f 3)
           
 
 
