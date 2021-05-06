@@ -28,9 +28,10 @@ jobs:
       - name: tag id
         id: tag_id
         run: |
-        
-          tag_id=v0.2.2
+
+          tag_id=$(git describe --tags --abbrev=0)
           echo "::set-output name=tag_id::$tag_id"
+          
 
 
       - name: Release snapshot
