@@ -39,7 +39,6 @@ jobs:
           git config --global http.postBuffer 1048576000
           
           git fetch --all
-          
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
           
           run_id=${{ github.run_number }}
