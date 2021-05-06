@@ -30,7 +30,7 @@ jobs:
         with:
           token: ${{secrets.GITHUB_TOKEN}}
           if: github.event.inputs.create_new_tag != 'true' and ${{ github.ref == 'refs/heads/main' }}
-      - name: major tag id
+      - name: Creating major tag -.X.- from main
         id: tag_id
         run: |
         
@@ -51,7 +51,7 @@ jobs:
           echo ::set-output name=tag_id::$tag_name
 
         if: github.event.inputs.create_new_tag == 'true' and ${{ github.ref == 'refs/heads/main' }}
-      - name: major tag id
+      - name: Creating version tag X.-.- from main
         id: major_id
         run: |
         
@@ -72,7 +72,7 @@ jobs:
           echo ::set-output name=tag_id::$tag_name
           
         if: ${{ github.ref == 'refs/heads/develop' }}
-      - name: minor tag id
+      - name: Creating minior tag -.-.X from main
         id: minor_id
         run: |
         
@@ -85,17 +85,16 @@ jobs:
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
           
           run_id=${{ github.run_number }}
-          
           tag_name=${latest_tag%.*}.$((${v##*.}+1))
           
           echo $tag_name
-
-
-          
           echo ::set-output name=tag_id::$tag_name
+
           
 
-
+      - name: minor tag id
+        id: Creating minior tag -.-.X from main
+        run: |
       - name: Release snapshot
         id: release-snapshot
         uses: actions/create-release@latest
