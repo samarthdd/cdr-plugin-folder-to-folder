@@ -10,6 +10,11 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      name:
+        description: create_new_tag
+        required: true
+        default: "false"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -17,7 +22,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    if: github.event.inputs.create_new_tag == 'false'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -34,11 +39,13 @@ jobs:
           git config --global http.postBuffer 1048576000
           
           git fetch --all
-          tags=$(git tag -l)
-          echo $tags
+          
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          
           run_id=${{ github.run_number }}
+          
           tag_name=${latest_tag%.*}.$run_id
+          
           echo $tag_name
 
 
