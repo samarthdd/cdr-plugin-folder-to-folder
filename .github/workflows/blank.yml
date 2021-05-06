@@ -29,13 +29,7 @@ jobs:
         id: tag_id
         run: |
           git remote -v
-#          tags=$(git tag -l)
-#          git rev-list --tags --max-count=1
-#          git describe --tags $(git rev-list --tags --max-count=1)
-#          echo $tags
-#          latest_tag_commit_id=$(git rev-list --tags --max-count=1)
           latest_tag_name=$(git describe --tags --abbrev=0)
-          #latest_tag_name=$(git describe --tags $(git rev-list --tags --max-count=1))
           echo $latest_tag_name
           echo "${latest_tag_name%.*}"
           run_id=${{ github.run_number }}
