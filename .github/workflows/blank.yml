@@ -31,6 +31,7 @@ jobs:
 
           tag_id=$(git describe --tags --abbrev=0)
           echo "::set-output name=tag_id::$tag_id"
+          echo ::set-output name=tag::${GITHUB_REF#refs/*/}s
           
 
 
