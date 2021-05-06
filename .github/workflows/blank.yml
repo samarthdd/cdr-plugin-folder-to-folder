@@ -31,34 +31,37 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{secrets.GITHUB_TOKEN}}
+          submodules: recursive
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-      - name: name
+      - name: Form tag name
         id: tag_id
         run: |
-        
+
           git config user.name github-actions@github.com
           git config user.email github-actions
           git config --global http.postBuffer 1048576000
-          
-          git fetch --all
-          
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo $latest_tag
 
+          git fetch --tags
+
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "previous latest tag : $latest_tag"
           version=`echo $latest_tag| cut -d. -f1`
-          echo $version
           major=`echo $latest_tag | cut -d. -f2`
           minor=`echo $latest_tag | cut -d. -f3`
-          branch=${{ steps.extract_branch.outputs.branch }}
- 
-          if [ $branch == 'main' ]; then
-            echo $branch 
-            version=${version#"v"}
-            major=`expr $major + 1`
 
+          branch=${{ steps.extract_branch.outputs.branch }}
+
+          if [[ $branch == 'main' &&  "${{ github.event.inputs.create_new_tag }}" == "true" ]] ; then
+            version=${version#"v"}
+            version=`expr $version + 1`
+            version=v${version}
+            echo $version
+
+          elif [ $branch == 'main' ]; then
+            major=`expr $major + 1`
           elif [ $branch == 'develop' ]; then
               echo $branch
               if [ -z "$minor" ]; then
@@ -66,17 +69,11 @@ jobs:
               else
                   minor=`expr $minor + 1`
               fi
-
           fi
-          
+
           tag_name=$version.$major.$minor
-          echo "tag"
-          echo $tag_name
-          
-
+          echo "new tag : $tag_name"
           echo ::set-output name=tag_id::$tag_name
-
-   
           
       - name: Release snapshot
         id: release-snapshot
