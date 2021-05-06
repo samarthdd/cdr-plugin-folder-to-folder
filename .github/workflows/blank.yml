@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{secrets.GITHUB_TOKEN}}
-          if: github.event.inputs.create_new_tag != 'true' and ${{ github.ref == 'refs/heads/main' }}
+          if: github.event.inputs.create_new_tag != 'true' and ${{ github.ref }} == 'refs/heads/main' 
       - name: Creating major tag -.X.- from main
         id: tag_id
         run: |
@@ -39,17 +39,19 @@ jobs:
           git config --global http.postBuffer 1048576000
           
           git fetch --all
+          
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo $latest_tag
           
           run_id=${{ github.run_number }}
           
           tag_name=${latest_tag}.$run_id
           
-          echo $tag_name
+
 
           echo ::set-output name=tag_id::$tag_name
 
-        if: github.event.inputs.create_new_tag == 'true' and ${{ github.ref == 'refs/heads/main' }}
+        if: github.event.inputs.create_new_tag == 'true' and ${{ github.ref }}  == 'refs/heads/main'
       - name: Creating version tag X.-.- from main
         id: major_id
         run: |
@@ -70,7 +72,7 @@ jobs:
 
           echo ::set-output name=tag_id::$tag_name
           
-        if: ${{ github.ref == 'refs/heads/develop' }}
+        if: ${{ github.ref }}  == 'refs/heads/develop' 
       - name: Creating minior tag -.-.X from main
         id: minor_id
         run: |
