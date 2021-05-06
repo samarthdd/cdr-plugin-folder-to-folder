@@ -6,7 +6,7 @@ name: tagging and release
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -45,28 +45,21 @@ jobs:
           git fetch --tags
           
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo "latest tag"
-          echo $latest_tag
-          
-          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo ${{ env.RELEASE_VERSION }}
+          echo "previous latest tag : $latest_tag"
 
           version=`echo $latest_tag| cut -d. -f1`
           major=`echo $latest_tag | cut -d. -f2`
           minor=`echo $latest_tag | cut -d. -f3`
+          
           branch=${{ steps.extract_branch.outputs.branch }}
           
           if [[ $branch == 'main' &&  "${{ github.event.inputs.create_new_tag }}" == "true" ]] ; then
-            echo $branch 
-            echo "true"
             version=${version#"v"}
             version=`expr $version + 1`
             version=v${version}
             echo $version
             
           elif [ $branch == 'main' ]; then
-            echo $branch 
-            version=${version#"v"}
             major=`expr $major + 1`
 
           elif [ $branch == 'develop' ]; then
@@ -76,18 +69,12 @@ jobs:
               else
                   minor=`expr $minor + 1`
               fi
-
-
           fi
           
           tag_name=$version.$major.$minor
-          echo "tag"
-          echo $tag_name
-          
+          echo "new tag : $tag_name"
 
           echo ::set-output name=tag_id::$tag_name
-
-   
           
       - name: Release snapshot
         id: release-snapshot
