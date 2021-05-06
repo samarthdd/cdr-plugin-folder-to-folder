@@ -59,7 +59,7 @@ jobs:
 
           elif [ $branch == 'develop' ]; then
               echo "develop branch"
-              if [ -z "$minor" ] then
+              if [ -z "$minor" ]; then
                  minor=0
               else
                   minor=`expr $minor + 1`
