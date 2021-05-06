@@ -43,7 +43,7 @@ jobs:
           version=`echo $latest_tag| cut -d. -f1`
           major=`echo $latest_tag | cut -d. -f2`
           minor=`echo $latest_tag | cut -d. -f3`
-          branch = git branch
+          branch = $(git branch)
           echo $branch
           if [ $branch == 'main' ]; then
             echo "main branch"
