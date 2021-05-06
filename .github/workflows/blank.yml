@@ -44,6 +44,7 @@ jobs:
           git fetch --all
           
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          latest_tag=$(git describe --tags --abbrev=0)
           echo $latest_tag
 
           version=`echo $latest_tag| cut -d. -f1`
