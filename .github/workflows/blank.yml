@@ -52,15 +52,8 @@ jobs:
           minor=`echo $latest_tag | cut -d. -f3`
           branch=${{ steps.extract_branch.outputs.branch }}
           
-          if [[ $branch == 'main' &&  ${{ github.event.inputs.create_new_tag }} == true ]] ; then
-            echo $branch 
-            echo "true"
-            version=${version#"v"}
-            version=`expr $version + 1`
-            version=v${version}
-            echo $version
-
-          elif [ $branch == 'main' ]; then
+        
+          if [ $branch == 'main' && -z ${{ github.event.inputs.create_new_tag }} ]; then
             echo $branch 
             version=${version#"v"}
             major=`expr $major + 1`
@@ -72,6 +65,13 @@ jobs:
               else
                   minor=`expr $minor + 1`
               fi
+          elif [[ $branch == 'main' &&  ${{ github.event.inputs.create_new_tag }} == true ]] ; then
+            echo $branch 
+            echo "true"
+            version=${version#"v"}
+            version=`expr $version + 1`
+            version=v${version}
+            echo $version
 
           fi
           
