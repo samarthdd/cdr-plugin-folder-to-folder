@@ -91,10 +91,6 @@ jobs:
           echo ::set-output name=tag_id::$tag_name
 
           
-
-      - name: minor tag id
-        id: Creating minior tag -.-.X from main
-        run: |
       - name: Release snapshot
         id: release-snapshot
         uses: actions/create-release@latest
