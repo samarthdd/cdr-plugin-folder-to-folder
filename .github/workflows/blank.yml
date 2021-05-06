@@ -21,13 +21,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      - name: Release snapshot
-        id: release-snapshot
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: tag id
+        id: tag_id
         run: |
           latest_tag_commit_id=$(git rev-list --tags --max-count=1)
           latest_tag_name=$(git describe --tags $tag_commit_id)
@@ -36,9 +31,17 @@ jobs:
           run_id=${{ github.run_number }}
           base_tag="${latest_tag_name%%.*}"
           tag_id=$base_tag.$run_id
+      - uses: actions/checkout@v2
+
+      - name: Release snapshot
+        id: release-snapshot
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
         with:
-          tag_name: ${{ steps.release-snapshot.outputs.tag_id }}
-          release_name: ${{ steps.release-snapshot.outputs.tag_id }}
+          tag_name: ${{ steps.tag_id.outputs.tag_id }}
+          release_name: ${{ steps.tag_id.outputs.tag_id }}
           draft: false
           prerelease: false
