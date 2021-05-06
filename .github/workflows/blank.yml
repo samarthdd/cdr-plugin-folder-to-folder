@@ -28,16 +28,17 @@ jobs:
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
+        run: |
           latest_tag_commit_id=$(git rev-list --tags --max-count=1)
           latest_tag_name=$(git describe --tags $tag_commit_id)
           echo $latest_tag_name
-
           echo "${latest_tag_name%.*}"
           run_id=${{ github.run_number }}
           base_tag="${latest_tag_name%%.*}"
           tag_id=$base_tag.$run_id
-          tag_name: abc
-          release_name: abc
+
+        with:
+          tag_name: ${{ steps.release-snapshot.outputs.tag_id }}
+          release_name: ${{ steps.release-snapshot.outputs.tag_id }}
           draft: false
           prerelease: false
