@@ -58,6 +58,8 @@ jobs:
           if [[ $branch == 'main' &&  "${{ github.event.inputs.create_new_tag }}" == "true" ]] ; then
             version=${version#"v"}
             version=`expr $version + 1`
+            major=0
+            minor=0
             version=v${version}
             echo $version
             
