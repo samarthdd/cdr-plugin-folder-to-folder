@@ -53,7 +53,7 @@ jobs:
           branch=${{ steps.extract_branch.outputs.branch }}
           
         
-          if [ $branch == 'main' && -z ${{ github.event.inputs.create_new_tag }} ]; then
+          if [[ $branch == 'main' && -z ${{ github.event.inputs.create_new_tag }} ]]; then
             echo $branch 
             version=${version#"v"}
             major=`expr $major + 1`
