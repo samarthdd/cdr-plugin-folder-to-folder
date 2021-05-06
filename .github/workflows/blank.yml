@@ -64,13 +64,10 @@ jobs:
               else
                   minor=`expr $minor + 1`
               fi
-          # now we can add your else ..
-          else
-             echo "not nested"
-          # ... which should be followed by another fi
+
           fi
           
-          tag_name= $version.$major.$minor
+          tag_name=$version.$major.$minor
           echo "tag"
           echo $tag_name
           
