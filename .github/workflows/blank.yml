@@ -51,14 +51,14 @@ jobs:
           major=`echo $latest_tag | cut -d. -f2`
           minor=`echo $latest_tag | cut -d. -f3`
           branch=${{ steps.extract_branch.outputs.branch }}
-          echo $branch
+ 
           if [ $branch == 'main' ]; then
-            echo "main branch"
-            ${version#"v"}
+            echo $branch 
+            version=${version#"v"}
             major=`expr $major + 1`
 
           elif [ $branch == 'develop' ]; then
-              echo "develop branch"
+              echo $branch
               if [ -z "$minor" ]; then
                  minor=0
               else
