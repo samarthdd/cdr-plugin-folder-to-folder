@@ -35,7 +35,7 @@ jobs:
 
           echo "${latest_tag_name%.*}"
           base_tag="${latest_tag_name%%.*}"
-          tag_name: "$base_tag.${{ github.run_number }}"
+          tag_name: $base_tag
           release_name: "$base_tag.${{ github.run_number }}"
           draft: false
           prerelease: false
