@@ -21,6 +21,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          token: ${{secrets.GITHUBPAT}}
       - name: tag id
         id: tag_id
         run: |
@@ -31,7 +35,7 @@ jobs:
           run_id=${{ github.run_number }}
           base_tag="${latest_tag_name%%.*}"
           tag_id=$base_tag.$run_id
-      - uses: actions/checkout@v2
+  
 
       - name: Release snapshot
         id: release-snapshot
