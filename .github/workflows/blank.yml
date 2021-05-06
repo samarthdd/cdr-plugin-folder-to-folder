@@ -1,12 +1,12 @@
 # This is a basic workflow to help you get started with Actions
 
-name: tagging and release 
+name: Auto tagging and release
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: 
+    branches:
       - main
       - develop
 
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       create_new_tag:
-        description: create_new_tag? 
+        description: create_new_tag?
         required: true
         default: 'false'
 
@@ -37,7 +37,7 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       - name: Form tag name
-        id: tag_id
+        id: tagging
         run: |
 
           git config user.name github-actions@github.com
@@ -53,16 +53,20 @@ jobs:
           minor=`echo $latest_tag | cut -d. -f3`
 
           branch=${{ steps.extract_branch.outputs.branch }}
+          prerelease=false
 
           if [[ $branch == 'main' &&  "${{ github.event.inputs.create_new_tag }}" == "true" ]] ; then
             version=${version#"v"}
             version=`expr $version + 1`
+            major=0
+            minor=0
             version=v${version}
             echo $version
 
           elif [ $branch == 'main' ]; then
             major=`expr $major + 1`
           elif [ $branch == 'develop' ]; then
+              prerelease=true
               echo $branch
               if [ -z "$minor" ]; then
                  minor=0
@@ -73,17 +77,19 @@ jobs:
 
           tag_name=$version.$major.$minor
           echo "new tag : $tag_name"
+
+          echo ::set-output name=prerelease::$prerelease
           echo ::set-output name=tag_id::$tag_name
-          
+
       - name: Release snapshot
         id: release-snapshot
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.tag_id.outputs.tag_id }}
-          release_name: ${{ steps.tag_id.outputs.tag_id }}
+          tag_name: ${{ steps.tagging.outputs.tag_id }}
+          release_name: ${{ steps.tagging.outputs.tag_id }}
           draft: false
-          prerelease: false
-          
+          prerelease: ${{ steps.tagging.outputs.prerelease }}
+
       
