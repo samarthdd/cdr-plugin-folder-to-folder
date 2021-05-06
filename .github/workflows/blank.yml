@@ -44,22 +44,22 @@ jobs:
           git fetch --all
           
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-          
+          echo "latest tag"
           echo $latest_tag
 
           version=`echo $latest_tag| cut -d. -f1`
-          echo $version
           major=`echo $latest_tag | cut -d. -f2`
           minor=`echo $latest_tag | cut -d. -f3`
           branch=${{ steps.extract_branch.outputs.branch }}
           
           if [ $branch == 'main'] && [ ${{ github.event.inputs.create_new_tag }} == true ] ; then
             echo $branch 
+            echo "true"
             version=${version#"v"}
             version=`expr $version + 1`
             version=v${version}
+            echo $version
 
- 
           elif [ $branch == 'main' ]; then
             echo $branch 
             version=${version#"v"}
