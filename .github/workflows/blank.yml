@@ -57,13 +57,12 @@ jobs:
             ${version#"v"}
             major=`expr $major + 1`
 
-          elif [ $branch == 'develop' ];
-              then
-            echo "develop branch"
-              if [ -z "$revision" ] then
-                revision=0
+          elif [ $branch == 'develop' ]; then
+              echo "develop branch"
+              if [ -z "$minor" ] then
+                 minor=0
               else
-              minor=`expr $minor + 1`
+                  minor=`expr $minor + 1`
           tag_name= $version.$major.$minor
           echo "tag"
           echo $tag_name
